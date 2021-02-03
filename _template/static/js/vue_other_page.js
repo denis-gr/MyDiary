@@ -11,7 +11,6 @@ vueApp = new Vue({
         cls3: ["btn", "btn-danger mr-2 mb-2"],
     },
     methods: {
-
         load() {
             return Promise.all([
                 DB.countRecords().then(n => this.countRecords = n),
@@ -54,6 +53,7 @@ vueApp = new Vue({
                     return Promise.all(data.records.map(i => DB.addRecord(i)));
                 })
                 .then(DB.removeUnusedTags)
+                .then(this.load())
                 .then(() =>
                     this.cls2.splice(this.cls2.findIndex(data => data == "disabled"), 1)
                 );
@@ -62,6 +62,7 @@ vueApp = new Vue({
             this.cls3.push("disabled");
             DB.delTypes().then(DB.delTags).then(DB.delRecords)
             .then(() => dbPromise.then(createDefaultTypes))
+            .then(this.load)
             .then(() =>
                 this.cls3.splice(this.cls3.findIndex(data => data == "disabled"), 1)
             )
@@ -69,9 +70,6 @@ vueApp = new Vue({
         clearJSON() {
             this.json = ""
         }
-
-
-
     },
     computed: {
         isValidJSON: vm => {
