@@ -56,7 +56,7 @@
                     <div class="row" v-if="types.length">
                         <div class="col-sm-6 pb-5" v-for="type in types">
                             <header>
-                                <img class="icon" :src="type.icon" style="width: 1.5rem;" alt="">
+                                <i :class="['icon', 'bi-'+type.icon]"></i>
                                 <span class="h5" v-text="type.title"></span>
                             </header>
                             <div class="col mb-2" v-text="type.description"></div>
