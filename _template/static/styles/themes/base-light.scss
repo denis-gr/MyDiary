@@ -1,0 +1,201 @@
+.base-light {
+    .main-navbar {
+        .navbar-brand {
+            color: rgba(0,0,0,.9);
+        }
+
+        .navbar-toggler {
+            color: rgba(0,0,0,.55);
+            border: none;
+
+            &:focus {
+                box-shadow: none;
+            }
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 0, 0, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        .navbar-nav {}
+
+        .navbar-nav .nav-item {}
+
+        .navbar-nav .nav-link {
+            color: rgba(0,0,0,.55)
+        }
+
+        .navbar-search {
+            margin-left: auto;
+        }
+
+        .navbar-search .form-field {
+            .form-control {}
+
+            .btn {} 
+        }
+
+        background-color: #f8f9fa;
+    }
+
+    .records-header {
+        .title {}
+
+        .header .btn-change-date {}
+
+        .search-field.form-field {
+            .form-control {}
+
+            .btn {}
+        }
+    }
+
+    .records-header .tags-menu {
+        .current-tag {}
+
+        .tags-menu-list {}
+
+        .tags-menu-list-item {}
+
+        .tags-menu-list-link {}
+    }
+
+    .records {
+        .records-list {}
+
+        .records-list-item {}
+
+        .errors {}
+
+        .error-text {}
+    }
+
+    .calendar {
+        .header {
+            font-size: 1rem;
+        }
+
+        .header .title {
+            font-size: calc(1.3rem + .6vw);
+        }
+
+        .header .btn-change-date {
+            font-size: 0.75rem;
+            color: #7b5940;
+        }
+
+        .day-row {}
+
+        .weekday {}
+
+        .weekday,
+        .day {
+            font-size: 1rem;
+            border-radius: 100%;
+            border: 1px solid transparent;
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .day {
+            text-decoration: none;
+        }
+
+        .day.active.today {
+            border-color: red;
+        }
+
+        .day.active.today:hover {
+            background-color: red;
+            color: white;
+        }
+
+        .day.active {
+            border-color: #7b5940;
+        }
+
+        .day.active:hover {
+            background-color: #7b5940;
+            color: white;
+        }
+
+        .day.passive {
+            color: #7b5940;
+        }
+    }
+
+    .main-page-tags {
+        .header {}
+
+        .header .title {}
+
+        .tags-list {
+            list-style: none;
+            padding: 0;          
+        }
+
+        .tags-list-item {}
+
+        .tags-list-link {
+            word-wrap: break-word;
+            font-size: 1.5rem;
+            color: #212529;
+        }
+
+        .errors {}
+
+        .error-text {}
+    }
+
+    .creation-menu {
+        .creation-menu-inner {}
+
+        .creation-menu-inner .link {}
+
+        .creation-menu-inner .icon {}
+
+        .main-link {}
+
+        .main-icon {}
+    }
+
+    .record-preview {
+        .left {}
+
+        .right {}
+
+        .right .content {
+            border-bottom: 1px solid #353535;
+        }
+
+        .right .bottom {}
+
+        .date,
+        .tag {
+            color: #353535;
+            font-size: 0.75rem;
+        }
+
+        .icon {}
+    }
+
+    .form-field {
+        .form-control {}
+
+        .form-label {}
+
+        .btn {}
+
+        margin-bottom: 1rem;
+    }
+
+    .text-to-borders {}
+
+    .icon {
+        color: #212529;
+        font-size: 1.5rem;
+        line-height: 1rem;
+    }
+
+    //other.html ...
+}

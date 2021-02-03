@@ -1,0 +1,50 @@
+{% extends '_diary_page.html' %}
+
+{% block inner %}
+<div class="min-vh-100 py-3" id="app">
+    <div class="container">
+        <header class="mb-3 records-header">
+            <div class="h1 title">Поиск</div>
+            <div class="row gx-1 search-field form-field">
+                <div class="col">
+                    <input class="form-control" type="search" v-model="options.q" placeholder="Поиск" aria-label="Поиск">
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-primary" type="button" @click="update()">Найти</button>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-auto row">
+                    <label for="field-type" class="col-auto col-form-label">Тип</label>
+                    <div class="col-auto">
+                        <select class="form-select" v-model.number="options.type" id="field-type">
+                            <option value="0">Любой</option>
+                            <option :value="i.id" v-for="i in types" v-text="i.title"></option>
+                        </select>                        
+                    </div>
+                </div>
+                <div class="col-auto row">
+                    <label for="field-tag" class="col-auto col-form-label">Тег</label>
+                    <div class="col-auto">
+                        <select class="form-select" v-model="options.tag" id="field-tag">
+                            <option :value="undefined">Любой</option>
+                            <option :value="i.name" v-for="i in tags" v-text="'#'+i.name"></option>
+                        </select>                        
+                    </div>
+                </div>
+            </div>
+            <hr>          
+        </header>
+        <div class="records">
+            <ul class="row records-list" v-if="records.length">
+                <li class="records-list-item col-sm-4" v-for="i in records" :key="i.id">
+                    <component :is="getComponent(i.type)" :id_record="i.id"></component>
+                </li>
+            </ul>
+            <div class="errors" v-else>
+                <p class="error-text">У вас, либо нет записей, либо они не загруженны.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

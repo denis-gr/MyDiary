@@ -1,0 +1,137 @@
+.theme {
+    .navbar {
+        .navbar-brand {}
+
+        .navbar-toggler {}
+
+        .navbar-toggler-icon {}
+
+        .navbar-nav {}
+
+        .navbar-nav .nav-item {}
+
+        .navbar-nav .nav-link {}
+
+        .navbar-search {}
+
+        .navbar-search .form-field {
+            .form-control {}
+    
+            .btn {}
+        }
+    }
+
+    .records-header {
+        .title {}
+
+        .header .btn-change-date {}
+
+        .search-field.form-field {
+            .form-control {}
+    
+            .btn {}
+        }
+    }
+
+    .records-header .tags-menu {
+        .current-tag {}
+
+        .tags-menu-list {}
+
+        .tags-menu-list-item {}
+
+        .tags-menu-list-link {}
+    }
+
+    .records {
+        .records-list {}
+
+        .records-list-item {}
+
+        .errors {}
+
+        .error-text {}
+    }
+
+    .calendar {
+        .header{}
+
+        .header .title {}
+
+        .header .btn-change-date {}
+
+        .day-row {}
+
+        .day-row .weekday {}
+
+        .day-row .weekday .day {}
+
+        .day {}
+
+        .day.active.today {}
+
+        .day.active.today:hover {}
+
+        .day.active {}
+
+        .day.active:hover {}
+
+        .day.passive {}
+    }
+
+    .main-page-tags {
+        .header{}
+
+        .header .title {}
+
+        .tags-list {}
+
+        .tags-list-item {}
+
+        .tags-list-link {}
+
+        .errors {}
+
+        .error-text {}
+    }
+
+    .creation-menu {
+        .creation-menu-inner {}
+
+        .creation-menu-inner .link {}
+
+        .creation-menu-inner .icon {}
+
+        .main-link {}
+
+        .main-icon {}
+    }
+
+    .record-preview {
+        .left {}
+
+        .right {}
+
+        .right .content {}
+
+        .right .bottom {}
+
+        .date {}
+
+        .tag {}
+
+        .icon {}
+    }
+
+    .form-field {
+        .form-control {}
+
+        .form-label {}
+
+        .btn {}
+    }
+
+    .text-to-borders {}
+
+    //other.html ...
+}

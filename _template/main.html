@@ -1,0 +1,39 @@
+{% extends '_diary_page.html' %}
+
+{% block inner %}
+<div class="min-vh-100 py-3">
+    <div class="container" id="app">
+        <div class="row text-center">
+            <div class="col-md mb-3">
+                <calendar :id="'calendar'" :first_date="options.date" v-cloak></calendar>
+            </div>
+            <div class="main-page-tags col-md mb-3">
+                <header class="header text-center">
+                    <div class="title h3">Теги</div>
+                </header>
+                <ul class="row tags-list" v-if="tags.length">
+                    <li class="col-6 tags-list-item" v-for="i in tags">
+                        <a class="tags-list-link" :href="getTagUrl(i)" v-text="'#'+i.name"></a>
+                    </li>
+                </ul>
+                <div class="errors text-center" v-else>
+                    <p class="error-text">У вас, либо нет тегов, либо они не загруженны.</p>
+                </div>
+            </div>
+        </div>
+        <div class="records">
+            <header class="header">
+                <div class="title h3">Последнии записи</div>
+            </header>
+            <ul class="row records-list" v-if="records.length">
+                <li class="records-list-item col-sm-4" v-for="i in records" :key="i.id">
+                    <component :is="getComponent(i.type)" :id_record="i.id"></component>
+                </li>
+            </ul>
+            <div class="errors" v-else>
+                <p class="error-text">У вас, либо нет записей, либо они не загруженны.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

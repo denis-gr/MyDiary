@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+  <meta charset="utf-8">
+  <title>Мой дневник</title>
+  <meta name="description" content="Diary">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1/font/bootstrap-icons.min.css">
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1/font/fonts/bootstrap-icons.woff?4601c71fb26c9277391ec80789bfde9c" as="font">
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1/font/fonts/bootstrap-icons.woff2?4601c71fb26c9277391ec80789bfde9c" as="font">
+  <link rel="stylesheet" href="{{ start_url }}/static/styles/base.css">
+  <link rel="stylesheet" href="{{ start_url }}/static/styles/themes/base-light.css">
+</head>
+
+<body class="base-light">
+  <header class="navbar main-navbar navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand" href="#">MyDiary</a>
+      <a class="navbar-toggler" href="#" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </a>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="{{ start_url }}/main.html">Главная страница</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ start_url }}/other.html">Другое</a>
+          </li>
+        </ul>
+        <form class="navbar-search d-flex" action="{{ start_url }}/search.html" defer>
+          <div class="row gx-1 form-field">
+            <div class="col">
+              <input class="form-control " type="search" name="q" aria-label="Поиск">
+            </div>
+            <div class="col-auto">
+              <button class="btn btn-outline-secondary" type="submit">Найти</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </header>
+
+  {% block content %}
+  {% endblock %}
+
+  {% block extra_js %}
+  {% endblock %}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js" defer></script>
+  <script defer>
+    window.addEventListener('load', () => navigator.serviceWorker.register('{{ start_url }}/sw.js'));
+  </script>
+</body>
+
+</html>

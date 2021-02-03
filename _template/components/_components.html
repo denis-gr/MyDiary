@@ -1,0 +1,56 @@
+<template id="modal-template">
+  <div class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" v-text="title"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <slot></slot>
+        </div>
+        <div class="modal-footer">
+          <slot name="footer"></slot>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="calendar-template">
+  <div class="calendar">
+    <modal title="Изменить дату" :id="'edit'+id">
+      <div class="form-field">
+        <label class="form-label">Год и месяц</label>
+        <div class="row">
+          <div class="col">
+            <input class="form-control" type="number" v-model="year" placeholder="Year">
+          </div>
+          <div class="col">
+            <input class="form-control" type="number" v-model="month" placeholder="Month">
+          </div>
+        </div>
+      </div>
+      <template v-slot:footer>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="load()">Перейти</button>
+      </template>
+    </modal>
+    <div class="header">
+      <span class="h3 title" v-text='title'></span>
+      <a class="btn-change-date" data-bs-toggle="modal" :data-bs-target="'#edit'+id" href="#">Изменить</a>
+    </div>
+    <div class="day-row">
+      <span class="weekday">Пн</span>
+      <span class="weekday">Вт</span>
+      <span class="weekday">Ср</span>
+      <span class="weekday">Чт</span>
+      <span class="weekday">Пт</span>
+      <span class="weekday">Сб</span>
+      <span class="weekday">Вс</span>
+    </div>
+    <div class="day-row" v-for="i in days">
+      <a v-for="j in i" v-text="j.getDate()" :class="getDayCls(j)" :href="getUrlDay(j)"></a>
+    </div>
+  </div>
+</template>

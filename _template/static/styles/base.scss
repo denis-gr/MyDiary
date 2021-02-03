@@ -1,0 +1,206 @@
+.navbar {
+    .navbar-brand {}
+
+    .navbar-toggler {}
+
+    .navbar-toggler-icon {}
+
+    .navbar-nav {}
+
+    .navbar-nav .nav-item {}
+
+    .navbar-nav .nav-link {}
+
+    .navbar-search {}
+
+    .navbar-search .form-field {
+        .form-control {}
+
+        .btn {}
+    }
+}
+
+.records-header {
+    .title {}
+
+    .btn-change-date {}
+
+    .search-field.form-field {
+        .form-control {}
+
+        .btn {}
+    }
+}
+
+.records-header .tags-menu {
+    .current-tag {}
+
+    .tags-menu-list {}
+
+    .tags-menu-list-item {}
+
+    .tags-menu-list-link {}
+}
+
+.records {
+    .records-list {
+        list-style: none;
+        padding: 0;      
+    }
+
+    .records-list-item {}
+
+    .errors {}
+
+    .error-text {}
+}
+
+.calendar {
+    .header {
+        font-size: 1rem;
+    }
+
+    .header .title {}
+
+    .header .btn-change-date {}
+
+    .day-row {
+        font-size: 0;
+    }
+
+    .weekday {}
+
+    .weekday, .day {
+        display: inline-block;
+        box-sizing: content-box;
+        width: 1.6rem;
+        height: 1.6rem;
+        margin: 2px 2px;
+        padding: 0.5rem;
+    }
+
+    .day {}
+
+    .day.active.today {}
+
+    .day.active.today:hover {}
+
+    .day.active {}
+
+    .day.active:hover {}
+
+    .day.passive {}
+}
+
+.main-page-tags {
+    .header {}
+
+    .header .title {}
+
+    .tags-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .tags-list-item {}
+
+    .tags-list-link {
+        word-wrap: break-word;
+        font-size: 1.5rem;
+    }
+
+    .errors {}
+
+    .error-text {}
+}
+
+.creation-menu {
+    .creation-menu-inner {
+        display: none
+    }
+
+    .creation-menu-inner .link {}
+
+    .creation-menu-inner .icon {}
+
+    .link, .main-link {
+        display: inline-block;
+        height: 50px;
+        width: 50px;
+    }
+
+    &.show .creation-menu-inner {
+        display: block;
+    }
+
+    &.show .main-link {
+        display: none;
+    }
+
+    .main-link {}
+
+    .main-link .icon {}
+
+    position: fixed;
+    width: 50px;
+    bottom: 30px;
+    right: 30px;
+}
+
+.record-preview {
+    .left {
+        text-align: center;
+        display: inline-block;
+        padding: 0 5px;
+        position: absolute;
+        top: 0.5rem;
+        height: 15px;
+        left: 0;  
+    }
+
+    .left.icon {
+        color: #212529;
+        font-size: 1rem;
+        line-height: 0.05rem;
+        vertical-align: top;
+    }
+
+    .right {
+        display: inline-block;
+        vertical-align: top;
+        width: 100%;
+    }
+
+    .right .content {}
+
+    .right .bottom {}
+
+    .date, .tag {
+        margin-right: 10px;
+    }
+
+    .icon {}
+
+    margin-bottom: 10px;
+    position: relative;
+    padding-left: 25px;
+}
+
+.form-field {
+    .form-control {}
+
+    .form-label {}
+
+    .btn {}
+}
+
+.text-to-borders {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+[v-cloak] {
+    display: none;
+}
+
+//other.html ...

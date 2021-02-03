@@ -1,0 +1,28 @@
+{% extends '_diary_page.html' %}
+
+{% block inner %}
+<div class="min-vh-100 py-3" id="app">
+    <div class="container">
+        <header class="navbar records-header mb-2">
+            <div class="dropdown tags-menu">
+                <div class="dropdown-toggle h1 current-tag" type="button" data-bs-toggle="dropdown" v-text="'#'+options.tag"></div>
+                <ul class="dropdown-menu tags-menu-list">
+                    <li v-for="i in tags" class="tags-menu-list-item" v-if="i.name != options.tag">
+                        <a class="dropdown-item tags-menu-list-link" :href="getTagUrl(i)" v-text="'#'+i.name"></a>
+                    </li>
+                </ul>
+            </div>
+        </header>
+        <div class="records">
+            <ul class="row records-list" v-if="records.length">
+                <li class="records-list-item col-sm-4" v-for="i in records" :key="i.id">
+                    <component :is="getComponent(i.type)" :id_record="i.id"></component>
+                </li>
+            </ul>
+            <div class="errors" v-else>
+                <p class="error-text">У вас, либо нет записей, либо они не загруженны.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

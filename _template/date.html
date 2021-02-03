@@ -1,0 +1,31 @@
+{% extends '_diary_page.html' %}
+
+{% block inner %}
+<div class="min-vh-100 py-3" id="app">
+    <div class="container">
+        <modal title="Изменить дату" id="editDate">
+            <div class="form-field">
+                <label class="form-label">Новая дата</label>
+                <input type="date" class="form-control" v-model="today">
+            </div>
+            <template v-slot:footer>
+                <a class="btn btn-primary" :href="getDateUrl(today)">Перейти</a>
+            </template>
+        </modal>
+        <header class="records-header mb-2">
+            <span class="title h1" v-text="getFormattedDate(options.date)"></span>
+            <small class="btn-change-date" data-bs-toggle="modal" data-bs-target="#editDate">Изменить</small>
+        </header>
+        <div class="records">
+            <ul class="row records-list" v-if="records.length">
+                <li class="records-list-item col-sm-4" v-for="i in records" :key="i.id">
+                    <component :is="getComponent(i.type)" :id_record="i.id"></component>
+                </li>
+            </ul>
+            <div class="errors" v-else>
+                <p class="error-text">У вас, либо нет записей, либо они не загруженны.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
