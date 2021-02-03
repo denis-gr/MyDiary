@@ -1,5 +1,5 @@
 vueApp = new Vue({
-    el: "app",
+    el: "#app",
     data: {
         countTags: 0,
         countRecords: 0,
