@@ -11,7 +11,7 @@ vueApp = new Vue({
         cls3: ["btn", "btn-danger mr-2 mb-2"],
     },
     methods: {
-        load() {
+        update() {
             return Promise.all([
                 DB.countRecords().then(n => this.countRecords = n),
                 DB.countTags().then(n => this.countTags = n),
@@ -21,10 +21,10 @@ vueApp = new Vue({
         },
         load_type() {
             type = JSON.parse(this.json);
-            DB.addType(type).then(() => this.json = "").then(this.load)
+            DB.addType(type).then(() => this.json = "").then(this.update)
         },
         remove(type) {
-            DB.delType(type.id).then(this.load)
+            DB.delType(type.id).then(this.update)
         },
         exportJSON() {
             this.cls1.push("disabled");
@@ -53,7 +53,7 @@ vueApp = new Vue({
                     return Promise.all(data.records.map(i => DB.addRecord(i)));
                 })
                 .then(DB.removeUnusedTags)
-                .then(this.load())
+                .then(this.update())
                 .then(() =>
                     this.cls2.splice(this.cls2.findIndex(data => data == "disabled"), 1)
                 );
@@ -62,7 +62,7 @@ vueApp = new Vue({
             this.cls3.push("disabled");
             DB.delTypes().then(DB.delTags).then(DB.delRecords)
             .then(() => dbPromise.then(createDefaultTypes))
-            .then(this.load)
+            .then(this.update)
             .then(() =>
                 this.cls3.splice(this.cls3.findIndex(data => data == "disabled"), 1)
             )
@@ -84,4 +84,4 @@ vueApp = new Vue({
     },
 });
 
-vueApp.load();
+vueApp.update();

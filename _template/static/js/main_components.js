@@ -28,7 +28,7 @@ Vue.component("calendar", {
             return cls;
         },
         getUrlDay: (date) => `{{ start_url }}/date.html?date=${moment(date).format('YYYY-MM-DD')}`,
-        load() {
+        update() {
             this.days = getDays(this.year, this.month);
         },
     },
