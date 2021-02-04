@@ -2,38 +2,41 @@
 
 {% block content %}
 {% include 'components/_components.html' %}
-<modal title="Загрузить тип" id="createTypeModal">
-    <div class="form-field">
-        <label for="inputTemplate">Настройки модуля (JSON)</label>
-        <textarea class="form-control" id="inputTemplate" v-model="json"></textarea>
-    </div>
-    <template v-slot:footer>
-        <button class="btn btn-primary" data-bs-dismiss="modal" @click="load_type()" type="button">
-            Загрузить
-        </button>
-    </template>
-</modal>
-<modal title="Удалить все данные" id="deleteAllData">
-    Вы уверенны, что хотите удалить все данные?
-    <template v-slot:footer>
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="deleteAll()">Да</button>
-        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Нет</button>
-    </template>
-</modal>
-<modal title="Вы хотите импортировать данные" id="importData">
-    <div v-if="isValidJSON">
-        Вы уверенны, что хотите импортировать данные?
-    </div>
-    <div v-else>
-        Данные не верны.
-    </div>
-    <template v-slot:footer>
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="importJSON()"
-            v-if="isValidJSON">Да</button>
-        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Назад</button>
-    </template>
-</modal>
 <div class="min-vh-100 py-3" id="app">
+
+    <modal title="Загрузить тип" id="createTypeModal">
+        <div class="form-field">
+            <label for="inputTemplate">Настройки модуля (JSON)</label>
+            <textarea class="form-control" id="inputTemplate" v-model="json"></textarea>
+        </div>
+        <template v-slot:footer>
+            <button class="btn btn-primary" data-bs-dismiss="modal" @click="load_type()" type="button">
+                Загрузить
+            </button>
+        </template>
+    </modal>
+    <modal title="Удалить все данные" id="deleteAllData">
+        Вы уверенны, что хотите удалить все данные?
+        <template v-slot:footer>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="deleteAll()">Да</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Нет</button>
+        </template>
+    </modal>
+    <modal title="Вы хотите импортировать данные" id="importData">
+        <div v-if="isValidJSON">
+            Вы уверенны, что хотите импортировать данные?
+        </div>
+        <div v-else>
+            Данные не верны.
+        </div>
+        <template v-slot:footer>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="importJSON()"
+                v-if="isValidJSON">Да</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Назад</button>
+        </template>
+    </modal>
+
+
     <div class="container">
 
 
@@ -72,7 +75,7 @@
         <h3>Импорт и экспорт</h3>
         <textarea class="form-control mb-2" v-model="json"
             placeholder="Здесь будут или должны быть ваши данные в формате JSON"></textarea>
-        <div class="flex flex-wrap justify-content-between">
+        <div class="flex flex-wrap justify-content-between mb-5">
             <button class="btn btn-danger mr-2 mb-2" :class="{disabled: is_delete_bnt_disabled}" type="button"
                 data-bs-toggle="modal" data-bs-target="#deleteAllData">Удалить данные</button>
             <button class="btn btn-primary mr-2 mb-2" :class="{disabled: is_export_bnt_disabled}" type="button"
