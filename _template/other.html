@@ -3,13 +3,40 @@
 {% block content %}
 {% include 'components/_components.html' %}
 <div class="min-vh-100 py-3" id="app">
-
-
+    <modal title="Загрузить тип" id="createTypeModal">
+        <div class="form-field">
+            <label for="inputTemplate">Настройки модуля (JSON)</label>
+            <textarea class="form-control" id="inputTemplate" v-model="json"></textarea>
+        </div>
+        <template v-slot:footer>
+            <button class="btn btn-primary" data-bs-dismiss="modal" @click="load_type()" type="button">
+                Загрузить
+            </button>
+        </template>
+    </modal>
+    <modal title="Удалить все данные" id="deleteAllData">
+        Вы уверенны, что хотите удалить все данные?
+        <template v-slot:footer>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="deleteAll()">Да</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Нет</button>
+        </template>
+    </modal>
+    <modal title="Вы хотите импортировать данные" id="importData">
+        <div v-if="isValidJSON">
+            Вы уверенны, что хотите импортировать данные?
+        </div>
+        <div v-else>
+            Данные не верны.
+        </div>
+        <template v-slot:footer>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="importJSON()"
+                v-if="isValidJSON">Да</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Назад</button>
+        </template>
+    </modal>
 
     <h2>
-        <button>
-            Информация о дневнике
-        </button>
+        Информация о дневнике
     </h2>
     <div>
         <h3>Информация</h3>
@@ -30,22 +57,10 @@
     </div>
 
     <h2>
-        <button>
-            Типы записей
-        </button>
+        Типы записей
     </h2>
     <div>
-        <modal title="Загрузить тип" id="createTypeModal">
-            <div class="form-field">
-                <label for="inputTemplate">Настройки модуля (JSON)</label>
-                <textarea class="form-control" id="inputTemplate" v-model="json"></textarea>
-            </div>
-            <template v-slot:footer>
-                <button class="btn btn-primary" data-bs-dismiss="modal" @click="load_type()" type="button">
-                    Загрузить
-                </button>
-            </template>
-        </modal>
+
         <h3>Типы записей</h3>
         <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#createTypeModal">
             Добавить тип
@@ -64,31 +79,10 @@
     </div>
 
     <h2>
-        <button>
-            Импорт, экспорт и удаление данных
-        </button>
+        Импорт, экспорт и удаление данных
     </h2>
     <div>
-        <modal title="Удалить все данные" id="deleteAllData">
-            Вы уверенны, что хотите удалить все данные?
-            <template v-slot:footer>
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="deleteAll()">Да</button>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Нет</button>
-            </template>
-        </modal>
-        <modal title="Вы хотите импортировать данные" id="importData">
-            <div v-if="isValidJSON">
-                Вы уверенны, что хотите импортировать данные?
-            </div>
-            <div v-else>
-                Данные не верны.
-            </div>
-            <template v-slot:footer>
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="importJSON()"
-                    v-if="isValidJSON">Да</button>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Назад</button>
-            </template>
-        </modal>
+
         <h3>Импорт и экспорт</h3>
         <textarea class="form-control mb-2" v-model="json"
             placeholder="Здесь будут или должны быть ваши данные в формате JSON"></textarea>
@@ -104,9 +98,7 @@
     </div>
 
     <h2>
-        <button type="button">
-            Другое
-        </button>
+        Другое
     </h2>
     <div>
         <a class="link" href="">Первая главная страница</a>
