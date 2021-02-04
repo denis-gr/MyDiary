@@ -6,9 +6,9 @@ vueApp = new Vue({
         countTypes: 0,
         json: "",
         types: [],
-        cls1: ["btn", "btn-primary mr-2 mb-2"],
-        cls2: ["btn", "btn-primary mr-2 mb-2"],
-        cls3: ["btn", "btn-danger mr-2 mb-2"],
+        is_export_bnt_disabled: false,
+        is_import_bnt_disabled: false,
+        is_delete_bnt_disabled: false,
     },
     methods: {
         update() {
@@ -27,20 +27,18 @@ vueApp = new Vue({
             DB.delType(type.id).then(this.update)
         },
         exportJSON() {
-            this.cls1.push("disabled");
+            this.is_export_bnt_disabled = true;
             data = {};
             Promise.all([
-                DB.getTypes().then(types => data.types = types),
-                DB.getRecords({}).then(records => data.records = records),
-                DB.getTags().then(tags => data.tags = tags),
-            ])
-            .then(() => this.json = JSON.stringify(data))
-                .then(() =>
-                    this.cls1.splice(this.cls1.findIndex(data => data == "disabled"), 1)
-                );
+                    DB.getTypes().then(types => data.types = types),
+                    DB.getRecords({}).then(records => data.records = records),
+                    DB.getTags().then(tags => data.tags = tags),
+                ])
+                .then(() => this.json = JSON.stringify(data))
+                .then(() => this.is_export_bnt_disabled = false);
         },
         importJSON() {
-            this.cls2.push("disabled");
+            this.is_import_bnt_disabled = true;
             data = JSON.parse(this.json);
             types = {};
             data.types.map(i => delete i.id);
@@ -53,19 +51,15 @@ vueApp = new Vue({
                     return Promise.all(data.records.map(i => DB.addRecord(i)));
                 })
                 .then(DB.removeUnusedTags)
-                .then(this.update())
-                .then(() =>
-                    this.cls2.splice(this.cls2.findIndex(data => data == "disabled"), 1)
-                );
+                .then(this.update)
+                .then(() => this.is_import_bnt_disabled = false);
         },
         deleteAll() {
-            this.cls3.push("disabled");
+            this.is_delete_bnt_disabled = true;
             DB.delTypes().then(DB.delTags).then(DB.delRecords)
-            .then(() => dbPromise.then(createDefaultTypes))
-            .then(this.update)
-            .then(() =>
-                this.cls3.splice(this.cls3.findIndex(data => data == "disabled"), 1)
-            )
+                .then(() => dbPromise.then(createDefaultTypes))
+                .then(this.update)
+                .then(() => this.is_delete_bnt_disabled = false);
         },
         clearJSON() {
             this.json = ""

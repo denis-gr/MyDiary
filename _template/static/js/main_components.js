@@ -15,18 +15,6 @@ Vue.component("calendar", {
         }
     },
     methods: {
-        getDayCls: function (date) {
-            cls = ["day"];
-            if (date.getMonth() + 1 == this.month) {
-                cls.push("active");
-            } else {
-                cls.push("passive");
-            };
-            if (moment(date).format("L") == moment(new Date()).format("L")) {
-                cls.push("today");
-            };
-            return cls;
-        },
         getUrlDay: (date) => `{{ start_url }}/date.html?date=${moment(date).format('YYYY-MM-DD')}`,
         update() {
             this.days = getDays(this.year, this.month);

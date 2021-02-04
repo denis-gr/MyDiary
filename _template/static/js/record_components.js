@@ -6,12 +6,13 @@ function createVueModalRecord(a) {
         template: getRecordModalHTML(a)
     })
 };
+
 typesModal = {};
 DB.getTypes().then(recordTypes => {
-    for (type in recordTypes) {
-        typesModal[recordTypes[type].id] = `${recordTypes[type].name}-modal-record`;
-        createVueModalRecord(recordTypes[type]);
-    };
+    recordTypes.forEach(type => {
+        typesModal[type.id] = `${type.name}-modal-record`;
+        createVueModalRecord(type);
+    });
     window.getModalComponent = id => typesModal[id];
 });
 
@@ -25,12 +26,12 @@ function toggleCreationMenu() {
 function createVueCreate(b) {
     new Vue({
         el: `#add-${b.name}`,
-        data: () => new Object({
+        data: () => ({
             record: {
                 type: b.id,
                 content: {},
                 tags: options.tag ? [options.tag] : [],
-                date: new Date(Date.parse(options.date) || new Date).toISOString().slice(null,10),
+                date: new Date(Date.parse(options.date) || new Date).toISOString().slice(null, 10),
                 time: moment().format("HH:mm"),
             },
         }),
@@ -40,34 +41,35 @@ function createVueCreate(b) {
                 DB.getType(a.type).then(type => {
                     return type.fields.search.map(field =>
                         a.content[field].split(/\s/).filter(x => x[0] == "#")
-                            .map(x => x.slice(1)).filter(x => x)
+                        .map(x => x.slice(1)).filter(x => x)
                     ).flat();
                 }).then(tags =>
                     Promise.all(tags.map(DB.pullTag))
-                        .then(tags => tags.map(x => x.name))
-                        .then(tags => a.tags = tags)
-                        .then(() => vueApp.addRecord(a))
-                        .then(() => {
-                            this.record = {
-                                type: b.id,
-                                content: {},
-                                tags: options.tag ? [options.tag] : [],
-                                date: new Date(Date.parse(options.date) || new Date).toISOString().slice(null,10),
-                                time: moment().format("HH:mm"),
-                            }
-                        }));
+                    .then(tags => tags.map(x => x.name))
+                    .then(tags => a.tags = tags)
+                    .then(() => vueApp.addRecord(a))
+                    .then(() => {
+                        this.record = {
+                            type: b.id,
+                            content: {},
+                            tags: options.tag ? [options.tag] : [],
+                            date: new Date(Date.parse(options.date) || new Date).toISOString().slice(null, 10),
+                            time: moment().format("HH:mm"),
+                        }
+                    }));
             },
         },
     })
 };
+
 DB.getTypes().then(recordTypes => {
     templates = recordTypes.map(getCrearionMenuLinkTemplate).join("");
     document.querySelector("#creation-menu-inner").insertAdjacentHTML('afterbegin', templates);
-    for (type in recordTypes) {
-        template = getCrearionElement(recordTypes[type]);
+    recordTypes.forEach(type => {
+        template = getCrearionElement(type);
         document.querySelector("#creation-menu").insertAdjacentHTML('beforebegin', template);
-        createVueCreate(recordTypes[type]);
-    }
+        createVueCreate(type);
+    });
 });
 const getRecordHTML = type => `<div class="record-preview"><modal title="Изменить запись" :id="'editRecord'+id_record"><component is="${type.name}-modal-record" :record="form"></component><template v-slot:footer><button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="remove()">Удалить</button><button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="save()">Изменить</button></template></modal><i class="bi-${type.icon} icon left"></i><div class="right"><div class="content" data-bs-toggle="modal" :data-bs-target="'#editRecord'+id_record">${type.template}</div><div class="bottom"><a class="date" v-text="datetime(record)" :href="url_date(record)"></a><a class="tag" v-for="tag in record.tags" v-text="'#'+tag" :href="url_tag(tag)"></a></div></div></div>`;
 
@@ -105,24 +107,25 @@ function createVueRecord(a, b) {
                 DB.getType(this.record.type).then(type => {
                     return type.fields.search.map(field =>
                         this.record.content[field].split(/\s/).filter(x => x[0] == "#")
-                            .map(x => x.slice(1)).filter(x => x)
+                        .map(x => x.slice(1)).filter(x => x)
                     ).flat();
                 }).then(tags =>
                     Promise.all(tags.map(DB.pullTag))
-                        .then(tags => tags.map(x => x.name))
-                        .then(() => this.record.tags = tags)
-                        .then(() => DB.putRecord(this.record))
-                        .then(() => vueApp.removeUnusedTags())
+                    .then(tags => tags.map(x => x.name))
+                    .then(() => this.record.tags = tags)
+                    .then(() => DB.putRecord(this.record))
+                    .then(() => vueApp.removeUnusedTags())
                 );
             },
         },
     })
 };
+
 types = {};
 DB.getTypes().then(recordTypes => {
-    for (type in recordTypes) {
-        types[recordTypes[type].id] = `${recordTypes[type].name}-record`;
-        createVueRecord(recordTypes[type], recordTypes);
-    };
+    recordTypes.forEach(type => {
+        types[type.id] = `${type.name}-record`;
+        createVueRecord(type, recordTypes);
+    });
     window.getComponent = id => types[id];
 })

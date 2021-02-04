@@ -55,12 +55,9 @@ function getRecords({
     slice
 }) {
     return dbPromise
-        .then(db =>
-            date ? db.getAllFromIndex("records", "date", date) : db.getAll("records")
-        )
-        .then(records => {
-            return dbPromise.then(db => db.getAll("recordTypes"))
-            .then(types => {
+        .then(db => date ? db.getAllFromIndex("records", "date", date) : db.getAll("records"))
+        .then(records =>
+            dbPromise.then(db => db.getAll("recordTypes")).then(types => {
                 records = type ? records.filter(d => d.type == type) : records;
                 records = tag ? records.filter(d => d.tags.indexOf(tag) >= 0) : records;
                 if (q) {
@@ -78,13 +75,12 @@ function getRecords({
                 records = !slice ? records : (slice > 0 ? records.slice(0, slice) : records.slice(slice));
                 return records;
             })
-        })
+        )
 };
 
 function removeUnusedTags(tags) {
     return dbPromise
-        .then(db => tags ? Object.assign([], tags) :
-            db.getAll("tags").then(tags => tags.map(tag => tag.name)))
+        .then(db => tags || db.getAll("tags").then(tags => tags.map(tag => tag.name)))
         .then(tags => dbPromise.then(db => db.getAll("records")).then(records =>
             records.reduce((a, i) => a.filter(tag => i.tags.indexOf(tag) < 0), tags)
         ))
@@ -125,8 +121,10 @@ const DB = {
     pullTag(name) {
         return dbPromise.then(db => db.getFromIndex("tags", "name", name)).then(tag => {
             if (!tag) {
-                tag = dbPromise.then(db => db.add("tags", { name }))
-                .then(id => dbPromise.then(db => db.get("tags", id)));
+                tag = dbPromise.then(db => db.add("tags", {
+                    name
+                }));
+                tag = tag.then(id => dbPromise.then(db => db.get("tags", id)));
             };
             return tag;
         })
