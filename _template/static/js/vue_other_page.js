@@ -74,7 +74,7 @@ vueApp = new Vue({
                 isValidJSON = false
             };
             return isValidJSON;
-        },
+        }
     },
 });
 

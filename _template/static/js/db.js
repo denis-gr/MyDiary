@@ -3,19 +3,37 @@ isFirst = false;
 function createDefaultTypes(db) {
     data = {
         types: [{
-            name: "note",
-            title: "Заметка",
-            description: "Одно поле для текста",
-            icon: "pencil-fill",
-            template: `<div class="text-to-borders"v-text='record.content.text'></div>`,
-            form_template: `<div class='form-field'><label class='form-label'>Текст</label><textarea class="form-control"v-model='record.content.text'></textarea></div>`,
-            fields: {
-                tags: ["text"],
-                search: ["text"],
-                require: ["text"],
+                name: "note",
+                title: "Заметка",
+                description: "Одно поле для текста",
+                icon: "pencil-fill",
+                template: `<div class="text-to-borders"v-text='record.content.text'></div>`,
+                form_template: `<div class='form-field'><label class='form-label'>Текст</label><textarea class="form-control"v-model='record.content.text'></textarea></div>`,
+                fields: {
+                    tags: ["text"],
+                    search: ["text"],
+                    require: ["text"],
+                }
             },
-
-        }, ],
+            {
+                name: "idea",
+                title: "Идея",
+                description: "Одно поле для текста, есть страница, со списком идей.",
+                icon: "chat-fill",
+                template: `<div class="text-to-borders"v-text='record.content.text'></div>`,
+                form_template: `<div class='form-field'><label class='form-label'>Что за идея?</label><textarea class="form-control"v-model='record.content.text'></textarea></div>`,
+                fields: {
+                    tags: ["text"],
+                    search: ["text"],
+                    require: ["text"],
+                },
+                page: {
+                    name: "ideas-page",
+                    title: "Идеи",
+                    template: '<div class="records"><header class="header"><div class="title h3">Мои идеи</div></header><ul class="row records-list" v-if="records.length"><li class="records-list-item col-sm-4" v-for="i in records" :key="i.id"><component :is="getComponent(i.type)" :id_record="i.id"></component></li></ul><div class="errors" v-else><p class="error-text">У вас, либо нет идей, либо они не загруженны.</p></div></div>'
+                },
+            },
+        ],
     };
     promises = data.types.map(i => db.add("recordTypes", i));
     return Promise.all(promises);
