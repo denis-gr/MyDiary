@@ -6,9 +6,3 @@ const options = window.location.search.replace('?', '').split('&')
     }, {});
 options.slice = 10;
 moment.locale("ru");
-if (options.type) {
-    console.log(options.type);
-    DB.getType(Number(options.type)).then(type =>
-        document.querySelector("#app").innerHTML = type.page.template
-    );
-};

@@ -1,7 +1,6 @@
 const SLICE = 10;
 
-const vueAp = new Vue({
-    el: "#app",
+const vueApp = new Vue({
     data: {
         types: [],
         records: [],
@@ -49,4 +48,11 @@ const vueAp = new Vue({
     },
 });
 
-document.addEventListener("load", vueApp.update);
+if (options.type && options.page) {
+    DB.getType(Number(options.type)).then(type =>
+        document.querySelector("#app").innerHTML = type.page.template
+    ).then(() => vueApp.$mount("#app")).then(vueApp.update)
+} else {
+    vueApp.$mount("#app");
+    vueApp.update();
+}
