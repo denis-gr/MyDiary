@@ -1,6 +1,6 @@
 const SLICE = 10;
 
-const vueApp = new Vue({
+const vueAp = new Vue({
     el: "#app",
     data: {
         types: [],
@@ -49,4 +49,4 @@ const vueApp = new Vue({
     },
 });
 
-vueApp.update();
+document.addEventListener("load", vueApp.update);
