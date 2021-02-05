@@ -4,7 +4,7 @@
 
 <div class="min-vh-100 py-3">
     <div class="container page" id="app">
-        <p class="error-text">У вас, либо нет такой, либо они не загружена.</p>
+        <p class="error-text">У вас, либо нет такой страницы, либо они не загружена.</p>
     </div>
 </div>
 
@@ -18,7 +18,7 @@
 <script src="{{ start_url }}/static/js/base.js"></script>
 <script>
     if (options.type) {
-        DB.getType(options.type).then(type =>
+        DB.getType(Number(options.type)).then(type =>
             document.querySelector("#app").innerHTML = type.page.template
         );
     }    
