@@ -10,5 +10,5 @@ DB.getTypes().then(types => {
     links = types.filter(type => type.page).map(type => `<li class="nav-item"><a class="nav-link"` +
         `href="{{ start_url }}/page.html?page=page&type=${type.id}">${type.page.title}</a></li>`);
     template = links.join("");
-    document.querySelector("#navbarSupportedContent ul").insertAdjacentHTML('beforebegin', template);
+    document.querySelector("#navbarSupportedContent ul").insertAdjacentHTML('beforeend', template);
 });
