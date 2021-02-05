@@ -7,8 +7,8 @@ const options = window.location.search.replace('?', '').split('&')
 options.slice = 10;
 moment.locale("ru");
 DB.getTypes().then(types => {
-    links = types.filter(type => type.page).map(type = `<li class="nav-item"><a class="nav-link"
-        href="{{ start_url }}/page.html?page=page&type=${type.id}">${type.page.title}</a></li>`);
+    links = types.filter(type => type.page).map(type => `<li class="nav-item"><a class="nav-link"` +
+        `href="{{ start_url }}/page.html?page=page&type=${type.id}">${type.page.title}</a></li>`);
     template = links.join("");
     document.querySelector("#navbarSupportedContent ul").insertAdjacentHTML('beforebegin', template);
-})
+});
