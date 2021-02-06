@@ -41,7 +41,7 @@ vueApp = new Vue({
             this.is_import_bnt_disabled = true;
             data = JSON.parse(this.json);
             types = {};
-            promises = types.map(oldType => {
+            promises = data.types.map(oldType => {
                 oldId = oldType.id;
                 delete oldType.id;
                 return DB.addType(oldType).then(newType => types[oldId] = newType);
