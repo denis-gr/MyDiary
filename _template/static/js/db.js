@@ -98,7 +98,8 @@ function getRecords({
 
 function removeUnusedTags() {
     return dbPromise
-        .then(db.getAll("tags").then(tags => tags.map(tag => tag.name)))
+        .then(db => db.getAll("tags"))
+        .then(tags => tags.map(tag => tag.name))
         .then(tags => dbPromise.then(db => db.getAll("records")).then(records =>
             records.reduce((a, i) => a.filter(tag => i.tags.indexOf(tag) < 0), tags)
         ))
