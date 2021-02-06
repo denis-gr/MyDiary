@@ -41,11 +41,13 @@ vueApp = new Vue({
             this.is_import_bnt_disabled = true;
             data = JSON.parse(this.json);
             types = {};
-            data.types.map(i => delete i.id);
-            data.records.map(i => delete i.id);
-            promises = data.types.map(i => DB.addType(i).then(d => types[i.id] = d));
+            promises = types.map(oldType => {
+                oldId = oldType.id;
+                delete oldType.id;
+                return DB.addType(oldType).then(newType => types[oldId] = newType);
+            });
             Promise.all(promises)
-                .then(() => Promise.all(data.tags.map(i => DB.pullTag(i.name))))
+                .then(() => Promise.all(data.tags.map(name => DB.pullTag(name))))
                 .then(() => {
                     data.records.map(i => i.type = types[i.type].id);
                     return Promise.all(data.records.map(i => DB.addRecord(i)));
