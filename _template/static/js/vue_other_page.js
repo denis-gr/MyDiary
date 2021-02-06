@@ -40,6 +40,7 @@ vueApp = new Vue({
         importJSON() {
             this.is_import_bnt_disabled = true;
             data = JSON.parse(this.json);
+            data.records.forEach(i => delete i.id);
             types = {};
             promises = data.types.map(oldType => {
                 oldId = oldType.id;
