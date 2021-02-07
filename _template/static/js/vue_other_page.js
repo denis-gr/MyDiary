@@ -48,7 +48,7 @@ vueApp = new Vue({
                 return DB.addType(type).then(newType => types[oldType.id] = newType.id);
             });
             Promise.all(promises)
-                .then(() => data.records = data.records.map(i => i.type = types[i.type]))
+                .then(() => data.records.forEach(i => i.type = types[i.type]))
                 .then(() => Promise.all(data.records.map(i => DB.addRecord(i))))
                 .then(() => Promise.all(data.tags.map(name => DB.pullTag(name))))
                 .then(DB.removeUnusedTags)
