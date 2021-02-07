@@ -42,15 +42,15 @@ vueApp = new Vue({
             data = JSON.parse(this.json);
             data.records.forEach(i => delete i.id);
             types = {};
-            promises = data.types.map(oldType => {
-                oldId = oldType.id;
-                delete oldType.id;
-                return DB.addType(oldType).then(newType => types[oldId] = newType.id);
+            promises = data.types.map(type => {
+                oldId = type.id;
+                delete type.id;
+                return DB.addType(type).then(newType => types[oldId] = newType.id);
             });
             Promise.all(promises)
                 .then(() => Promise.all(data.tags.map(name => DB.pullTag(name))))
                 .then(() => {
-                    data.records.map(i => i.type = types[i.type]);
+                    data.records = data.records.map(i => i.type = types[i.type]);
                     return Promise.all(data.records.map(i => DB.addRecord(i)));
                 })
                 .then(DB.removeUnusedTags)
