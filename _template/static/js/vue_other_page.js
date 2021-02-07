@@ -48,11 +48,12 @@ vueApp = new Vue({
                 console.log(type, type.id, oldId)
                 delete type.id;
                 console.log(type, type.id, oldId)
-                return DB.addType(type).then(newType => {types[oldId] = newType.id; return [oldId, newType.id]});
+                return DB.addType(type).then(newType => {types[oldId] = newType.id; console.log(oldId, newType.id); return [oldId, newType.id]});
             });
             Promise.all(promises)
                 .then(console.log)
                 .then(() => console.log(types))
+
             /*
                 .then(() => data.records = data.records.map(i => i.type = types[i.type]))
                 .then(() => Promise.all(data.records.map(i => DB.addRecord(i))))
