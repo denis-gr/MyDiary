@@ -1,10 +1,12 @@
-isFirst = false;
+const nameDB = "MyDiary";
+const versionDB = 1;
 
 function createDefaultTypes(db) {
     data = {
         types: [{
                 name: "note",
                 title: "Заметка",
+                uuid: "71e99ba9-4aa2-467c-80be-f55c45d4bcd7",
                 description: "Одно поле для текста",
                 icon: "pencil-fill",
                 template: `<div class="text-to-borders"v-text='record.content.text'></div>`,
@@ -18,6 +20,7 @@ function createDefaultTypes(db) {
             {
                 name: "idea",
                 title: "Идея",
+                uuid: "0f3e74c0-beca-4d91-8b37-0d8af574afd7",
                 description: "Одно поле для текста, есть страница, со списком идей.",
                 icon: "chat-fill",
                 template: `<div class="text-to-borders"v-text='record.content.text'></div>`,
@@ -39,8 +42,8 @@ function createDefaultTypes(db) {
     return Promise.all(promises);
 };
 
-const nameDB = "MyDiary";
-const versionDB = 8;
+isFirst = false;
+
 const dbPromise = idb.openDB(nameDB, versionDB, {
     upgrade(db) {
         db.createObjectStore('tags', {
@@ -54,7 +57,7 @@ const dbPromise = idb.openDB(nameDB, versionDB, {
         db.createObjectStore('recordTypes', {
             keyPath: 'id',
             autoIncrement: true
-        });
+        }).createIndex('name', 'name');;
         window.isFirst = true;
     },
 });
@@ -123,7 +126,15 @@ const DB = {
         return dbPromise.then(db => db.clear("recordTypes"))
     },
     addType(data) {
-        return dbPromise.then(db => db.add("recordTypes", data)).then(id => dbPromise.then(db => db.get("recordTypes", id)))
+        return dbPromise.then(db => db.getFromIndex("tags", "name", data.name))
+            .then(type => {
+                if (type.uuid == data.uuid) {
+                    return type;
+                } else {
+                    return dbPromise.then(db => db.add("recordTypes", data))
+                        .then(id => dbPromise.then(db => db.get("recordTypes", id)));
+                };
+            })        
     },
     delType(id) {
         return dbPromise.then(db => db.delete("recordTypes", id))
