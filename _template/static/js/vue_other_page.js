@@ -42,11 +42,10 @@ vueApp = new Vue({
             data = JSON.parse(this.json);
             data.records.forEach(i => delete i.id);
             types = {};
-            promises = data.types.map(type => {
-                oldId = Number(type.id);
-                type = Object.assign({}, type)
-                delete type.id;
-                return DB.addType(type).then(newType => {types[oldId] = newType.id; console.log(oldId, newType.id); return [oldId, newType.id]});
+            promises = data.types.map(oldType => {
+                type = Object.assign({}, oldType);
+                delete type.id
+                return DB.addType(type).then(newType => {types[oldType.id] = newType.id; return [oldType.id, newType.id]});
             });
             Promise.all(promises)
                 .then(console.log)
