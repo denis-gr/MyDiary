@@ -43,7 +43,8 @@ vueApp = new Vue({
             data.records.forEach(i => delete i.id);
             types = {};
             promises = data.types.map(type => {
-                oldId = type.id;
+                oldId = Number(type.id);
+                type = Object.assign({}, type)
                 delete type.id;
                 return DB.addType(type).then(newType => {types[oldId] = newType.id; console.log(oldId, newType.id); return [oldId, newType.id]});
             });
