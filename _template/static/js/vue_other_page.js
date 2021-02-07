@@ -50,6 +50,7 @@ vueApp = new Vue({
             Promise.all(promises)
                 .then(() => Promise.all(data.tags.map(name => DB.pullTag(name))))
                 .then(() => {
+                    data.records.forEach(i => delete i.id);
                     data.records = data.records.map(i => i.type = types[i.type]);
                     return Promise.all(data.records.map(i => DB.addRecord(i)));
                 })
