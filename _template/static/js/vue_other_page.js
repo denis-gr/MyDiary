@@ -45,9 +45,9 @@ vueApp = new Vue({
             promises = data.types.map(type => {
                 console.log(type, type.id)
                 oldId = type.id;
-                console.log(type, type.id)
+                console.log(type, type.id, oldId)
                 delete type.id;
-                console.log(type, type.id)
+                console.log(type, type.id, oldId)
                 return DB.addType(type).then(newType => {types[oldId] = newType.id; return [oldId, newType.id]});
             });
             Promise.all(promises)
