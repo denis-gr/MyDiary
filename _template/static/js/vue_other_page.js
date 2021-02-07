@@ -48,12 +48,9 @@ vueApp = new Vue({
                 return DB.addType(type).then(newType => types[oldId] = newType.id);
             });
             Promise.all(promises)
+                .then(() => data.records = data.records.map(i => i.type = types[i.type]))
+                .then(() => Promise.all(data.records.map(i => DB.addRecord(i))))
                 .then(() => Promise.all(data.tags.map(name => DB.pullTag(name))))
-                .then(() => {
-                    data.records.forEach(i => delete i.id);
-                    data.records = data.records.map(i => i.type = types[i.type]);
-                    return Promise.all(data.records.map(i => DB.addRecord(i)));
-                })
                 .then(DB.removeUnusedTags)
                 .then(this.update)
                 .then(() => this.is_import_bnt_disabled = false);
