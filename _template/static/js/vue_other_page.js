@@ -41,14 +41,14 @@ vueApp = new Vue({
             this.is_import_bnt_disabled = true;
             data = JSON.parse(this.json);
             data.records.forEach(i => delete i.id);
-            importJSON.types = {};
+            types = {};
             promises = data.types.map(type => {
                 oldId = type.id;
                 delete type.id;
-                return DB.addType(type).then(newType => importJSON.types[oldId] = newType.id);
+                return DB.addType(type).then(newType => types[oldId] = newType.id);
             });
             Promise.all(promises)
-                .then(() => console.log(importJSON.types))
+                .then(() => console.log(types))
             /*
                 .then(() => data.records = data.records.map(i => i.type = types[i.type]))
                 .then(() => Promise.all(data.records.map(i => DB.addRecord(i))))
