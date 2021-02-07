@@ -6,7 +6,7 @@ function createDefaultTypes(db) {
         types: [{
                 name: "note",
                 title: "Заметка",
-                uuid: "71e99ba9-4aa2-467c-80be-f55c45d4bcd7",
+                uuid: "abb116ac-697a-11eb-ac85-c0e434b07c91",
                 description: "Одно поле для текста",
                 icon: "pencil-fill",
                 template: `<div class="text-to-borders"v-text='record.content.text'></div>`,
