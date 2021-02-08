@@ -50,7 +50,7 @@ vueApp = new Vue({
             Promise.all(promises)
                 .then(() => data.records.forEach(i => i.type = types[i.type]))
                 .then(() => Promise.all(data.records.map(DB.addRecord)))
-                .then(() => Promise.all(data.tags.map(console.log)))
+                .then(() => Promise.all(data.tags.map(tag => tag.name)))
                 .then(DB.removeUnusedTags)
                 .then(this.update)
                 .then(() => this.is_import_bnt_disabled = false);
