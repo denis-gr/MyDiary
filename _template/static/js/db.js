@@ -126,10 +126,13 @@ const DB = {
         return dbPromise.then(db => db.clear("recordTypes"))
     },
     addType(data) {
+        data = Object.assign({}, data);
         return dbPromise.then(db => db.getFromIndex("tags", "name", data.name))
             .then(type => {
                 if (type.uuid == data.uuid) {
-                    return type;
+                    data.id = type.id;
+                    return dbPromise.then(db => db.put("recordTypes", data))
+                        .then(id => dbPromise.then(db => db.get("recordTypes", id)));
                 } else {
                     return dbPromise.then(db => db.add("recordTypes", data))
                         .then(id => dbPromise.then(db => db.get("recordTypes", id)));
