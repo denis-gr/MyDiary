@@ -32,7 +32,7 @@ vueApp = new Vue({
             Promise.all([
                     DB.getTypes().then(types => data.types = types),
                     DB.getRecords({}).then(records => data.records = records),
-                    DB.getTags().then(tags => data.tags = tags),
+                    DB.getTags().then(tags => data.tags = tags.map(tag => tag.name)),
                 ])
                 .then(() => this.json = JSON.stringify(data))
                 .then(() => this.is_export_bnt_disabled = false);
@@ -50,7 +50,7 @@ vueApp = new Vue({
             Promise.all(promises)
                 .then(() => data.records.forEach(i => i.type = types[i.type]))
                 .then(() => Promise.all(data.records.map(DB.addRecord)))
-                .then(() => Promise.all(data.tags.map(tag => tag.name)))
+                .then(() => Promise.all(data.tags.map(DB.pullTag)))
                 .then(DB.removeUnusedTags)
                 .then(this.update)
                 .then(() => this.is_import_bnt_disabled = false);
