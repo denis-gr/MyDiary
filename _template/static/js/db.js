@@ -127,9 +127,9 @@ const DB = {
     },
     addType(data) {
         data = Object.assign({}, data);
-        return dbPromise.then(db => db.getFromIndex("recordTypes", "uuid", data.uuid))
-            .then(type => 
-                dbPromise.then(db => type ? db.put("recordTypes", data) :  db.add("recordTypes", data))
+        return dbPromise.then(db => db.countFromIndex("recordTypes", "uuid", data.uuid))
+            .then(count => 
+                dbPromise.then(db => count ? db.put("recordTypes", data) :  db.add("recordTypes", data))
                     .then(id => dbPromise.then(db => db.get("recordTypes", id)))
             )        
     },
