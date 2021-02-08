@@ -130,6 +130,7 @@ const DB = {
         return dbPromise.then(db => db.getFromIndex("tags", "name", data.name))
             .then(type => {
                 if (type.uuid == data.uuid) {
+                    console.log(type, data, type.uuid, data.uuid);
                     data.id = type.id;
                     return dbPromise.then(db => db.put("recordTypes", data))
                         .then(id => dbPromise.then(db => db.get("recordTypes", id)));
