@@ -45,12 +45,13 @@
             
         </table>
 
-        <h3>Типы записей</h3>
+        
+        <span class=h3 >Типы записей</span>
         <button type=button  class="btn btn-primary mb-3" data-bs-toggle=modal  data-bs-target="#createTypeModal">
             Добавить тип
         </button>
         <div class="row mb-5" v-if=types.length >
-            <div class=col-sm-6  v-for="type in types">
+            <div class="col-sm-6 pb-3" v-for="type in types">
                 <header>
                     <i :class="['icon', 'bi-'+type.icon]"></i>
                     <span class=h5  v-text=type.title ></span>
