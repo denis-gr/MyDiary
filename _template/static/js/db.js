@@ -57,7 +57,7 @@ const dbPromise = idb.openDB(nameDB, versionDB, {
         db.createObjectStore('recordTypes', {
             keyPath: 'id',
             autoIncrement: true
-        }).createIndex('name', 'name');;
+        }).createIndex('uuid', 'uuid');;
         window.isFirst = true;
     },
 });
@@ -127,20 +127,11 @@ const DB = {
     },
     addType(data) {
         data = Object.assign({}, data);
-        return dbPromise.then(db => db.getFromIndex("tags", "name", data.name))
-            .then(type => {
-                console.log(type, data);
-                console.log(type.uuid);
-                console.log(data.uuid);
-                if (type && type.uuid == data.uuid) {
-                    data.id = type.id;
-                    return dbPromise.then(db => db.put("recordTypes", data))
-                        .then(id => dbPromise.then(db => db.get("recordTypes", id)));
-                } else {
-                    return dbPromise.then(db => db.add("recordTypes", data))
-                        .then(id => dbPromise.then(db => db.get("recordTypes", id)));
-                };
-            })        
+        return dbPromise.then(db => db.getFromIndex("recordTypes", "uuid", data.uuid))
+            .then(type => 
+                dbPromise.then(db => type ? db.put("recordTypes", data) :  db.add("recordTypes", data))
+                    .then(id => dbPromise.then(db => db.get("recordTypes", id)))
+            )        
     },
     delType(id) {
         return dbPromise.then(db => db.delete("recordTypes", id))
