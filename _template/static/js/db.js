@@ -189,10 +189,14 @@ const DB = {
         return dbPromise.then(db => db.get("records", id))
     },
     addRecord(data) {
-        return dbPromise.then(db => db.add("records", data)).then(id => dbPromise.then(db => db.get("records", id)))
+        data = Object.assign({}, data);
+        data.created = data.changed = new Date().getTime();
+        return dbPromise.then(db => db.add("records", data)).then(id => dbPromise.then(db => db.get("records", id)));
     },
     putRecord(data) {
-        return dbPromise.then(db => db.put("records", data)).then(id => dbPromise.then(db => db.get("records", id)))
+        data = Object.assign({}, data);
+        data.changed = new Date().getTime();
+        return dbPromise.then(db => db.put("records", data)).then(id => dbPromise.then(db => db.get("records", id)));
     },
     delRecord(id) {
         return dbPromise.then(db => db.delete("records", id))
