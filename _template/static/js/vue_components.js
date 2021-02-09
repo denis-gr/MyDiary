@@ -49,7 +49,7 @@ const vueApp = new Vue({
 });
 
 if (options.type && options.page) {
-    DB.getType(Number(options.type)).then(type =>
+    DB.getType(options.type).then(type =>
         document.querySelector("#app").innerHTML = type.page.template
     ).then(() => vueApp.$mount("#app")).then(vueApp.update)
 } else {

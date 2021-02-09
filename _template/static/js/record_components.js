@@ -10,13 +10,13 @@ function createVueModalRecord(a) {
 typesModal = {};
 DB.getTypes().then(recordTypes => {
     recordTypes.forEach(type => {
-        typesModal[type.id] = `${type.name}-modal-record`;
+        typesModal[type.uuid] = `${type.name}-modal-record`;
         createVueModalRecord(type);
     });
-    window.getModalComponent = id => typesModal[id];
+    window.getModalComponent = uuid => typesModal[uuid];
 });
 
-const getCrearionMenuLinkTemplate = (type) => `<button class="btn btn-outline-secondary link"type="button"data-bs-toggle="modal"data-bs-target="#add-${type.name}"><i class="bi-${type.icon} icon"title="Создать ${type.title}"></i></button>`;
+const getCrearionMenuLinkTemplate = type => `<button class="btn btn-outline-secondary link"type="button"data-bs-toggle="modal"data-bs-target="#add-${type.name}"><i class="bi-${type.icon} icon"title="Создать ${type.title}"></i></button>`;
 const getCrearionElement = type => `<modal title="${type.title}"id="add-${type.name}"><component is="${type.name}-modal-record" :record="record"></component><template v-slot:footer><button type="button"class="btn btn-primary"data-bs-dismiss="modal"@click="add(record)">Создать</button></template> </modal>`;
 
 function toggleCreationMenu() {
@@ -28,7 +28,7 @@ function createVueCreate(b) {
         el: `#add-${b.name}`,
         data: () => ({
             record: {
-                type: b.id,
+                type: b.uuid,
                 content: {},
                 tags: options.tag ? [options.tag] : [],
                 date: new Date(Date.parse(options.date) || new Date).toISOString().slice(null, 10),
@@ -36,7 +36,7 @@ function createVueCreate(b) {
             },
         }),
         methods: {
-            getModalComponent: (id) => window.getModalComponent(id),
+            getModalComponent: uuid => window.getModalComponent(uuid),
             add: function (a) {
                 DB.getType(a.type).then(type => {
                     return type.fields.search.map(field =>
@@ -50,7 +50,7 @@ function createVueCreate(b) {
                     .then(() => vueApp.addRecord(a))
                     .then(() => {
                         this.record = {
-                            type: b.id,
+                            type: b.uuid,
                             content: {},
                             tags: options.tag ? [options.tag] : [],
                             date: new Date(Date.parse(options.date) || new Date).toISOString().slice(null, 10),
@@ -79,7 +79,7 @@ function createVueRecord(a, b) {
         template: getRecordHTML(a),
         data: function () {
             DB.getRecord(this.id_record).then(record => {
-                this.icon = b.find(x => x.id == record.type).icon;
+                this.icon = b.find(x => x.uuid == record.type).icon;
                 this.record = record;
                 this.form = Object.assign({}, record);
                 this.form.content = Object.assign({}, record.content);
@@ -124,8 +124,8 @@ function createVueRecord(a, b) {
 types = {};
 DB.getTypes().then(recordTypes => {
     recordTypes.forEach(type => {
-        types[type.id] = `${type.name}-record`;
+        types[type.uuid] = `${type.name}-record`;
         createVueRecord(type, recordTypes);
     });
-    window.getComponent = id => types[id];
+    window.getComponent = uuid => types[uuid];
 })

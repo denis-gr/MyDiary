@@ -24,7 +24,7 @@ vueApp = new Vue({
             DB.addType(type).then(() => this.json = "").then(this.update)
         },
         remove(type) {
-            DB.delType(type.id).then(this.update)
+            DB.delType(type.uuid).then(this.update)
         },
         exportJSON() {
             this.is_export_bnt_disabled = true;
@@ -41,14 +41,8 @@ vueApp = new Vue({
             this.is_import_bnt_disabled = true;
             data = JSON.parse(this.json);
             data.records.forEach(i => delete i.id);
-            types = {};
-            promises = data.types.map(oldType => {
-                type = Object.assign({}, oldType);
-                delete type.id;
-                return DB.addType(type).then(newType => types[oldType.id] = newType.id);
-            });
+            data.types.forEach(i => delete i.id);
             Promise.all(promises)
-                .then(() => data.records.forEach(i => i.type = types[i.type]))
                 .then(() => Promise.all(data.records.map(DB.addRecord)))
                 .then(() => Promise.all(data.tags.map(DB.pullTag)))
                 .then(DB.removeUnusedTags)

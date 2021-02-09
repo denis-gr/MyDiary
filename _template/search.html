@@ -19,7 +19,7 @@
                     <div class="col-auto">
                         <select class="form-select" v-model.number="options.type" id="field-type">
                             <option value="0">Любой</option>
-                            <option :value="i.id" v-for="i in types" v-text="i.title"></option>
+                            <option :value="i.uuid" v-for="i in types" v-text="i.title"></option>
                         </select>                        
                     </div>
                 </div>

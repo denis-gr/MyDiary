@@ -84,7 +84,7 @@ function getRecords({
                 if (q) {
                     q = q.toLowerCase();
                     records = records.filter(record => {
-                        fields = types.find(type => type.id == record.type).fields.search;
+                        fields = types.find(type => type.uuid == record.type).fields.search;
                         for (i in fields) {
                             if (record.content[fields[i]].toLowerCase().includes(q)) {
                                 return true;
@@ -121,8 +121,8 @@ const DB = {
     getTypes() {
         return dbPromise.then(db => db.getAll("recordTypes"))
     },
-    getType(id) {
-        return dbPromise.then(db => db.get("recordTypes", id))
+    getType(uuid) {
+        return dbPromise.then(db => db.getFromIndex("recordTypes", "uuid", uuid))
     },
     delTypes() {
         return dbPromise.then(db => db.clear("recordTypes"))
@@ -138,8 +138,11 @@ const DB = {
                     .then(id => dbPromise.then(db => db.get("recordTypes", id)));
             });      
     },
-    delType(id) {
-        return dbPromise.then(db => db.delete("recordTypes", id))
+    delType(uuid) {
+        return dbPromise.then(db =>
+            db.getKeyFromIndex("recordTypes", "uuid", uuid)
+            .then(id => db.delete("recordTypes", id))
+        );
     },
     countTags() {
         return dbPromise.then(db => db.count("tags"))
