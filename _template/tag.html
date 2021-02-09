@@ -13,16 +13,7 @@
                 </ul>
             </div>
         </header>
-        <div class="records">
-            <ul class="row records-list" v-if="records.length">
-                <li class="records-list-item col-sm-4" v-for="i in records" :key="i.id">
-                    <component :is="getComponent(i.type)" :id_record="i.id"></component>
-                </li>
-            </ul>
-            <div class="errors" v-else>
-                <p class="error-text">У вас, либо нет записей, либо они не загруженны.</p>
-            </div>
-        </div>
+        {% include 'components/_records_list.html' %}
     </div>
 </div>
 {% endblock %}
