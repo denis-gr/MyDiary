@@ -1,13 +1,13 @@
 <div class="records">
-    <div class="errors" v-if="records">
+    <div class="errors" v-if="!records">
         <p class="error-text">Загрузка...</p>
+    </div>
+    <div class="errors" v-else-if="!records.length">
+        <p class="error-text">У ваc нет записей.</p>
     </div>            
-    <ul class="row records-list" v-else-if="records.length">
+    <ul class="row records-list" v-else>
         <li class="records-list-item col-sm-4" v-for="i in records" :key="i.id">
             <component :is="getComponent(i.type)" :id_record="i.id"></component>
         </li>
     </ul>
-    <div class="errors" v-else>
-        <p class="error-text">У ваc нет записей.</p>
-    </div>
 </div>
