@@ -17,8 +17,8 @@
                 <div class="col-auto row">
                     <label for="field-type" class="col-auto col-form-label">Тип</label>
                     <div class="col-auto">
-                        <select class="form-select" v-model.number="options.type" id="field-type">
-                            <option value="0">Любой</option>
+                        <select class="form-select" v-model="options.type" id="field-type">
+                            <option value="">Любой</option>
                             <option :value="i.uuid" v-for="i in types" v-text="i.title"></option>
                         </select>                        
                     </div>

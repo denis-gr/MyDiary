@@ -7,7 +7,7 @@ const vueApp = new Vue({
         tags: [],
         today: moment().format("YYYY-MM-DD"),
         options: {
-            type: options.type || 0,
+            type: options.type || "",
             date: options.date,
             q: options.q,
             tag: options.tag,

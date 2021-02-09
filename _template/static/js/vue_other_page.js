@@ -42,8 +42,7 @@ vueApp = new Vue({
             data = JSON.parse(this.json);
             data.records.forEach(i => delete i.id);
             data.types.forEach(i => delete i.id);
-            Promise.all(promises)
-                .then(() => Promise.all(data.records.map(DB.addRecord)))
+            Promise.all(data.records.map(DB.addRecord))
                 .then(() => Promise.all(data.tags.map(DB.pullTag)))
                 .then(DB.removeUnusedTags)
                 .then(this.update)
