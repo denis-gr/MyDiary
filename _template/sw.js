@@ -26,7 +26,7 @@ workbox.precaching.precacheAndRoute([
     'https://cdn.jsdelivr.net/npm/workbox-sw@6/build/workbox-sw.min.js',
     'https://cdn.jsdelivr.net/npm/moment@2/moment.min.js',
     'https://cdn.jsdelivr.net/npm/moment@2/locale/ru.min.js',
-    'https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js',
+    'https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js',
     'https://cdn.jsdelivr.net/npm/idb@6/build/iife/index-min.js',
     '{{ start_url }}/about.html',
     '{{ start_url }}/date.html',
