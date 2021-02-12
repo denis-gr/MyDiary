@@ -47,13 +47,10 @@ const vueApp = new Vue({
             return DB.removeUnusedTags(tags).then(() => this.update());
         },
     },
-    created: function () {
-        this.update();
-    },
-    mounted: function () {
-        console.log(4221);
+    mounted() {
+        console.log(2321321);
         activateAutoHeightTextareas();
-    },
+    }
 });
 
 if (options.type && options.page) {
