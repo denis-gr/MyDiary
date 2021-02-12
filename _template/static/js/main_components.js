@@ -6,27 +6,27 @@ Vue.component("modal", {
 Vue.component('autosize-textarea', {
     template: `<div
       contenteditable="true"
-      @input="update"
-      v-html="text"
+      @blur="update"
+      v-text="text"
     ></div>`,
     props: ["value"],
     data() {
       return {
-        text: ''
+        text: this.value
       }
     },
     watch: {
       text(newVal) {
           this.text = newVal;
-          this.$emit('update:value', newVal)
+          this.$emit('input', newVal)
       }
     },
     created() {
-      this.text = this.value
+      this.text = this.value;
     },
     methods: {
       update(e) {
-        this.text = e.target.innerHTML
+        this.text = e.target.textContent
       },
     }
   });
