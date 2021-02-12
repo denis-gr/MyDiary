@@ -13,6 +13,7 @@ DB.getTypes().then(types => {
     document.querySelector("#navbarSupportedContent ul li:first-child").insertAdjacentHTML('afterend', template);
 });
 document.addEventListener("load", () => {
+    console.log(1243123123);
     document.querySelectorAll(".auto-height").forEach(i => i.addEventListener('keyup', function() {
         if (this.scrollTop > 0) {
             this.style.height = this.scrollHeight + "px";
