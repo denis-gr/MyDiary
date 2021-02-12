@@ -3,10 +3,43 @@ Vue.component("modal", {
     template: "#modal-template",
 });
 
-Vue.component("autosize-textarea", {
+Vue.component('autosize-textarea', {
+    template: `<div
+      contenteditable
+      @input="update"
+      v-html="valueText"
+    ></div>`,
     props: ["value"],
-    template: `<div :value=value class='autosize-textarea'></div>'`,
-});
+    data() {
+      return {
+        valueText: ''
+      }
+    },
+    computed: {
+      localValue: {
+        get() {
+          return this.value
+        },
+        set(newValue) {
+          this.$emit('update:value', newValue)
+        }
+      }
+    },
+    watch: {
+      localValue(newVal) {
+          this.valueText = newVal
+      }
+    },
+    created() {
+      this.valueText = this.value
+    },
+    methods: {
+      update(e) {
+        this.localValue = e.target.innerHTML
+      },
+    }
+  });
+
 
 Vue.component("calendar", {
     props: ["id", "first_date"],
