@@ -2,6 +2,7 @@ const SLICE = 10;
 
 const vueApp = new Vue({
     data: {
+        temp: "",
         types: [],
         records: null,
         tags: [],

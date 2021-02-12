@@ -12,8 +12,3 @@ DB.getTypes().then(types => {
     template = links.join("");
     document.querySelector("#navbarSupportedContent ul li:first-child").insertAdjacentHTML('afterend', template);
 });
-function activateAutoHeightTextareas() {
-    document.querySelectorAll(".auto-height").forEach(i => i.addEventListener('keyup', function() {
-        this.style.height = this.scrollHeight + "px";
-    }));    
-};
