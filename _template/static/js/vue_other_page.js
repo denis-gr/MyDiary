@@ -70,6 +70,9 @@ vueApp = new Vue({
             return isValidJSON;
         }
     },
+    mounted() {
+        activateAutoHeightTextareas();
+    }
 });
 
 vueApp.update();
