@@ -14,8 +14,6 @@ DB.getTypes().then(types => {
 });
 function activateAutoHeightTextareas() {
     document.querySelectorAll(".auto-height").forEach(i => i.addEventListener('keyup', function() {
-        if (this.scrollTop > 0) {
-            this.style.height = this.scrollHeight + "px";
-        };
+        this.style.height = this.scrollHeight + "px";
     }));    
 };
