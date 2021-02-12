@@ -3,9 +3,11 @@ const getRecordModalHTML = type => `<div><div class="form-field"><label class="f
 function createVueModalRecord(a) {
     Vue.component(`${a.name}-modal-record`, {
         props: ["record"],
-        template: getRecordModalHTML(a)
+        template: getRecordModalHTML(a),
+        mounted: function () {
+            this.$nextTick().then(activateAutoHeightTextareas);
+        },
     });
-    activateAutoHeightTextareas();
 };
 
 typesModal = {};
