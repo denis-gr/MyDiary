@@ -5,7 +5,7 @@ Vue.component("modal", {
 
 Vue.component('autosize-textarea', {
     template: `<div
-      contenteditable
+      contenteditable="true"
       @input="update"
       v-html="valueText"
     ></div>`,
