@@ -10,7 +10,7 @@ function createDefaultTypes(db) {
                 description: "Одно поле для текста",
                 icon: "pencil-fill",
                 template: `<div class="text-to-borders"v-text='record.content.text'></div>`,
-                form_template: `<div class='form-field'><label class='form-label'>Текст</label><textarea class="form-control"v-model='record.content.text'rows=10></textarea></div>`,
+                form_template: `<div class='form-field'><label class='form-label'>Текст</label><textarea class="form-control auto-height"v-model='record.content.text'></textarea></div>`,
                 fields: {
                     tags: ["text"],
                     search: ["text"],
@@ -24,7 +24,7 @@ function createDefaultTypes(db) {
                 description: "Одно поле для текста, есть страница, со списком идей.",
                 icon: "chat-fill",
                 template: `<div class="text-to-borders"v-text='record.content.text'></div>`,
-                form_template: `<div class='form-field'><label class='form-label'>Что за идея?</label><textarea class="form-control"v-model='record.content.text'rows=10></textarea></div>`,
+                form_template: `<div class='form-field'><label class='form-label'>Что за идея?</label><textarea class="form-control auto-height"v-model='record.content.text'></textarea></div>`,
                 fields: {
                     tags: ["text"],
                     search: ["text"],

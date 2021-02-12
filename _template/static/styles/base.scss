@@ -189,6 +189,19 @@
 .form-field {
     .form-control {}
 
+    .auto-height {
+        resize: none;
+        overflow: hidden;
+        border: none;
+        min-height: 0;
+        border-bottom: 1px solid red;
+        border-radius: 0px;
+        resize: none;
+        overflow: hidden;
+        box-shadow: none;
+        padding: 0px;
+    }
+
     .form-label {}
 
     .btn {}
