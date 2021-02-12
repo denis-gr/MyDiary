@@ -70,10 +70,11 @@ vueApp = new Vue({
             return isValidJSON;
         }
     },
-    mounted() {
+    created: function () {
+        this.update();
+    },
+    mounted: function () {
         console.log(4221);
         activateAutoHeightTextareas();
-    }
+    },
 });
-
-vueApp.update();
