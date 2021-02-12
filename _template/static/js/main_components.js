@@ -7,26 +7,17 @@ Vue.component('autosize-textarea', {
     template: `<div
       contenteditable="true"
       @blur="update"
-      v-text="text"
+      v-text="value"
     ></div>`,
     props: ["value"],
-    data() {
-      return {
-        text: this.value
-      }
-    },
     watch: {
       text(newVal) {
-          this.text = newVal;
-          this.$emit('input', newVal)
+        this.$emit('input', newVal)
       }
-    },
-    created() {
-      this.text = this.value;
     },
     methods: {
       update(e) {
-        this.text = e.target.textContent
+        this.value = e.target.textContent
       },
     }
   });
