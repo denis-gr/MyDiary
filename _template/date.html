@@ -2,7 +2,7 @@
 
 {% block inner %}
 <div class="min-vh-100 py-3" id="app">
-    <modal title="Изменить дату" id="editDate">
+    <modal title="Изменить дату" id="editDate" v-cloak>
         <div class="form-field">
             <label class="form-label">Новая дата</label>
             <input type="date" class="form-control" v-model="today">
