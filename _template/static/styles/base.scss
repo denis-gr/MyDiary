@@ -190,11 +190,10 @@
     .form-control {}
 
     .auto-height {
-        resize: none;
-        overflow: hidden;
         border: none;
-        min-height: 0;
-        border-bottom: 1px solid red;
+        height: 2rem;
+        min-height: 2rem;
+        border-bottom: 1px solid #ced4da;
         border-radius: 0px;
         resize: none;
         overflow: hidden;

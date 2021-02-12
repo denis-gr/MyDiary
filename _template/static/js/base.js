@@ -7,7 +7,7 @@ const options = window.location.search.replace('?', '').split('&')
 if (window.moment) {
     moment.locale("ru");
 };
-document.querySelectorAll(".auto-height").forEach(i => i.addEventListener('keyup', () => {
+document.querySelectorAll(".auto-height").forEach(i => i.addEventListener('keyup', function() {
     if (this.scrollTop > 0) {
         this.style.height = this.scrollHeight + "px";
     };
