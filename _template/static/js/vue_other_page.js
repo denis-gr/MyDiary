@@ -73,7 +73,4 @@ vueApp = new Vue({
     created: function () {
         this.update();
     },
-    mounted: function () {
-        this.$nextTick(activateAutoHeightTextareas);
-    },
 });

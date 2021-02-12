@@ -4,7 +4,8 @@ function createVueModalRecord(a) {
     Vue.component(`${a.name}-modal-record`, {
         props: ["record"],
         template: getRecordModalHTML(a)
-    })
+    });
+    activateAutoHeightTextareas();
 };
 
 typesModal = {};
