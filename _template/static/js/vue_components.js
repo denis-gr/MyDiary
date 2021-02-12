@@ -48,6 +48,7 @@ const vueApp = new Vue({
         },
     },
     mounted() {
+        console.log(456456432);
         activateAutoHeightTextareas();
     }
 });

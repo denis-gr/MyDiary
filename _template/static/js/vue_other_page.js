@@ -71,6 +71,7 @@ vueApp = new Vue({
         }
     },
     mounted() {
+        console.log(4221);
         activateAutoHeightTextareas();
     }
 });
