@@ -7,7 +7,7 @@
     <modal title="Загрузить тип" id="createTypeModal">
         <div class="form-field">
             <label for="inputTemplate">Настройки модуля (JSON)</label>
-            <textarea class="form-control" id="inputTemplate" v-model="json"></textarea>
+            <textarea class="form-control" id="inputTemplate" v-model="json" rows=10></textarea>
         </div>
         <template v-slot:footer>
             <button class="btn btn-primary" data-bs-dismiss="modal" @click="load_type()" type="button">
