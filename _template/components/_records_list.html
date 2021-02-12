@@ -1,9 +1,9 @@
 <div class="records">
     <div class="errors" v-if="!records">
-        <p class="error-text">Загрузка...</p>
+        <p class="error-text text-center">Загрузка...</p>
     </div>
     <div class="errors" v-else-if="!records.length">
-        <p class="error-text">У ваc нет записей.</p>
+        <p class="error-text text-center">У ваc нет записей.</p>
     </div>            
     <ul class="row records-list" v-else>
         <li class="records-list-item col-sm-4" v-for="i in records" :key="i.id">
