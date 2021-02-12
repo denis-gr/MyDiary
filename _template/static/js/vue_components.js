@@ -47,7 +47,7 @@ const vueApp = new Vue({
             return DB.removeUnusedTags(tags).then(() => this.update());
         },
     },
-    mounted() {
+    mounted: function() {
         console.log(2321321);
         activateAutoHeightTextareas();
     }
