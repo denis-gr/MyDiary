@@ -1,82 +1,72 @@
 Vue.component("modal", {
-    props: ["title"],
-    template: "#modal-template",
+  props: ["title"],
+  template: "#modal-template",
 });
 
 Vue.component('autosize-textarea', {
-    template: `<div
+  template: `<div
       contenteditable="true"
-      @blur="update"
+      @blur="this.$emit('input', $event.target.textContent)"
       v-text="value"
     ></div>`,
-    props: ["value"],
-    watch: {
-      text(newVal) {
-        this.$emit('input', newVal)
-      }
-    },
-    methods: {
-      update(e) {
-        this.value = e.target.textContent
-      },
-    }
-  });
+  props: ["value"],
+});
 
 
 Vue.component("calendar", {
-    props: ["id", "first_date"],
-    template: "#calendar-template",
-    data() {
-        date = new Date(Date.parse(this.first_date) || new Date);
-        return {
-            year: date.getFullYear(),
-            month: date.getMonth() + 1,
-            days: getDays(date.getFullYear(), date.getMonth() + 1),
-        }
+  props: ["id", "first_date"],
+  template: "#calendar-template",
+  data() {
+    date = new Date(Date.parse(this.first_date) || new Date);
+    return {
+      year: date.getFullYear(),
+      month: date.getMonth() + 1,
+      days: getDays(date.getFullYear(), date.getMonth() + 1),
+    }
+  },
+  methods: {
+    getClassesDay(date) {
+      classes = ["day"];
+      classes.push(date.getMonth() + 1 == this.month ? 'active' : 'passive');
+      classes.push(moment(date).format('L') == moment(new Date()).format('L') ? 'today' : '');
+      return classes;
     },
-    methods: {
-        getClassesDay(date) {
-            classes = ["day"];
-            classes.push(date.getMonth() + 1 == this.month ? 'active' : 'passive');
-            classes.push(moment(date).format('L') == moment(new Date()).format('L') ? 'today' : '');
-            return classes;
-        },
-        getUrlDay: (date) => `{{ start_url }}/date.html?date=${moment(date).format('YYYY-MM-DD')}`,
-        update() {
-            this.days = getDays(this.year, this.month);
-        },
+    getUrlDay: (date) => `{{ start_url }}/date.html?date=${moment(date).format('YYYY-MM-DD')}`,
+    update() {
+      this.days = getDays(this.year, this.month);
     },
-    computed: {
-        title: vm => moment(`${vm.year}${vm.month}`, "YYYYMM").format("MMMM YYYY").toUpperCase(),
-    },
+  },
+  computed: {
+    title: vm => moment(`${vm.year}${vm.month}`, "YYYYMM").format("MMMM YYYY").toUpperCase(),
+  },
 });
 
 function getDays(year, month) {
-    const date = (year && month) ? new Date(year, month - 1, 1) : new Date();
+  const date = (year && month) ? new Date(year, month - 1, 1) : new Date();
 
-    var date1 = new Date(date);
-    date1.setDate(1);
-    if (date1.getDay() != 1) {
-        date1.setDate(0);
-        date1.setDate(date1.getDate() - date1.getDay() + 1);
-    };
+  var date1 = new Date(date);
+  date1.setDate(1);
+  if (date1.getDay() != 1) {
+    date1.setDate(0);
+    date1.setDate(date1.getDate() - date1.getDay() + 1);
+  };
 
-    var date2 = new Date(date);
-    date2.setMonth(date2.getMonth() + 1);
-    date2.setDate(0);
-    if (date2.getDay() != 0) {
-        date2.setDate(date2.getDate() + 7 - date2.getDay());
-    };
+  var date2 = new Date(date);
+  date2.setMonth(date2.getMonth() + 1);
+  date2.setDate(0);
+  if (date2.getDay() != 0) {
+    date2.setDate(date2.getDate() + 7 - date2.getDay());
+  };
 
-    let days = new Array();
-    let i = 0;
-    while (date1 <= date2) {
-        if (Math.floor(i % 7) == 0);
-        days.push([]);
-        days[Math.floor(i / 7)].push(new Date(date1));
-        date1.setDate(date1.getDate() + 1);
-        i++;
-    };
-    days = days.filter(x => x.length);
-    return days;
+  let days = new Array();
+  let i = 0;
+  while (date1 <= date2) {
+    if (Math.floor(i % 7) == 0);
+    days.push([]);
+    days[Math.floor(i / 7)].push(new Date(date1));
+    date1.setDate(date1.getDate() + 1);
+    i++;
+  };
+  days = days.filter(x => x.length);
+  return days;
 };
