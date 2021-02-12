@@ -4,12 +4,8 @@ Vue.component("modal", {
 });
 
 Vue.component('autosize-textarea', {
-  template: `<div
-      contenteditable="true"
-      @blur="this.$emit('input', $event.target.textContent)"
-      v-text="value"
-    ></div>`,
   props: ["value"],
+  template: `<div class="autosize-textarea"contenteditable="true"v-text="value" @blur="$emit('input', $event.target.textContent)"></div>`,
 });
 
 
