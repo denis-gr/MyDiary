@@ -5,7 +5,7 @@ Vue.component("modal", {
 
 Vue.component("autosize-textarea", {
     props: ["value"],
-    template: `<div :value=value class='autosize-textarea' @input='$emit("blur:, $event.target.textContent)></div>'`,
+    template: `<div :value=value class='autosize-textarea' @input='$emit("blur", $event.target.textContent)></div>'`,
 });
 
 Vue.component("calendar", {
