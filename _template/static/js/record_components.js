@@ -101,14 +101,14 @@ function createVueRecord(a, b) {
     })
 };
 
-typesModal = {};
-types = {};
+_typesModal = {};
+_types = {};
 DB.getTypes().then(recordTypes => {
     recordTypes.forEach(type => {
-        typesModal[type.uuid] = `${type.name}-modal-record`;
+        _typesModal[type.uuid] = `${type.name}-modal-record`;
         createVueModalRecord(type);
     });
-    window.getModalComponent = uuid => typesModal[uuid];
+    window.getModalComponent = uuid => _typesModal[uuid];
 
     templates = recordTypes.map(getCrearionMenuLinkTemplate).join("");
     document.querySelector("#creation-menu-inner").insertAdjacentHTML('afterbegin', templates);
@@ -119,8 +119,8 @@ DB.getTypes().then(recordTypes => {
     });
 
     recordTypes.forEach(type => {
-        types[type.uuid] = `${type.name}-record`;
+        _types[type.uuid] = `${type.name}-record`;
         createVueRecord(type, recordTypes);
     });
-    window.getComponent = uuid => types[uuid];
+    window.getComponent = uuid => _types[uuid];
 });
