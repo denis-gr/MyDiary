@@ -1,5 +1,5 @@
 const getCrearionMenuLinkTemplate = type => document.querySelector("#record-modal-template").innerHTML.replaceAll("{type_name}", type.name).replaceAll("{type_icon}", type.icon).replaceAll("{type_icon}", type.icon);
-const getCrearionElement = type => document.querySelector("#creation-element-template").innerHTML.replaceAll("{type_name}", type.name).replaceAll("{type_icon}", type.icon);
+const getCrearionElement = type => document.querySelector("#creation-element-template").innerHTML.replaceAll("{type_name}", type.name).replaceAll("{type_icon}", type.icon).replaceAll("{type_title}", type.title);
 const getRecordHTML = type => document.querySelector("#record-template").innerHTML.replaceAll("{type_name}", type.name).replaceAll("{type_icon}", type.icon).replaceAll("{type_template}", type.template);
 
 function createVueModalRecord(type) {
