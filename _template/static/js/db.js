@@ -33,7 +33,7 @@ function createDefaultTypes(db) {
                 page: {
                     name: "ideas-page",
                     title: "Идеи",
-                    template: '<header class="header"><div class="title h3 text-center">Мои идеи</div></header><div class="records"> <div class="errors" v-if="!records"> <p class="error-text">Загрузка...</p></div><div class="errors" v-else-if="!records.length"> <p class="error-text">У ваc нет записей.</p></div><ul class="row records-list" v-else> <li class="records-list-item col-sm-4" v-for="i in records" :key="i.id"> <component :is="getComponent(i.type)" :id_record="i.id"></component> </li></ul></div>'
+                    template: '<header class="header"><div class="title h3 text-center">Мои идеи</div></header><div class="records"> <div class="errors" v-if="!records"> <p class="error-text">Загрузка...</p></div><div class="errors" v-else-if="!records.length"> <p class="error-text text-center">У ваc нет записей.</p></div><ul class="row records-list" v-else> <li class="records-list-item col-sm-4" v-for="i in records" :key="i.id"> <component :is="getComponent(i.type)" :id_record="i.id"></component> </li></ul></div>'
                 },
             },
         ],
