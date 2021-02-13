@@ -26,3 +26,32 @@
     </header>
     {% include 'components/_records_list.html' %}
 </template>
+
+<template id="task-type-template">
+    <div class="text-to-borders task" v-text='record.content.text'
+        :class="{overdue: new Date(record.date + ' ' + record.time) < new Date(), done: record.content.isDone}" ></div>
+</template>
+
+<template id="task-type-form-template">
+    <div class='form-field'>
+        <label class='form-label'>Что за идея?</label>
+        <autosize-textarea class="form-control" v-model='record.content.text'></autosize-textarea>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" v-model='record.content.isDone'>
+        <label class="form-check-label">
+          Задача выполнена.
+        </label>
+      </div>
+    <div class='form-field' v-if="record.content.isDone">
+        <label class='form-label'>Итоги</label>
+        <autosize-textarea class="form-control" v-model='record.content.conclusion'></autosize-textarea>
+    </div>
+</template>
+
+<template id="task-type-page-template">
+    <header class="header">
+        <div class="title h3 text-center">Мои задачи</div>
+    </header>
+    {% include 'components/_records_list.html' %}
+</template>

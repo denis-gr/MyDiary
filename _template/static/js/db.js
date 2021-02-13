@@ -20,8 +20,8 @@ function createDefaultTypes(db) {
             {
                 name: "idea",
                 title: "Идея",
-                uuid: "0f3e74c0-beca-4d91-8b37-0d8af574afd7",
-                description: "Одно поле для текста, есть страница, со списком идей.",
+                uuid: "cb363470-6e2b-11eb-91ec-c0e434b07c91",
+                description: "Одно поле для идеи, есть страница, со списком идей.",
                 icon: "chat-fill",
                 template: document.querySelector("#idea-type-template").innerHTML,
                 form_template: document.querySelector("#idea-type-form-template").innerHTML,
@@ -34,6 +34,25 @@ function createDefaultTypes(db) {
                     name: "ideas-page",
                     title: "Идеи",
                     template: document.querySelector("#idea-type-page-template").innerHTML
+                },
+            },
+            {
+                name: "task",
+                title: "Задача",
+                uuid: "ee5a8960-6e2b-11eb-b6df-c0e434b07c91",
+                description: "Одно поле для описания задачи, одно поле для обозначения завершенности и заключения, есть страница, со списком задач.",
+                icon: "calendar-event-fill",
+                template: document.querySelector("#task-type-template").innerHTML,
+                form_template: document.querySelector("#task-type-form-template").innerHTML,
+                fields: {
+                    tags: ["text", "conclusion"],
+                    search: ["text", "conclusion"],
+                    require: ["text"],
+                },
+                page: {
+                    name: "tasks-page",
+                    title: "Задачи",
+                    template: document.querySelector("#task-type-page-template").innerHTML
                 },
             },
         ],
