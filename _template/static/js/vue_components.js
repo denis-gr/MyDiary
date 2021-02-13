@@ -50,15 +50,16 @@ const vueApp = new Vue({
 });
 
 if (options.type && options.page) {
-    DB.getType(options.type).then(type => {
-        if (type && type.page) {
+    DB.getType(options.type).then(
+        type => {
             document.querySelector("#app").innerHTML = type.page.template;
-        } else {
+        },
+        () => {
             document.querySelector("#app .load").hidden = false;
             document.querySelector("#app .errors").hidden = true;
-        };
-    }).then(() => vueApp.$mount("#app")).then(vueApp.update)
+        }
+    ).then(() => vueApp.$mount("#app")).then(vueApp.update)
 } else {
     vueApp.$mount("#app");
     vueApp.update();
-}
+};
