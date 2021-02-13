@@ -3,8 +3,7 @@
 {% block content %}
 {% include 'components/_components.html' %}
 <div class="min-vh-100 py-3" id="app">
-
-    <modal title="Загрузить тип" id="createTypeModal">
+    <modal title="Загрузить тип" id="createTypeModal" v-cloak>
         <div class="form-field">
             <label for="inputTemplate">Настройки модуля (JSON)</label>
             <textarea class="form-control" id="inputTemplate" v-model="json" rows=10></textarea>
@@ -15,14 +14,14 @@
             </button>
         </template>
     </modal>
-    <modal title="Удалить все данные" id="deleteAllData">
+    <modal title="Удалить все данные" id="deleteAllData" v-cloak>
         Вы уверенны, что хотите удалить все данные?
         <template v-slot:footer>
             <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="deleteAll()">Да</button>
             <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Нет</button>
         </template>
     </modal>
-    <modal title="Вы хотите импортировать данные" id="importData">
+    <modal title="Вы хотите импортировать данные" id="importData" v-cloak>
         <div v-if="isValidJSON">
             Вы уверенны, что хотите импортировать данные?
         </div>
@@ -35,8 +34,6 @@
             <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Назад</button>
         </template>
     </modal>
-
-
     <div class="container">
         <h3>Информация</h3>
         <table class="table col-md mb-5">
@@ -53,7 +50,6 @@
                 <td v-text="countRecords"></td>
             </tr>
         </table>
-
         
         <span class="h3 me-2">Типы записей</span>
         <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#createTypeModal">

@@ -1,15 +1,18 @@
 {% extends '_base.html' %}
 
 {% block content %}
-
 <div class="min-vh-100 py-3">
     <div class="container page" id="app">
-        <p class="error-text">У вас, либо нет такой страницы, либо она не загружена.</p>
+        <div class="load">
+            <p class="load-text text-center">Загрузка...</p>
+        </div>
+        <div class="errors" hidden>
+            <p class="error-text text-center">У ваc нет такой страницы.</p>
+        </div>
     </div>
 </div>
-
-{% include 'components/_creation_menu.html' %}
 {% include 'components/_components.html' %}
+{% include 'components/_record_components.html' %}
 {% endblock %}
 
 {% block extra_js %}

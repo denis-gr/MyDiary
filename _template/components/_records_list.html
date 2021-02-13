@@ -1,8 +1,8 @@
 <div class="records">
-    <div class="errors" v-if="!records">
-        <p class="error-text text-center">Загрузка...</p>
+    <div class="load" v-if="!records">
+        <p class="load-text text-center">Загрузка...</p>
     </div>
-    <div class="errors" v-else-if="!records.length">
+    <div class="errors" v-else-if="!records.length" v-cloak>
         <p class="error-text text-center">У ваc нет записей.</p>
     </div>            
     <ul class="row records-list" v-else>

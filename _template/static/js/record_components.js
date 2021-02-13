@@ -1,17 +1,17 @@
+const getRecordModalHTML = type => document.querySelector("#record-modal-template").innerHTML.replaceAll("{form}", type.form_template);
 const getCrearionMenuLinkTemplate = type => document.querySelector("#creation-menu-link-template").innerHTML.replaceAll("{type_name}", type.name).replaceAll("{type_icon}", type.icon).replaceAll("{type_icon}", type.icon).replaceAll("{type_title}", type.title);
 const getCrearionElement = type => document.querySelector("#creation-element-template").innerHTML.replaceAll("{type_name}", type.name).replaceAll("{type_icon}", type.icon).replaceAll("{type_title}", type.title);
 const getRecordHTML = type => document.querySelector("#record-template").innerHTML.replaceAll("{type_name}", type.name).replaceAll("{type_icon}", type.icon).replaceAll("{type_template}", type.template);
 
-function createVueModalRecord(type) {
-    console.log(document.querySelector("#record-modal-template").innerHTML.replaceAll("{form}", type.form_template))
-    Vue.component(`${type.name}-modal-record`, {
-        props: ["record"],
-        template: document.querySelector("#record-modal-template").innerHTML.replaceAll("{form}", type.form_template),
-    });
-};
-
 function toggleCreationMenu() {
     document.querySelector("#creation-menu").classList.toggle("show")
+};
+
+function createVueModalRecord(a) {
+    Vue.component(`${a.name}-modal-record`, {
+        props: ["record"],
+        template: getRecordModalHTML(a),
+    });
 };
 
 function createVueCreate(b) {
@@ -104,24 +104,21 @@ function createVueRecord(a, b) {
 _typesModal = {};
 _types = {};
 DB.getTypes().then(recordTypes => {
-    
+    temp = recordTypes.map(getCrearionMenuLinkTemplate).join("");
+    document.querySelector("#creation-menu-inner").insertAdjacentHTML('afterbegin', temp);
+
     recordTypes.forEach(type => {
         _typesModal[type.uuid] = `${type.name}-modal-record`;
         createVueModalRecord(type);
-    });
-    window.getModalComponent = uuid => _typesModal[uuid];
 
-    templates = recordTypes.map(getCrearionMenuLinkTemplate).join("");
-    document.querySelector("#creation-menu-inner").insertAdjacentHTML('afterbegin', templates);
-    recordTypes.forEach(type => {
-        template = getCrearionElement(type);
-        document.querySelector("#creation-menu").insertAdjacentHTML('beforebegin', template);
+        temp = getCrearionElement(type);
+        document.querySelector("#creation-menu").insertAdjacentHTML('beforebegin', temp);
         createVueCreate(type);
-    });
 
-    recordTypes.forEach(type => {
         _types[type.uuid] = `${type.name}-record`;
         createVueRecord(type, recordTypes);
     });
+
     window.getComponent = uuid => _types[uuid];
-});
+    window.getModalComponent = uuid => _typesModal[uuid];
+})
