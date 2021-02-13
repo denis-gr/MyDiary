@@ -1,8 +1,8 @@
-function createVueModalRecord(a) {
-    Vue.component(`${a.name}-modal-record`, {
+function createVueModalRecord(type) {
+    Vue.component(`${type.name}-modal-record`, {
         props: ["record"],
         template: document.querySelector("#record-modal-template")
-            .innerHTML.replace("{form}", a.form_template),
+            .innerHTML.replace("{form}", type.form_template),
     });
 };
 
