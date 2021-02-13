@@ -4,6 +4,7 @@ const getCrearionElement = type => document.querySelector("#creation-element-tem
 const getRecordHTML = type => document.querySelector("#record-template").innerHTML.replaceAll("{type_name}", type.name).replaceAll("{type_icon}", type.icon).replaceAll("{type_template}", type.template);
 
 function createVueModalRecord(type) {
+    console.log(getModalRecordHTML(type))
     Vue.component(`${type.name}-modal-record`, {
         props: ["record"],
         template: getModalRecordHTML(type),
