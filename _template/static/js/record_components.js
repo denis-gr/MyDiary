@@ -1,12 +1,8 @@
-const getRecordModalHTML = type => `<div><div class="form-field"><label class="form-label">Дата и время</label><div class="row"><div class="col"><input class="form-control" type="date" v-model="record.date" placeholder="Date"></div><div class="col"><input class="form-control" type="time" v-model="record.time" placeholder="Time"></div></div></div>${type.form_template}</div>`;
-
 function createVueModalRecord(a) {
     Vue.component(`${a.name}-modal-record`, {
         props: ["record"],
-        template: getRecordModalHTML(a),
-        mounted: function () {
-            this.$nextTick().then(activateAutoHeightTextareas);
-        },
+        template: document.querySelector("#record-modal-template")
+            .innerHTML.replace("{form}", a.form_template),
     });
 };
 
