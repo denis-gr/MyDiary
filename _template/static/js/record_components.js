@@ -1,5 +1,5 @@
 const getModalRecordHTML = type => document.querySelector("#record-modal-template").innerHTML.replace("{form}", type.form_template);
-const getCrearionMenuLinkTemplate = type => document.querySelector("#creation-menu-link-template").innerHTML.replaceAll("{type_name}", type.name).replaceAll("{type_icon}", type.icon).replaceAll("{type_icon}", type.icon);
+const getCrearionMenuLinkTemplate = type => document.querySelector("#creation-menu-link-template").innerHTML.replaceAll("{type_name}", type.name).replaceAll("{type_icon}", type.icon).replaceAll("{type_icon}", type.icon).replaceAll("{type_title}", type.title);
 const getCrearionElement = type => document.querySelector("#creation-element-template").innerHTML.replaceAll("{type_name}", type.name).replaceAll("{type_icon}", type.icon).replaceAll("{type_title}", type.title);
 const getRecordHTML = type => document.querySelector("#record-template").innerHTML.replaceAll("{type_name}", type.name).replaceAll("{type_icon}", type.icon).replaceAll("{type_template}", type.template);
 

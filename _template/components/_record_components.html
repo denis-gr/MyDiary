@@ -9,12 +9,13 @@
 </template>
 
 <template id="creation-menu-link-template">
-    <button class="btn btn-outline-secondary link" type="button" data-bs-toggle="modal"
-        data-bs-target="#add-{type_name}"><i class="bi-{type_icon} icon" title="Создать {type_title}"></i></button>
+    <button class="btn btn-outline-secondary link" type="button" data-bs-toggle="modal" data-bs-target="#add-{type_name}">
+        <i class="bi-{type_icon} icon" title="Создать {type_title}"></i>
+    </button>
 </template>
 
 <template id="creation-element-template">
-    <modal title="{type_title}" id="add-${type_name}">
+    <modal title="{type_title}" id="add-{type_name}">
         <component is="{type_name}-modal-record" :record="record">
         </component>
         <template v-slot:footer>
