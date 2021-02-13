@@ -1,13 +1,12 @@
-const getModalRecordHTML = type => document.querySelector("#record-modal-template").innerHTML.replaceAll("{form}", type.form_template);
 const getCrearionMenuLinkTemplate = type => document.querySelector("#creation-menu-link-template").innerHTML.replaceAll("{type_name}", type.name).replaceAll("{type_icon}", type.icon).replaceAll("{type_icon}", type.icon).replaceAll("{type_title}", type.title);
 const getCrearionElement = type => document.querySelector("#creation-element-template").innerHTML.replaceAll("{type_name}", type.name).replaceAll("{type_icon}", type.icon).replaceAll("{type_title}", type.title);
 const getRecordHTML = type => document.querySelector("#record-template").innerHTML.replaceAll("{type_name}", type.name).replaceAll("{type_icon}", type.icon).replaceAll("{type_template}", type.template);
 
 function createVueModalRecord(type) {
-    console.log(getModalRecordHTML(type))
+    console.log(document.querySelector("#record-modal-template").innerHTML.replaceAll("{form}", type.form_template))
     Vue.component(`${type.name}-modal-record`, {
         props: ["record"],
-        template: getModalRecordHTML(type),
+        template: document.querySelector("#record-modal-template").innerHTML.replaceAll("{form}", type.form_template),
     });
 };
 
