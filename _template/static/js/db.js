@@ -9,8 +9,8 @@ function createDefaultTypes(db) {
                 uuid: "abb116ac-697a-11eb-ac85-c0e434b07c91",
                 description: "Одно поле для текста",
                 icon: "pencil-fill",
-                template: `<div class="text-to-borders"v-text='record.content.text'></div>`,
-                form_template: `<div class='form-field'><label class='form-label'>Текст</label><autosize-textarea class="form-control"v-model='record.content.text'></autosize-textarea></div>`,
+                template: document.querySelector("#record-type-template").innerHTML,
+                form_template: document.querySelector("#record-type-form-template").innerHTML,
                 fields: {
                     tags: ["text"],
                     search: ["text"],
@@ -23,8 +23,8 @@ function createDefaultTypes(db) {
                 uuid: "0f3e74c0-beca-4d91-8b37-0d8af574afd7",
                 description: "Одно поле для текста, есть страница, со списком идей.",
                 icon: "chat-fill",
-                template: `<div class="text-to-borders"v-text='record.content.text'></div>`,
-                form_template: `<div class='form-field'><label class='form-label'>Что за идея?</label><autosize-textarea class="form-control"v-model='record.content.text'></autosize-textarea></div>`,
+                template: document.querySelector("#idea-type-template").innerHTML,
+                form_template: document.querySelector("#idea-type-form-template").innerHTML,
                 fields: {
                     tags: ["text"],
                     search: ["text"],
@@ -33,7 +33,7 @@ function createDefaultTypes(db) {
                 page: {
                     name: "ideas-page",
                     title: "Идеи",
-                    template: '<header class="header"><div class="title h3 text-center">Мои идеи</div></header><div class="records"> <div class="errors" v-if="!records"> <p class="error-text">Загрузка...</p></div><div class="errors" v-else-if="!records.length"> <p class="error-text text-center">У ваc нет записей.</p></div><ul class="row records-list" v-else> <li class="records-list-item col-sm-4" v-for="i in records" :key="i.id"> <component :is="getComponent(i.type)" :id_record="i.id"></component> </li></ul></div>'
+                    template: document.querySelector("#idea-type-page-template").innerHTML
                 },
             },
         ],
