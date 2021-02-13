@@ -11,13 +11,18 @@
                 <header class="header text-center">
                     <div class="title h3">Теги</div>
                 </header>
-                <ul class="row tags-list" v-if="tags.length">
-                    <li class="col-6 tags-list-item" v-for="i in tags">
-                        <a class="tags-list-link" :href="getTagUrl(i)" v-text="'#'+i.name"></a>
-                    </li>
-                </ul>
-                <div class="errors text-center" v-else>
-                    <p class="error-text">У вас, либо нет тегов, либо они не загруженны.</p>
+                <div class="tags">
+                    <div class="load" v-if="!tags">
+                        <p class="load-text text-center">Загрузка...</p>
+                    </div>
+                    <div class="errors" v-else-if="!tags.length" v-cloak>
+                        <p class="error-text text-center">У ваc нет тегов.</p>
+                    </div>            
+                    <ul class="row tags-list" v-else>
+                        <li class="col-6 tags-list-item" v-for="i in tags">
+                            <a class="tags-list-link" :href="getTagUrl(i)" v-text="'#'+i.name"></a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>

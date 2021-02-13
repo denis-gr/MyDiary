@@ -28,7 +28,7 @@
                     <div class="col-auto">
                         <select class="form-select" v-model="options.tag" id="field-tag">
                             <option :value="undefined">Любой</option>
-                            <option :value="i.name" v-for="i in tags" v-text="'#'+i.name"></option>
+                            <option :value="i.name" v-if="tags" v-for="i in tags" v-text="'#'+i.name"></option>
                         </select>                        
                     </div>
                 </div>

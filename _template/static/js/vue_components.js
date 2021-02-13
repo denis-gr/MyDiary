@@ -4,7 +4,7 @@ const vueApp = new Vue({
     data: {
         types: [],
         records: null,
-        tags: [],
+        tags: null,
         today: moment().format("YYYY-MM-DD"),
         options: {
             type: options.type || "",
@@ -32,7 +32,7 @@ const vueApp = new Vue({
                 .then(() => this.update());
         },
         update() {
-            this.records = null;
+            this.records = this.tags = null;
             date = this.date_time ? moment(this.date_time).format("YYYY-MM-DD") : null;
             DB.getTypes().then(types => this.types = types);
             DB.getTags().then(tags => this.tags = tags);
