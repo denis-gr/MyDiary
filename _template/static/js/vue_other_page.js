@@ -11,13 +11,11 @@ vueApp = new Vue({
         is_delete_bnt_disabled: false,
     },
     methods: {
-        update() {
-            return Promise.all([
-                DB.countRecords().then(n => this.countRecords = n),
-                DB.countTags().then(n => this.countTags = n),
-                DB.countTypes().then(n => this.countTypes = n),
-                DB.getTypes().then(data => this.types = data)
-            ]);
+        async update() {
+            this.countTags = await DB.countTags();
+            this.countRecords = await DB.countRecords();
+            this.countTypes = await DB.countTypes();
+            this.types = await DB.getTypes();
         },
         load_type() {
             type = JSON.parse(this.json);
@@ -26,27 +24,33 @@ vueApp = new Vue({
         remove(type) {
             DB.delType(type.uuid).then(this.update)
         },
-        exportJSON() {
+        async exportData() {
             this.is_export_bnt_disabled = true;
+            fileHandle = await showSaveFilePicker();
+            fileWritable = await fileHandle.createWritable();
             data = {};
-            Promise.all([
-                    DB.getTypes().then(types => data.types = types),
-                    DB.getRecords({}).then(records => data.records = records),
-                    DB.getTags().then(tags => data.tags = tags.map(tag => tag.name)),
-                ])
-                .then(() => this.json = JSON.stringify(data))
-                .then(() => this.is_export_bnt_disabled = false);
+            data.types = await DB.getTypes();
+            data.records = await DB.getRecords({});
+            data.tags = await DB.getTags();
+            data.tags = data.tags.map(tag => tag.name);
+            string = JSON.stringify(data);
+            await fileWritable.write(string);
+            await fileWritable.close();
+            this.is_export_bnt_disabled = false;            
         },
-        importJSON() {
+        async importData() {
             this.is_import_bnt_disabled = true;
-            data = JSON.parse(this.json);
+            fileHandles = await showOpenFilePicker();
+            fileHandle = await fileHandles[0];
+            file = await fileHandle.getFile();
+            text = await file.text();
+            data = JSON.parse(text);
             data.records.forEach(i => delete i.id);
             data.types.forEach(i => delete i.id);
-            Promise.all(data.records.map(DB.addRecord))
-                .then(() => Promise.all(data.tags.map(DB.pullTag)))
-                .then(DB.removeUnusedTags)
-                .then(this.update)
-                .then(() => this.is_import_bnt_disabled = false);
+            await Promise.all(data.records.map(DB.addRecord));
+            await Promise.all(data.tags.map(DB.pullTag));
+            this.update();
+            this.is_import_bnt_disabled = false;
         },
         deleteAll() {
             this.is_delete_bnt_disabled = true;
@@ -55,9 +59,6 @@ vueApp = new Vue({
                 .then(this.update)
                 .then(() => this.is_delete_bnt_disabled = false);
         },
-        clearJSON() {
-            this.json = ""
-        }
     },
     computed: {
         isValidJSON: vm => {
