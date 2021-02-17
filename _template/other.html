@@ -3,19 +3,7 @@
 {% block content %}
 {% include 'components/_components.html' %}
 {% include 'components/_default_record_types.html' %}
-
 <div class="min-vh-100 py-3" id="app">
-    <modal title="Загрузить тип" id="createTypeModal" v-cloak>
-        <div class="form-field">
-            <label for="inputTemplate">Настройки модуля (JSON)</label>
-            <textarea class="form-control" id="inputTemplate" v-model="json" rows=10></textarea>
-        </div>
-        <template v-slot:footer>
-            <button class="btn btn-primary" data-bs-dismiss="modal" @click="load_type()" type="button">
-                Загрузить
-            </button>
-        </template>
-    </modal>
     <modal title="Удалить все данные" id="deleteAllData" v-cloak>
         Вы уверенны, что хотите удалить все данные и востановить типы по умолчанию?
         <template v-slot:footer>
@@ -23,9 +11,9 @@
             <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Нет</button>
         </template>
     </modal>
-    <div class="container">
+    <div class="container mb-5">
         <h3>Информация</h3>
-        <table class="table col-md mb-5">
+        <table class="table">
             <tr>
                 <td>Количество типов записей: </td>
                 <td v-text="countTypes"></td>
@@ -39,35 +27,61 @@
                 <td v-text="countRecords"></td>
             </tr>
         </table>
-        
-        <span class="h3 me-2">Типы записей</span>
-        <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#createTypeModal">
-            Добавить тип
-        </button>
-        <div class="row mb-5" v-if="types.length">
-            <div class="col-sm-6 pb-3" v-for="type in types">
+    </div>
+    <div class="container mb-5">  
+        <header>
+            <span class="h3 me-2">Типы записей</span>
+            <button type="button" class="btn btn-primary" @click="addRecordType">Добавить тип</button>            
+        </header>      
+        <div class="row" v-if="types.length">
+            <div class="col-sm-6 mb-3" v-for="type in types">
                 <header>
                     <i :class="['icon', 'bi-'+type.icon]"></i>
                     <span class="h5" v-text="type.title"></span>
                 </header>
-                <div class="col mb-2" v-text="type.description"></div>
+                <div class="col" v-text="type.description"></div>
                 <button class="btn btn-primary" type="button" @click="remove(type)">Удалить</button>
             </div>
         </div>
-        <div class="mb-5" v-else>У вас либо нет типов записей, либо они не загруженны.</div>
-
+        <div v-else>У вас либо нет типов записей, либо они не загруженны.</div>
+    </div>
+    <div class="container mb-5"> 
         <h3>Импорт и экспорт</h3>
-        <div class="flex flex-wrap justify-content-between mb-5">
-            <button class="btn btn-danger mr-2 mb-2" :class="{disabled: is_delete_bnt_disabled}" type="button"
-                data-bs-toggle="modal" data-bs-target="#deleteAllData">Удалить данные</button>
-            <button class="btn btn-primary mr-2 mb-2" :class="{disabled: is_export_bnt_disabled}" type="button"
-                @click="exportData">Экспортировать</button>
-            <button class="btn btn-primary mr-2 mb-2" :class="{disabled: is_import_bnt_disabled}" type="button"
-                @click="importData">Импортировать</button>
+        <button class="btn btn-danger mr-2 mb-2" :class="{disabled: is_delete_bnt_disabled}" type="button"
+            data-bs-toggle="modal" data-bs-target="#deleteAllData">Удалить данные</button>
+        <button class="btn btn-primary mr-2 mb-2" :class="{disabled: is_export_bnt_disabled}" type="button"
+            @click="exportData">Экспортировать</button>
+        <button class="btn btn-primary mr-2 mb-2" :class="{disabled: is_import_bnt_disabled}" type="button"
+            @click="importData">Импортировать</button>
+    </div>
+    <div class="container mb-5"> 
+        <h3>Конвектирование типов</h3>
+        <div class="d-flex flex-wrap">
+            <div class="mb-3 me-2 row">
+                <label class="col-auto col-form-label">Из: </label>
+                <div class="col-auto">
+                    <select class="form-select" v-model="fromType">
+                        <option v-for="(val, key) in convectorsTypes" :key="key" :value="key" v-text="val"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="mb-3 me-2 row">
+                <label class="col-auto col-form-label">В: </label>
+                <div class="col-auto">
+                    <select class="form-select" v-model="toType">
+                        <option v-for="(val, key) in convectorsTypes" :key="key" :value="key" v-text="val"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="mb-3 me-2">
+                <button @click="startConvector" class="btn btn-primary" :class="{ disabled: is_convector_bnt_disabled }">
+                    Конвектировать
+                </button>                
+            </div>
         </div>
-        <h3>
-            Другое
-        </h3>
+    </div>
+    <div class="container mb-5"> 
+        <h3>Другое</h3>
         <div>
             <a class="link" href="">Первая главная страница</a>
             <a class="link" href="">О сайте</a>
