@@ -15,37 +15,35 @@ const vueApp = new Vue({
         },
     },
     methods: {
-        addRecord(data) {
-            return DB.addRecord(data)
-                .then(record => this.records.unshift(record))
-                .then(() => this.update());
+        async addRecord(data) {
+            record  = await DB.addRecord(data);
+            this.records.unshift(record);
+            await this.update();
         },
-        removeRecord(record_id) {
-            return DB.delRecord(record_id)
-                .then(() => {
-                    index = this.records.findIndex(data => data.id == record_id);
-                    record = this.records[index];
-                    this.records.splice(index, 1);
-                    return record;
-                })
-                .then(record => this.removeUnusedTags(record.tags))
-                .then(() => this.update());
+        async removeRecord(record_id) {
+            await DB.delRecord(record_id);
+            index = this.records.findIndex(data => data.id == record_id);
+            record = this.records[index];
+            this.records.splice(index, 1);
+            await this.removeUnusedTags(record.tags);
+            await this.update();
         },
-        update() {
+        async update() {
             this.records = this.tags = null;
             date = this.date_time ? moment(this.date_time).format("YYYY-MM-DD") : null;
-            DB.getTypes().then(types => this.types = types);
-            DB.getTags().then(tags => this.tags = tags);
-            DB.getRecords(this.options).then(records => this.records = records);
+            this.types = await DB.getTypes();
+            this.tags = await DB.getTags();
+            this.records = await DB.getRecords(this.options);
+        },
+        async removeUnusedTags(tags) {
+            await DB.removeUnusedTags(tags)
+            await this.update();
         },
         getComponent: id => getComponent(id),
         getRecordDate: record => moment(record.date + "T" + record.time).format("LLL"),
         getFormattedDate: date => moment(date).format("LL"),
         getDateUrl: date => `{{ start_url }}/date.html?date=${moment(date).format("YYYY-MM-DD")}`,
         getTagUrl: tag => `{{ start_url }}/tag.html?tag=${tag.name}`,
-        removeUnusedTags(tags) {
-            return DB.removeUnusedTags(tags).then(() => this.update());
-        },
     },
 });
 

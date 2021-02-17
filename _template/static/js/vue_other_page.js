@@ -17,12 +17,15 @@ vueApp = new Vue({
             this.countTypes = await DB.countTypes();
             this.types = await DB.getTypes();
         },
-        load_type() {
+        async load_type() {
             type = JSON.parse(this.json);
-            DB.addType(type).then(() => this.json = "").then(this.update)
+            await DB.addType(type);
+            this.json = "";
+            await this.update();
         },
-        remove(type) {
-            DB.delType(type.uuid).then(this.update)
+        async remove(type) {
+            await DB.delType(type.uuid);
+            await this.update();
         },
         async exportData() {
             this.is_export_bnt_disabled = true;
@@ -52,12 +55,14 @@ vueApp = new Vue({
             this.update();
             this.is_import_bnt_disabled = false;
         },
-        deleteAll() {
+        async deleteAll() {
             this.is_delete_bnt_disabled = true;
-            DB.delTypes().then(DB.delTags).then(DB.delRecords)
-                .then(() => dbPromise.then(createDefaultTypes))
-                .then(this.update)
-                .then(() => this.is_delete_bnt_disabled = false);
+            await DB.delTypes();
+            await DB.delTags();
+            await DB.delRecords();
+            await dbPromise.then(createDefaultTypes);
+            await this.update();
+            this.is_delete_bnt_disabled = false;
         },
     },
     computed: {
