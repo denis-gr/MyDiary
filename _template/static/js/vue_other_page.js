@@ -194,9 +194,12 @@ vueApp = new Vue({
             this.types = await DB.getTypes();
         },
         async load_type() {
-            type = JSON.parse(this.json);
-            await DB.addType(type);
-            this.json = "";
+            fileHandles = await showOpenFilePicker();
+            fileHandle = await fileHandles[0];
+            file = await fileHandle.getFile();
+            text = await file.text();
+            data = JSON.parse(text);
+            await DB.addType(data);
             await this.update();
         },
         async remove(type) {
