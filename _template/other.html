@@ -29,10 +29,7 @@
         </table>
     </div>
     <div class="container mb-5">  
-        <header>
-            <span class="h3 me-2">Типы записей</span>
-            <button type="button" class="btn btn-primary" @click="addRecordType">Добавить тип</button>            
-        </header>      
+        <h3>Типы записей</h3> 
         <div class="row" v-if="types.length">
             <div class="col-sm-6 mb-3" v-for="type in types">
                 <header>
@@ -44,20 +41,26 @@
             </div>
         </div>
         <div v-else>У вас либо нет типов записей, либо они не загруженны.</div>
+        <div class="mb-3 me-2">
+            <label for="typeFile" class="form-label">Загрузить тип данных</label>
+            <input @change="addRecordType" class="form-control" type="file" id="typeFile">
+        </div>        
     </div>
     <div class="container mb-5"> 
         <h3>Импорт и экспорт</h3>
         <button class="btn btn-danger mr-2 mb-2" :class="{disabled: is_delete_bnt_disabled}" type="button"
             data-bs-toggle="modal" data-bs-target="#deleteAllData">Удалить данные</button>
+        <div class="mb-3 me-2">
+            <label for="formImportFile" class="form-label">Импорт данных</label>
+            <input @change="importData" class="form-control" type="file" id="formImportFile">
+        </div>
         <button class="btn btn-primary mr-2 mb-2" :class="{disabled: is_export_bnt_disabled}" type="button"
             @click="exportData">Экспортировать</button>
-        <button class="btn btn-primary mr-2 mb-2" :class="{disabled: is_import_bnt_disabled}" type="button"
-            @click="importData">Импортировать</button>
     </div>
     <div class="container mb-5"> 
         <h3>Конвектирование типов</h3>
         <div class="d-flex flex-wrap">
-            <div class="mb-3 me-2 row">
+            <div class="mb-2 me-1 row">
                 <label class="col-auto col-form-label">Из: </label>
                 <div class="col-auto">
                     <select class="form-select" v-model="fromType">
@@ -73,11 +76,9 @@
                     </select>
                 </div>
             </div>
-            <div class="mb-3 me-2">
-                <button @click="startConvector" class="btn btn-primary" :class="{ disabled: is_convector_bnt_disabled }">
-                    Конвектировать
-                </button>                
-            </div>
+            <div class="mb-3 me-3">
+                <input @change="startConvector" class="form-control" type="file" id="formFile">
+            </div>          
         </div>
     </div>
     <div class="container mb-5"> 

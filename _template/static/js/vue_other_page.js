@@ -178,7 +178,9 @@ vueApp = new Vue({
         is_export_bnt_disabled: false,
         is_import_bnt_disabled: false,
         is_delete_bnt_disabled: false,
-        is_convector_bnt_disabled: false,        
+        is_convector_bnt_disabled: false,
+        fileOutputUrl: "",
+        fileExportUrl: "",     
         fromType: "universum",
         toType: "mydiary",
         convectorsTypes: {
@@ -207,25 +209,23 @@ vueApp = new Vue({
             await this.update();
         },
         async exportData() {
-            this.is_export_bnt_disabled = true;
-            fileHandle = await showSaveFilePicker();
-            fileWritable = await fileHandle.createWritable();
             data = {};
             data.types = await DB.getTypes();
             data.records = await DB.getRecords({});
             data.tags = await DB.getTags();
             data.tags = data.tags.map(tag => tag.name);
             string = JSON.stringify(data);
-            await fileWritable.write(string);
-            await fileWritable.close();
-            this.is_export_bnt_disabled = false;            
+            var blob = new Blob([string]);
+            var url = URL.createObjectURL(blob); 
+            var link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', "DB.json");
+            link.click();           
         },
         async importData() {
             this.is_import_bnt_disabled = true;
-            fileHandles = await showOpenFilePicker();
-            fileHandle = await fileHandles[0];
-            file = await fileHandle.getFile();
-            text = await file.text();
+            var file = document.querySelector("#formImportFile").files[0];
+            var text = await file.text();
             data = JSON.parse(text);
             data.records.forEach(i => delete i.id);
             data.types.forEach(i => delete i.id);
@@ -244,26 +244,22 @@ vueApp = new Vue({
             this.is_delete_bnt_disabled = false;
         },
         async addRecordType() {
-            fileHandles = await showOpenFilePicker();
-            fileHandle = await fileHandles[0];
-            file = await fileHandle.getFile();
-            text = await file.text();
+            var file = document.querySelector("#typeFile").files[0];
+            var text = await file.text();
             data = JSON.parse(text);
             await DB.addType(data);
             this.update();
         },
         async startConvector() {
-            this.is_convector_bnt_disabled = true;
-            var fromFileHandles = await showOpenFilePicker();
-            var fromFileHandle = await fromFileHandles[0];
-            var toFileHandle = await showSaveFilePicker();
-            var toFileWritable = await toFileHandle.createWritable();
-            var fromFile = await fromFileHandle.getFile();
+            var fromFile = document.querySelector("#formFile").files[0];
             var fromText = await fromFile.text();
             var toText = CONVECTORS[this.fromType][this.toType](fromText);
-            await toFileWritable.write(toText);
-            await toFileWritable.close();
-            this.is_convector_bnt_disabled = false;
+            var blob = new Blob([toText]);
+            var url = URL.createObjectURL(blob);
+            var link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', "DB.json");
+            link.click();
         }
     },
     created: function () {
