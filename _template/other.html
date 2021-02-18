@@ -48,14 +48,14 @@
     </div>
     <div class="container mb-5"> 
         <h3>Импорт и экспорт</h3>
-        <button class="btn btn-danger mr-2 mb-2" :class="{disabled: is_delete_bnt_disabled}" type="button"
+        <button class="btn btn-danger mr-2 mb-2" type="button"
             data-bs-toggle="modal" data-bs-target="#deleteAllData">Удалить данные</button>
+        <button class="btn btn-primary mr-2 mb-2" type="button"
+            @click="exportData">Экспортировать</button>
         <div class="mb-3 me-2">
             <label for="formImportFile" class="form-label">Импорт данных</label>
             <input @change="importData" class="form-control" type="file" id="formImportFile">
         </div>
-        <button class="btn btn-primary mr-2 mb-2" :class="{disabled: is_export_bnt_disabled}" type="button"
-            @click="exportData">Экспортировать</button>
     </div>
     <div class="container mb-5"> 
         <h3>Конвектирование типов</h3>
