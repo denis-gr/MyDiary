@@ -1,6 +1,5 @@
 const getRecordModalHTML = type => document.querySelector("#record-modal-template").innerHTML.replaceAll("{form}", type.form_template);
 const getCrearionMenuLinkTemplate = type => document.querySelector("#creation-menu-link-template").innerHTML.replaceAll("{type_name}", type.name).replaceAll("{type_icon}", type.icon).replaceAll("{type_icon}", type.icon).replaceAll("{type_title}", type.title);
-const getCrearionElement = type => document.querySelector("#creation-element-template").innerHTML.replaceAll("{type_name}", type.name).replaceAll("{type_icon}", type.icon).replaceAll("{type_title}", type.title);
 const getRecordHTML = type => document.querySelector("#record-template").innerHTML.replaceAll("{type_name}", type.name).replaceAll("{type_icon}", type.icon).replaceAll("{type_template}", type.template);
 
 function toggleCreationMenu() {
@@ -20,37 +19,32 @@ Vue.component("record-type-creator", {
     data() {
         return {
             record: {
-                type: this.type.uuid,
                 content: {},
-                tags: options.tag ? [options.tag] : [],
-                date: new Date(Date.parse(options.date) || new Date).toISOString().slice(null, 10),
-                time: moment().format("HH:mm"),
             },
         }
     },
     methods: {
         getModalComponent: uuid => window.getModalComponent(uuid),
-        add: function (a) {
-            DB.getType(a.type).then(type => {
-                return type.fields.search.map(field =>
-                    a.content[field].split(/\s/).filter(x => x[0] == "#")
-                    .map(x => x.slice(1)).filter(x => x)
-                ).flat();
-            }).then(tags =>
-                Promise.all(tags.map(DB.pullTag))
-                .then(tags => tags.map(x => x.name))
-                .then(tags => a.tags = tags)
-                .then(() => vueApp.addRecord(a))
-                .then(() => {
-                    this.record = {
-                        type: this.type.uuid,
-                        content: {},
-                        tags: options.tag ? [options.tag] : [],
-                        date: new Date(Date.parse(options.date) || new Date).toISOString().slice(null, 10),
-                        time: moment().format("HH:mm"),
-                    }
-                }));
+        async add(a) {
+            tags = this.type.fields.search.map(field => a.content[field].split(/\s/)).flat();
+            tags = tags.filter(x => x[0] == "#").map(x => x.slice(1)).filter(x => x);
+            tags = await Promise.all(tags.map(DB.pullTag));
+            a.tags = tags.map(x => x.name);
+            await vueApp.addRecord(a);
+            this.record = this.getRecord();
         },
+        getRecord() {
+            return record = {
+                type: this.type.uuid,
+                content: {},
+                tags: options.tag ? [options.tag] : [],
+                date: new Date(Date.parse(options.date) || new Date).toISOString().slice(null, 10),
+                time: moment().format("HH:mm"),
+            };
+        },
+    },
+    created() {
+        this.record = this.getRecord();
     },
 })
 
