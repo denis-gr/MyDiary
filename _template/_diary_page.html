@@ -1,14 +1,14 @@
 {% extends '_base.html' %}
 
 {% block content %}
-{% block inner %}{% endblock %}
 {% include 'components/_creation_menu.html' %}
-{% include 'components/_components.html' %}
-{% include 'components/_record_components.html' %}
-{% include 'components/_default_record_types.html' %}
+{% block inner %}{% endblock %}
 {% endblock %}
 
 {% block extra_js %}
+{% include 'components/_components.html' %}
+{% include 'components/_record_components.html' %}
+{% include 'components/_default_record_types.html' %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/moment@2/locale/ru.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/idb@6/build/iife/index-min.js" defer></script>

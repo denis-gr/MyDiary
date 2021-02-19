@@ -45,18 +45,20 @@ const vueApp = new Vue({
         getDateUrl: date => `{{ start_url }}/date.html?date=${moment(date).format("YYYY-MM-DD")}`,
         getTagUrl: tag => `{{ start_url }}/tag.html?tag=${tag.name}`,
     },
+    created() {
+        this.update();
+    }
 });
 
 if (options.type && options.page) {
     DB.getType(options.type).then(type => {
         if (type && type.page) {
-            document.querySelector("#app").innerHTML = type.page.template;
+            document.querySelector("#page").innerHTML = type.page.template;
         } else {
-            document.querySelector("#app .load").hidden = true;
-            document.querySelector("#app .errors").hidden = false;
+            document.querySelector("#page .load").hidden = true;
+            document.querySelector("#page .errors").hidden = false;
         };
-    }).then(() => vueApp.$mount("#app")).then(vueApp.update);
+    }).then(() => vueApp.$mount("#app"));
 } else {
     vueApp.$mount("#app");
-    vueApp.update();
 };

@@ -1,20 +1,18 @@
 {% extends '_diary_page.html' %}
 
 {% block inner %}
-<div class="min-vh-100 py-3" id="app">
-    <div class="container">
-        <header class="navbar records-header mb-2">
-            <div class="dropdown tags-menu" v-if="tags && tags.length">
-                <div class="dropdown-toggle h1 current-tag" type="button" data-bs-toggle="dropdown" v-text="'#'+options.tag"></div>
-                <ul class="dropdown-menu tags-menu-list">
-                    <li v-for="i in tags" class="tags-menu-list-item" v-if="i.name != options.tag">
-                        <a class="dropdown-item tags-menu-list-link" :href="getTagUrl(i)" v-text="'#'+i.name"></a>
-                    </li>
-                </ul>
-            </div>
-            <div class="h1 current-tag" v-text="'#'+options.tag" v-else></div>
-        </header>
-        {% include 'components/_records_list.html' %}
-    </div>
+<div class="container">
+    <header class="navbar records-header mb-2">
+        <div class="dropdown tags-menu" v-if="tags && tags.length">
+            <div class="dropdown-toggle h1 current-tag" type="button" data-bs-toggle="dropdown" v-text="'#'+options.tag"></div>
+            <ul class="dropdown-menu tags-menu-list">
+                <li v-for="i in tags" class="tags-menu-list-item" v-if="i.name != options.tag">
+                    <a class="dropdown-item tags-menu-list-link" :href="getTagUrl(i)" v-text="'#'+i.name"></a>
+                </li>
+            </ul>
+        </div>
+        <div class="h1 current-tag" v-text="'#'+options.tag" v-else></div>
+    </header>
+    {% include 'components/_records_list.html' %}
 </div>
 {% endblock %}

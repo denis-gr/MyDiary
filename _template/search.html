@@ -1,41 +1,39 @@
 {% extends '_diary_page.html' %}
 
 {% block inner %}
-<div class="min-vh-100 py-3" id="app">
-    <div class="container">
-        <header class="mb-3 records-header">
-            <div class="h1 title text-center">Поиск</div>
-            <div class="row gx-1 search-field form-field">
-                <div class="col">
-                    <input class="form-control" type="search" v-model="options.q" placeholder="Поиск" aria-label="Поиск">
-                </div>
+<div class="container">
+    <header class="mb-3 records-header">
+        <div class="h1 title text-center">Поиск</div>
+        <div class="row gx-1 search-field form-field">
+            <div class="col">
+                <input class="form-control" type="search" v-model="options.q" placeholder="Поиск" aria-label="Поиск">
+            </div>
+            <div class="col-auto">
+                <button class="btn btn-primary" type="button" @click="update()">Найти</button>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-auto row mb-2">
+                <label for="field-type" class="col-auto col-form-label">Тип</label>
                 <div class="col-auto">
-                    <button class="btn btn-primary" type="button" @click="update()">Найти</button>
+                    <select class="form-select" v-model="options.type" id="field-type">
+                        <option value="">Любой</option>
+                        <option :value="i.uuid" v-for="i in types" v-text="i.title"></option>
+                    </select>                        
                 </div>
             </div>
-            <div class="row justify-content-center">
-                <div class="col-auto row mb-2">
-                    <label for="field-type" class="col-auto col-form-label">Тип</label>
-                    <div class="col-auto">
-                        <select class="form-select" v-model="options.type" id="field-type">
-                            <option value="">Любой</option>
-                            <option :value="i.uuid" v-for="i in types" v-text="i.title"></option>
-                        </select>                        
-                    </div>
-                </div>
-                <div class="col-auto row mb-2">
-                    <label for="field-tag" class="col-auto col-form-label">Тег</label>
-                    <div class="col-auto">
-                        <select class="form-select" v-model="options.tag" id="field-tag">
-                            <option :value="undefined">Любой</option>
-                            <option :value="i.name" v-if="tags" v-for="i in tags" v-text="'#'+i.name"></option>
-                        </select>                        
-                    </div>
+            <div class="col-auto row mb-2">
+                <label for="field-tag" class="col-auto col-form-label">Тег</label>
+                <div class="col-auto">
+                    <select class="form-select" v-model="options.tag" id="field-tag">
+                        <option :value="undefined">Любой</option>
+                        <option :value="i.name" v-if="tags" v-for="i in tags" v-text="'#'+i.name"></option>
+                    </select>                        
                 </div>
             </div>
-            <hr>          
-        </header>
-        {% include 'components/_records_list.html' %}
-    </div>
+        </div>
+        <hr>          
+    </header>
+    {% include 'components/_records_list.html' %}
 </div>
 {% endblock %}

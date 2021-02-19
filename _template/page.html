@@ -1,14 +1,12 @@
 {% extends '_base.html' %}
 
 {% block content %}
-<div class="min-vh-100 py-3">
-    <div class="container page" id="app">
-        <div class="load">
-            <p class="load-text text-center">Загрузка...</p>
-        </div>
-        <div class="errors" hidden>
-            <p class="error-text text-center">У ваc нет такой страницы.</p>
-        </div>
+<div class="container page" id="page">
+    <div class="load">
+        <p class="load-text text-center">Загрузка...</p>
+    </div>
+    <div class="errors" hidden>
+        <p class="error-text text-center">У ваc нет такой страницы.</p>
     </div>
 </div>
 {% include 'components/_components.html' %}
