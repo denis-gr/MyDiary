@@ -14,44 +14,45 @@ function createVueModalRecord(a) {
     });
 };
 
-function createVueCreate(b) {
-    new Vue({
-        el: `#add-${b.name}`,
-        data: () => ({
+Vue.component("record-type-creator", {
+    template: "#creation-element-template",
+    props: ["type"],
+    data() {
+        return {
             record: {
-                type: b.uuid,
+                type: this.type.uuid,
                 content: {},
                 tags: options.tag ? [options.tag] : [],
                 date: new Date(Date.parse(options.date) || new Date).toISOString().slice(null, 10),
                 time: moment().format("HH:mm"),
             },
-        }),
-        methods: {
-            getModalComponent: uuid => window.getModalComponent(uuid),
-            add: function (a) {
-                DB.getType(a.type).then(type => {
-                    return type.fields.search.map(field =>
-                        a.content[field].split(/\s/).filter(x => x[0] == "#")
-                        .map(x => x.slice(1)).filter(x => x)
-                    ).flat();
-                }).then(tags =>
-                    Promise.all(tags.map(DB.pullTag))
-                    .then(tags => tags.map(x => x.name))
-                    .then(tags => a.tags = tags)
-                    .then(() => vueApp.addRecord(a))
-                    .then(() => {
-                        this.record = {
-                            type: b.uuid,
-                            content: {},
-                            tags: options.tag ? [options.tag] : [],
-                            date: new Date(Date.parse(options.date) || new Date).toISOString().slice(null, 10),
-                            time: moment().format("HH:mm"),
-                        }
-                    }));
-            },
+        }
+    },
+    methods: {
+        getModalComponent: uuid => window.getModalComponent(uuid),
+        add: function (a) {
+            DB.getType(a.type).then(type => {
+                return type.fields.search.map(field =>
+                    a.content[field].split(/\s/).filter(x => x[0] == "#")
+                    .map(x => x.slice(1)).filter(x => x)
+                ).flat();
+            }).then(tags =>
+                Promise.all(tags.map(DB.pullTag))
+                .then(tags => tags.map(x => x.name))
+                .then(tags => a.tags = tags)
+                .then(() => vueApp.addRecord(a))
+                .then(() => {
+                    this.record = {
+                        type: this.type.uuid,
+                        content: {},
+                        tags: options.tag ? [options.tag] : [],
+                        date: new Date(Date.parse(options.date) || new Date).toISOString().slice(null, 10),
+                        time: moment().format("HH:mm"),
+                    }
+                }));
         },
-    })
-};
+    },
+})
 
 function createVueRecord(a, b) {
     Vue.component(`${a.name}-record`, {
@@ -110,10 +111,6 @@ DB.getTypes().then(recordTypes => {
     recordTypes.forEach(type => {
         _typesModal[type.uuid] = `${type.name}-modal-record`;
         createVueModalRecord(type);
-
-        temp = getCrearionElement(type);
-        document.querySelector("#creation-menu").insertAdjacentHTML('beforebegin', temp);
-        createVueCreate(type);
 
         _types[type.uuid] = `${type.name}-record`;
         createVueRecord(type, recordTypes);
