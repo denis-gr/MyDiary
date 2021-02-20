@@ -18,6 +18,33 @@ workbox.routing.registerRoute(
 );
 
 workbox.precaching.precacheAndRoute([
+    "https://cdn.jsdelivr.net/npm/workbox-sw@6/build/workbox-sw.min.js",
+    "https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css",
+    "https://cdn.jsdelivr.net/npm/bootstrap-icons@1/font/bootstrap-icons.min.css",
+    "https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js",
+    "https://cdn.jsdelivr.net/npm/moment@2/moment.min.js",
+    "https://cdn.jsdelivr.net/npm/moment@2/locale/ru.min.js",
+    "https://cdn.jsdelivr.net/npm/idb@6/build/iife/index-min.js",
+    "https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js",
+    "{{ start_url }}/static/styles/themes/base-light.css",
+    "{{ start_url }}/static/styles/base.css",
+    "{{ start_url }}/static/js/main_components.js",
+    "{{ start_url }}/static/js/record_components.js",
+    "{{ start_url }}/static/js/vue_components.js",
+    "{{ start_url }}/static/js/vue_development.js",
+    "{{ start_url }}/static/js/vue_other_page.js",
+    "{{ start_url }}/static/js/vue_page.js",
+    "{{ start_url }}/static/js/base.js",
+    "{{ start_url }}/static/js/db.js",
+    "{{ start_url }}/date.html",
+    "{{ start_url }}/development.html",
+    "{{ start_url }}/index.html",
+    "{{ start_url }}/main.html",
+    "{{ start_url }}/other.html",
+    "{{ start_url }}/page.html",
+    "{{ start_url }}/search.html",
+    "{{ start_url }}/sw.html",
+    "{{ start_url }}/tag.html",
 ], {
     ignoreURLParametersMatching: [/.*/]
 });
