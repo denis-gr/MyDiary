@@ -115,32 +115,12 @@ async function getRecords({
     return records;
 };
 
-/*async function removeUnusedTags() {
+async function removeUnusedTags(tags) {
     db = await dbPromise;
-    tags = await db.getAll("tags");
-    tags = tags.map(tag => tag.name);
-    records = await db.getAll("records");
-    records.reduce((a, i) => a.filter(tag => i.tags.indexOf(tag) < 0), tags);
-    promises = tags.map(
-        tag => db.getKeyFromIndex("tags", "name", tag).then(i => db.delete("tags", i)));
-    await Promise.all(promises);
-};*/
-/*async function removeUnusedTags() {
-    db = await dbPromise;
-    tags = await db.getAll("tags");
-    tags = tags.map(tag => tag.name);
-    records = db.getAll("records");
-    records = records.reduce((a, i) => a.filter(tag => i.tags.indexOf(tag) < 0), tags);
-    await Promise.all(
-        tags.map(tag => db.getKeyFromIndex("tags", "name", tag).then(iZ => db.delete("tags", i)))
-    );
-};*/
-
-
-async function removeUnusedTags() {
-    db = await dbPromise;
-    tags = await db.getAll("tags");
-    tags = tags.map(tag => tag.name);
+    tags = tags || (await db.getAll("tags")).map(tag => tag.name);
+    if (!tags.length) {
+        return null;
+    };
     records = await db.getAll("records");
     records.forEach(record => {
         if (tags.length) {

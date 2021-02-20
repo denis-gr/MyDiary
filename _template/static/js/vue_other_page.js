@@ -262,7 +262,7 @@ vueApp = new Vue({
             link.click();
         }
     },
-    created: function () {
+    created() {
         this.update();
     },
 });

@@ -25,16 +25,16 @@ Vue.component("record-type-creator", {
     },
     methods: {
         getModalComponent: uuid => window.getModalComponent(uuid),
-        async add(a) {
-            tags = this.type.fields.search.map(field => a.content[field].split(/\s/)).flat();
+        async add(data) {
+            tags = this.type.fields.search.map(field => data.content[field].split(/\s/)).flat();
             tags = tags.filter(x => x[0] == "#").map(x => x.slice(1)).filter(x => x);
             tags = await Promise.all(tags.map(DB.pullTag));
-            a.tags = tags.map(x => x.name);
-            await vueApp.addRecord(a);
+            data.tags = tags.map(x => x.name);
+            await vueApp.addRecord(data);
             this.record = this.getRecord();
         },
         getRecord() {
-            return record = {
+            return {
                 type: this.type.uuid,
                 content: {},
                 tags: options.tag ? [options.tag] : [],
@@ -52,46 +52,40 @@ function createVueRecord(a, b) {
     Vue.component(`${a.name}-record`, {
         props: ["id_record"],
         template: getRecordHTML(a),
-        data: function () {
-            DB.getRecord(this.id_record).then(record => {
-                this.icon = b.find(x => x.uuid == record.type).icon;
-                this.record = record;
-                this.form = Object.assign({}, record);
-                this.form.content = Object.assign({}, record.content);
-            });
-            return {
-                icon: "",
-                record: {
-                    content: {}
-                },
-                form: {
-                    content: {}
-                }
-            }
-        },
+        data: () => ({
+            type: null,
+            icon: null,
+            record: {
+                content: {}
+            },
+            form: {
+                content: {}
+            },
+        }),
         methods: {
             datetime: x => moment(x.date + "T" + x.time).format("LLL"),
             url_date: x => `{{ start_url }}/date.html?date=${moment(x.date).format("YYYY-MM-DD")}`,
             url_tag: tag => `{{ start_url }}/tag.html?tag=${tag}`,
-            remove: function () {
-                vueApp.removeRecord(this.id_record)
+            async remove() {
+                await vueApp.removeRecord(this.id_record);
             },
-            save: function () {
+            async save() {
                 this.record = Object.assign({}, this.form);
                 this.record.content = Object.assign({}, this.form.content);
-                DB.getType(this.record.type).then(type => {
-                    return type.fields.search.map(field =>
-                        this.record.content[field].split(/\s/).filter(x => x[0] == "#")
-                        .map(x => x.slice(1)).filter(x => x)
-                    ).flat();
-                }).then(tags =>
-                    Promise.all(tags.map(DB.pullTag))
-                    .then(tags => tags.map(x => x.name))
-                    .then(() => this.record.tags = tags)
-                    .then(() => DB.putRecord(this.record))
-                    .then(() => vueApp.removeUnusedTags())
-                );
+                tags = this.type.fields.search.map(field => this.record.content[field].split(/\s/)).flat();
+                tags = tags.filter(x => x[0] == "#").map(x => x.slice(1)).filter(x => x);
+                tags = await Promise.all(tags.map(DB.pullTag));
+                this.record.tags = tags.map(x => x.name);
+                await DB.putRecord(this.record);
+                await vueApp.removeUnusedTags();
             },
+        },
+        async created() {
+            this.record = await DB.getRecord(this.id_record);
+            this.type = b.find(x => x.uuid == this.record.type);
+            this.icon = this.type.icon;
+            this.form = Object.assign({}, record);
+            this.form.content = Object.assign({}, record.content);
         },
     })
 };
@@ -109,7 +103,7 @@ DB.getTypes().then(recordTypes => {
         _types[type.uuid] = `${type.name}-record`;
         createVueRecord(type, recordTypes);
     });
-
+    
     window.getComponent = uuid => _types[uuid];
     window.getModalComponent = uuid => _typesModal[uuid];
 })

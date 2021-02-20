@@ -27,7 +27,7 @@
               <a class="nav-link" href="{{ start_url }}/main.html">Главная страница</a>
             </li>
             <li class="nav-item" v-for="i in types" :key="i.uuid">
-              <a class="nav-link" v-if="i.page" :href="'{{ start_url }}/page.html?page=page&type=' + i.uuid" v-text="i.page.title"></a>
+              <a class="nav-link" v-if="i.page" :href="'{{ start_url }}/page.html?type=' + i.uuid" v-text="i.page.title"></a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{{ start_url }}/other.html">Другое</a>

@@ -1,7 +1,6 @@
 const SLICE = 10;
 
 const vueApp = new Vue({
-    el: "#app",
     data: {
         types: [],
         records: null,
@@ -17,7 +16,7 @@ const vueApp = new Vue({
     },
     methods: {
         async addRecord(data) {
-            record  = await DB.addRecord(data);
+            record = await DB.addRecord(data);
             this.records.unshift(record);
             await this.update();
         },
@@ -50,3 +49,12 @@ const vueApp = new Vue({
         this.update();
     }
 });
+
+DB.getType(options.type).then(type => {
+    if (type && type.page) {
+        document.querySelector("#page").innerHTML = type.page.template;
+    } else {
+        document.querySelector("#page .load").hidden = true;
+        document.querySelector("#page .errors").hidden = false;
+    };
+}).then(() => vueApp.$mount("#app"));
