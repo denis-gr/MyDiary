@@ -40,7 +40,7 @@ const vueApp = new Vue({
             await DB.removeUnusedTags(tags);
             await this.update();
         },
-        getComponent: id => getComponent(id),
+        getRecordTypeComponent: id => getComponent(id),
         getRecordDate: record => moment(record.date + "T" + record.time).format("LLL"),
         getFormattedDate: date => moment(date).format("LL"),
         getDateUrl: date => `{{ start_url }}/date.html?date=${moment(date).format("YYYY-MM-DD")}`,

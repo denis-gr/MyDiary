@@ -6,8 +6,8 @@
         <p class="error-text text-center">У ваc нет записей.</p>
     </div>            
     <ul class="row records-list" v-else>
-        <li class="records-list-item col-sm-4" v-for="i in records" :key="i.id">
-            <component :is="getComponent(i.type)" :id_record="i.id"></component>
+        <li class="records-list-item col-sm-4" v-for="i in records">
+            <component :is="getRecordTypeComponent(i.type)" :id_record="i.id"></component>
         </li>
     </ul>
 </div>

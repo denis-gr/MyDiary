@@ -41,7 +41,7 @@ TYPES = [
         "page":{
             "name": "ideas-page",
             "title": "Идеи",
-            "template": "<div class=\"records\"><header class=\"header\"><div class=\"title h3\">Мои идеи</div></header><ul class=\"row records-list\" v-if=\"records.length\"><li class=\"records-list-item col-sm-4\" v-for=\"i in records\" :key=\"i.id\"><component :is=\"getComponent(i.type)\" :id_record=\"i.id\"></component></li></ul><div class=\"errors\" v-else><p class=\"error-text\">У вас, либо нет идей, либо они не загруженны.</p></div></div>"
+            "template": "<div class=\"records\"><header class=\"header\"><div class=\"title h3\">Мои идеи</div></header><ul class=\"row records-list\" v-if=\"records.length\"><li class=\"records-list-item col-sm-4\" v-for=\"i in records\" :key=\"i.id\"><component :is=\"getRecordTypeComponent(i.type)\" :id_record=\"i.id\"></component></li></ul><div class=\"errors\" v-else><p class=\"error-text\">У вас, либо нет идей, либо они не загруженны.</p></div></div>"
         },
     }, {
         "name": "task",
@@ -59,7 +59,7 @@ TYPES = [
         "page": {
             "name": "tasks-page",
             "title": "Задачи",
-            "template": `<header class="header"> <div class="title h3 text-center">Мои задачи</div> </header> <div class="records"> <div class="load" v-if="!records"> <p class="load-text text-center">Загрузка...</p> </div> <div class="errors" v-else-if="!records.length" v-cloak=""> <p class="error-text text-center">У ваc нет записей.</p> </div> <ul class="row records-list" v-else=""> <li class="records-list-item col-sm-4" v-for="i in records" :key="i.id"> <component :is="getComponent(i.type)" :id_record="i.id"></component> </li></ul> </div>`,
+            "template": `<header class="header"> <div class="title h3 text-center">Мои задачи</div> </header> <div class="records"> <div class="load" v-if="!records"> <p class="load-text text-center">Загрузка...</p> </div> <div class="errors" v-else-if="!records.length" v-cloak=""> <p class="error-text text-center">У ваc нет записей.</p> </div> <ul class="row records-list" v-else=""> <li class="records-list-item col-sm-4" v-for="i in records" :key="i.id"> <component :is="getRecordTypeComponent(i.type)" :id_record="i.id"></component> </li></ul> </div>`,
         },
     },
 ];
