@@ -1,8 +1,6 @@
 {% extends '_base.html' %}
 
 {% block content %}
-{% include 'components/_components.html' %}
-{% include 'components/_default_record_types.html' %}
 <div class="min-vh-100 py-3" id="app">
     <modal title="Удалить все данные" id="deleteAllData" v-cloak>
         Вы уверенны, что хотите удалить все данные и востановить типы по умолчанию?
@@ -84,12 +82,16 @@
     <div class="container mb-5"> 
         <h3>Другое</h3>
         <div>
-            <a class="link" href="">Первая главная страница</a>
-            <a class="link" href="">О сайте</a>
-            <a class="link" href="">Документация</a>
+            <a class="link" href="{{ start_url }}/?redirect=off">Первая главная страница</a>
+            <a class="link" href="{{ start_url }}/development.html">Документация</a>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+{% include 'components/_components.html' %}
+{% include 'components/_default_record_types.html' %}
 <script src="https://cdn.jsdelivr.net/npm/idb@6/build/iife/index-min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js" defer></script>
 <script src="{{ start_url }}/static/js/db.js" defer></script>
