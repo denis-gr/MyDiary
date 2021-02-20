@@ -142,9 +142,14 @@ async function removeUnusedTags() {
     tags = await db.getAll("tags");
     tags = tags.map(tag => tag.name);
     records = await db.getAll("records");
-    tags = records.reduce((a, i) => a.filter(tag => i.tags.indexOf(tag) < 0), tags);
-    promises = tags.map(tag => db.getKeyFromIndex("tags", "name", tag).then(i => db.delete("tags", i)))
-    await promises;
+    records.forEach(record => {
+        if (tags.length) {
+            tags = tags.filter(tag => record.tags.indexOf(tag) < 0);
+        };
+    });
+    promises = tags.map(tag => db.getKeyFromIndex("tags", "name", tag));
+    promises = promises.map(promise => promise.then(i => db.delete("tags", i)));
+    await Promise.all(promises);
 };
 
 const DB = {
