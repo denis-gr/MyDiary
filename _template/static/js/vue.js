@@ -1,45 +1,7 @@
 const SLICE = 10;
-
-
-
-Vue.component("modal", {
-    props: ["title"],
-    template: "#modal-template",
-});
-
-Vue.component('autosize-textarea', {
-    props: ["value"],
-    template: `<pre class="autosize-textarea"contenteditable="true"v-text="value" @blur="$emit('input', $event.target.innerText)"></pre>`,
-});
-
-
-Vue.component("calendar", {
-    props: ["id", "first_date"],
-    template: "#calendar-template",
-    data() {
-        date = new Date(Date.parse(this.first_date) || new Date);
-        return {
-            year: date.getFullYear(),
-            month: date.getMonth() + 1,
-            days: getDays(date.getFullYear(), date.getMonth() + 1),
-        }
-    },
-    methods: {
-        getClassesDay(date) {
-            classes = ["day"];
-            classes.push(date.getMonth() + 1 == this.month ? 'active' : 'passive');
-            classes.push(moment(date).format('L') == moment(new Date()).format('L') ? 'today' : '');
-            return classes;
-        },
-        getUrlDay: (date) => `{{ start_url }}/date.html?date=${moment(date).format('YYYY-MM-DD')}`,
-        update() {
-            this.days = getDays(this.year, this.month);
-        },
-    },
-    computed: {
-        title: vm => moment(`${vm.year}${vm.month}`, "YYYYMM").format("MMMM YYYY").toUpperCase(),
-    },
-});
+const getRecordModalHTML = type => document.querySelector("#record-modal-template").innerHTML.replaceAll("{form}", type.form_template);
+const getCrearionMenuLinkTemplate = type => document.querySelector("#creation-menu-link-template").innerHTML.replaceAll("{type_name}", type.name).replaceAll("{type_icon}", type.icon).replaceAll("{type_icon}", type.icon).replaceAll("{type_title}", type.title);
+const getRecordHTML = type => document.querySelector("#record-template").innerHTML.replaceAll("{type_name}", type.name).replaceAll("{type_icon}", type.icon).replaceAll("{type_template}", type.template);
 
 function getDays(year, month) {
     const date = (year && month) ? new Date(year, month - 1, 1) : new Date();
@@ -71,22 +33,47 @@ function getDays(year, month) {
     return days;
 };
 
-
-
-const getRecordModalHTML = type => document.querySelector("#record-modal-template").innerHTML.replaceAll("{form}", type.form_template);
-const getCrearionMenuLinkTemplate = type => document.querySelector("#creation-menu-link-template").innerHTML.replaceAll("{type_name}", type.name).replaceAll("{type_icon}", type.icon).replaceAll("{type_icon}", type.icon).replaceAll("{type_title}", type.title);
-const getRecordHTML = type => document.querySelector("#record-template").innerHTML.replaceAll("{type_name}", type.name).replaceAll("{type_icon}", type.icon).replaceAll("{type_template}", type.template);
-
 function toggleCreationMenu() {
     document.querySelector("#creation-menu").classList.toggle("show")
 };
 
-function createVueModalRecord(a) {
-    Vue.component(`${a.name}-modal-record`, {
-        props: ["record"],
-        template: getRecordModalHTML(a),
-    });
-};
+Vue.component("modal", {
+    props: ["title"],
+    template: "#modal-template",
+});
+
+Vue.component('autosize-textarea', {
+    props: ["value"],
+    template: `<pre class="autosize-textarea"contenteditable="true"v-text="value" @blur="$emit('input', $event.target.innerText)"></pre>`,
+});
+
+Vue.component("calendar", {
+    props: ["id", "first_date"],
+    template: "#calendar-template",
+    data() {
+        date = new Date(Date.parse(this.first_date) || new Date);
+        return {
+            year: date.getFullYear(),
+            month: date.getMonth() + 1,
+            days: getDays(date.getFullYear(), date.getMonth() + 1),
+        }
+    },
+    methods: {
+        getClassesDay(date) {
+            classes = ["day"];
+            classes.push(date.getMonth() + 1 == this.month ? 'active' : 'passive');
+            classes.push(moment(date).format('L') == moment(new Date()).format('L') ? 'today' : '');
+            return classes;
+        },
+        getUrlDay: (date) => `{{ start_url }}/date.html?date=${moment(date).format('YYYY-MM-DD')}`,
+        update() {
+            this.days = getDays(this.year, this.month);
+        },
+    },
+    computed: {
+        title: vm => moment(`${vm.year}${vm.month}`, "YYYYMM").format("MMMM YYYY").toUpperCase(),
+    },
+});
 
 Vue.component("record-type-creator", {
     template: "#creation-element-template",
@@ -123,13 +110,20 @@ Vue.component("record-type-creator", {
     },
 });
 
-function createVueRecord(a, b) {
+function createVueModalRecord(a) {
+    Vue.component(`${a.name}-modal-record`, {
+        props: ["record"],
+        template: getRecordModalHTML(a),
+    });
+};
+
+function createVueRecord(a) {
     Vue.component(`${a.name}-record`, {
         props: ["id_record"],
         template: getRecordHTML(a),
         data: () => ({
-            type: null,
-            icon: null,
+            type: a,
+            icon: a.icon,
             record: {
                 content: {}
             },
@@ -156,9 +150,7 @@ function createVueRecord(a, b) {
             },
         },
         async created() {
-            this.record = Object.assign({}, await DB.getRecord(this.id_record));
-            this.type = Object.assign({}, b.find(x => x.uuid == this.record.type));
-            this.icon = this.type.icon;
+            this.record = await DB.getRecord(this.id_record);
             this.form = Object.assign({}, this.record);
             this.form.content = Object.assign({}, this.record.content);
         },
@@ -176,7 +168,7 @@ DB.getTypes().then(recordTypes => {
         createVueModalRecord(type);
 
         _types[type.uuid] = `${type.name}-record`;
-        createVueRecord(type, recordTypes);
+        createVueRecord(type);
     });
 
     window.getComponent = uuid => _types[uuid];
