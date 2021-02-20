@@ -46,7 +46,7 @@ Vue.component("record-type-creator", {
     created() {
         this.record = this.getRecord();
     },
-})
+});
 
 function createVueRecord(a, b) {
     Vue.component(`${a.name}-record`, {
