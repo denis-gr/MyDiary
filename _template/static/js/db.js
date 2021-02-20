@@ -87,50 +87,64 @@ dbPromise.then(db => {
     };
 });
 
-function getRecords({
+async function getRecords({
     type,
     date,
     tag,
     q,
     slice
 }) {
-    return dbPromise
-        .then(db => date ? db.getAllFromIndex("records", "date", date) : db.getAll("records"))
-        .then(records =>
-            dbPromise.then(db => db.getAll("recordTypes")).then(types => {
-                records = type ? records.filter(d => d.type == type) : records;
-                records = tag ? records.filter(d => d.tags.indexOf(tag) >= 0) : records;
-                if (q) {
-                    q = q.toLowerCase();
-                    records = records.filter(record => {
-                        fields = types.find(type => type.uuid == record.type).fields.search;
-                        for (i in fields) {
-                            if (record.content[fields[i]].toLowerCase().includes(q)) {
-                                return true;
-                            };
-                            return false;
-                        };
-                    });
+    db = await dbPromise;
+    types = await db.getAll("recordTypes");
+    records = await (date ? db.getAllFromIndex("records", "date", date) : db.getAll("records"));
+    records = type ? records.filter(d => d.type == type) : records;
+    records = tag ? records.filter(d => d.tags.indexOf(tag) >= 0) : records;
+    if (q) {
+        q = q.toLowerCase();
+        records = records.filter(record => {
+            fields = types.find(type => type.uuid == record.type).fields.search;
+            for (i in fields) {
+                if (record.content[fields[i]].toLowerCase().includes(q)) {
+                    return true;
                 };
-                records = !slice ? records : (slice > 0 ? records.slice(0, slice) : records.slice(slice));
-                return records;
-            })
-        )
+                return false;
+            };
+        });
+    };
+    records = !slice ? records : (slice > 0 ? records.slice(0, slice) : records.slice(slice));
+    return records;
 };
 
-function removeUnusedTags() {
-    return dbPromise
-        .then(db => db.getAll("tags"))
-        .then(tags => tags.map(tag => tag.name))
-        .then(tags =>
-            dbPromise.then(db => db.getAll("records"))
-            .then(records =>
-                records.reduce((a, i) => a.filter(tag => i.tags.indexOf(tag) < 0), tags)
-        ))
-        .then(tags => Promise.all(
-            tags.map(tag => dbPromise.then(db => db.getKeyFromIndex("tags", "name", tag))
-                .then(index => dbPromise.then(db => db.delete("tags", index))))
-        ));
+/*async function removeUnusedTags() {
+    db = await dbPromise;
+    tags = await db.getAll("tags");
+    tags = tags.map(tag => tag.name);
+    records = await db.getAll("records");
+    records.reduce((a, i) => a.filter(tag => i.tags.indexOf(tag) < 0), tags);
+    promises = tags.map(
+        tag => db.getKeyFromIndex("tags", "name", tag).then(i => db.delete("tags", i)));
+    await Promise.all(promises);
+};*/
+/*async function removeUnusedTags() {
+    db = await dbPromise;
+    tags = await db.getAll("tags");
+    tags = tags.map(tag => tag.name);
+    records = db.getAll("records");
+    records = records.reduce((a, i) => a.filter(tag => i.tags.indexOf(tag) < 0), tags);
+    await Promise.all(
+        tags.map(tag => db.getKeyFromIndex("tags", "name", tag).then(iZ => db.delete("tags", i)))
+    );
+};*/
+
+
+async function removeUnusedTags() {
+    db = await dbPromise;
+    tags = await db.getAll("tags");
+    tags = tags.map(tag => tag.name);
+    records = await db.getAll("records");
+    tags = records.reduce((a, i) => a.filter(tag => i.tags.indexOf(tag) < 0), tags);
+    promises = tags.map(tag => db.getKeyFromIndex("tags", "name", tag).then(i => db.delete("tags", i)))
+    await promises;
 };
 
 const DB = {
@@ -153,9 +167,9 @@ const DB = {
                     data = Object.assign({}, data);
                     data.id = type.id;
                 };
-                return dbPromise.then(db =>db.put("recordTypes", data))
+                return dbPromise.then(db => db.put("recordTypes", data))
                     .then(id => dbPromise.then(db => db.get("recordTypes", id)));
-            });      
+            });
     },
     delType(uuid) {
         return dbPromise.then(db =>
