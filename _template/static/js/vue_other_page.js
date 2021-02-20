@@ -174,13 +174,7 @@ vueApp = new Vue({
         countTags: 0,
         countRecords: 0,
         countTypes: 0,
-        types: [],
-        is_export_bnt_disabled: false,
-        is_import_bnt_disabled: false,
-        is_delete_bnt_disabled: false,
-        is_convector_bnt_disabled: false,
-        fileOutputUrl: "",
-        fileExportUrl: "",     
+        types: [],    
         fromType: "universum",
         toType: "mydiary",
         convectorsTypes: {
@@ -194,15 +188,6 @@ vueApp = new Vue({
             this.countRecords = await DB.countRecords();
             this.countTypes = await DB.countTypes();
             this.types = await DB.getTypes();
-        },
-        async load_type() {
-            fileHandles = await showOpenFilePicker();
-            fileHandle = await fileHandles[0];
-            file = await fileHandle.getFile();
-            text = await file.text();
-            data = JSON.parse(text);
-            await DB.addType(data);
-            await this.update();
         },
         async remove(type) {
             await DB.delType(type.uuid);
@@ -223,7 +208,6 @@ vueApp = new Vue({
             link.click();           
         },
         async importData() {
-            this.is_import_bnt_disabled = true;
             var file = document.querySelector("#formImportFile").files[0];
             var text = await file.text();
             data = JSON.parse(text);
@@ -232,16 +216,13 @@ vueApp = new Vue({
             await Promise.all(data.records.map(DB.addRecord));
             await Promise.all(data.tags.map(DB.pullTag));
             this.update();
-            this.is_import_bnt_disabled = false;
         },
         async deleteAll() {
-            this.is_delete_bnt_disabled = true;
             await DB.delTypes();
             await DB.delTags();
             await DB.delRecords();
             await dbPromise.then(createDefaultTypes);
             await this.update();
-            this.is_delete_bnt_disabled = false;
         },
         async addRecordType() {
             var file = document.querySelector("#typeFile").files[0];
