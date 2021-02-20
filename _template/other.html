@@ -92,10 +92,11 @@
 {% block extra_js %}
 {% include 'components/_components.html' %}
 {% include 'components/_default_record_types.html' %}
-<script src="https://cdn.jsdelivr.net/npm/moment@2/moment.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/combine/npm/moment@2,npm/moment@2/locale/ru.min.js,npm/idb@6/build/iife/index-min.min.js,npm/vue@2"></script>
+<!--script src="https://cdn.jsdelivr.net/npm/moment@2/moment.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/moment@2/locale/ru.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/idb@6/build/iife/index-min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js" defer></script-->
 <script src="{{ start_url }}/static/js/db.js" defer></script>
 <script src="{{ start_url }}/static/js/main_components.js" defer></script>
 <script src="{{ start_url }}/static/js/base.js" defer></script>
