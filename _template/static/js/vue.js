@@ -184,7 +184,7 @@ function getDays(year, month) {
         date2.setDate(date2.getDate() + 7 - date2.getDay());
     };
 
-    let days = new Array();
+    let days = [];
     let i = 0;
     while (date1 <= date2) {
         if (Math.floor(i % 7) == 0);
@@ -292,7 +292,7 @@ function createVueRecord(a) {
                 await vueApp.removeRecord(this);
             },
             async save() {
-                this.record = Object.assign({}, this.form);
+                this.record = { ...this.form };
                 tags = this.type.fields.search.map(field => this.record[field].split(/\s/)).flat();
                 tags = tags.filter(x => x[0] == "#").map(x => x.slice(1)).filter(x => x);
                 tags = await Promise.all(tags.map(DB.pullTag));
@@ -303,7 +303,7 @@ function createVueRecord(a) {
         },
         async created() {
             this.record = await DB.getRecord(this.id_record);
-            this.form = Object.assign({}, this.record);
+            this.form = { ...this.record };
         },
     })
 };
@@ -322,7 +322,6 @@ DB.getTypes().then(recordTypes => {
     window.getComponent = uuid => _types[uuid];
     window.getModalComponent = uuid => _typesModal[uuid];
 });
-
 
 const vueApp = new Vue({
     data: {
@@ -435,7 +434,6 @@ const vueApp = new Vue({
         this.update();
     }
 });
-
 
 if (document.querySelector("#page")) {
     DB.getType(options.type).then(type => {
