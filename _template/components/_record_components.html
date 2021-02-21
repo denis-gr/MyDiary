@@ -6,21 +6,15 @@
             </label>
             <div class="row">
                 <div class="col">
-                    <input class="form-control" type="date" v-model="record.date" placeholder="Date">
+                    <input class="form-control" type="date" v-model="record.$date" placeholder="Date">
                 </div>
                 <div class="col">
-                    <input class="form-control" type="time" v-model="record.time" placeholder="Time">
+                    <input class="form-control" type="time" v-model="record.$time" placeholder="Time">
                 </div>
             </div>
         </div>
         {form}        
     </div>
-</template>
-
-<template id="creation-menu-link-template">
-    <button class="btn btn-outline-secondary link" type="button" data-bs-toggle="modal" data-bs-target="#add-{type_name}">
-        <i class="bi-{type_icon} icon" title="Создать {type_title}"></i>
-    </button>
 </template>
 
 <template id="creation-element-template">
@@ -55,7 +49,7 @@
             </div>
             <div class="bottom">
                 <a class="date" v-text="datetime(record)" :href="url_date(record)"></a>
-                <a class="tag" v-for="tag in record.tags" v-text="'#'+tag" :href="url_tag(tag)"></a>
+                <a class="tag" v-for="tag in record.$tags" v-text="'#'+tag" :href="url_tag(tag)"></a>
             </div>
         </div>
     </div>

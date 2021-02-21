@@ -14,15 +14,15 @@
         <table class="table">
             <tr>
                 <td>Количество типов записей: </td>
-                <td v-text="countTypes"></td>
+                <td v-text="(types || []).length"></td>
             </tr>
             <tr>
                 <td>Количество тегов: </td>
-                <td v-text="countTags"></td>
+                <td v-text="(tags || []).length"></td>
             </tr>
             <tr>
                 <td>Количество записей: </td>
-                <td v-text="countRecords"></td>
+                <td v-text="(records || []).length"></td>
             </tr>
         </table>
     </div>
@@ -35,7 +35,7 @@
                     <span class="h5" v-text="type.title"></span>
                 </header>
                 <div class="col" v-text="type.description"></div>
-                <button class="btn btn-primary" type="button" @click="remove(type)">Удалить</button>
+                <button class="btn btn-primary" type="button" @click="removeType(type)">Удалить</button>
             </div>
         </div>
         <div v-else>У вас либо нет типов записей, либо они не загруженны.</div>
@@ -61,16 +61,16 @@
             <div class="mb-2 me-1 row">
                 <label class="col-auto col-form-label">Из: </label>
                 <div class="col-auto">
-                    <select class="form-select" v-model="fromType">
-                        <option v-for="(val, key) in convectorsTypes" :key="key" :value="key" v-text="val"></option>
+                    <select class="form-select" v-model="convector.fromType">
+                        <option v-for="(val, key) in convector.convectorsTypes" :key="key" :value="key" v-text="val"></option>
                     </select>
                 </div>
             </div>
             <div class="mb-3 me-2 row">
                 <label class="col-auto col-form-label">В: </label>
                 <div class="col-auto">
-                    <select class="form-select" v-model="toType">
-                        <option v-for="(val, key) in convectorsTypes" :key="key" :value="key" v-text="val"></option>
+                    <select class="form-select" v-model="convector.toType">
+                        <option v-for="(val, key) in convector.convectorsTypes" :key="key" :value="key" v-text="val"></option>
                     </select>
                 </div>
             </div>
@@ -91,13 +91,13 @@
 
 {% block extra_js %}
 {% include 'components/_components.html' %}
+{% include 'components/_record_components.html' %}
 {% include 'components/_default_record_types.html' %}
 <script src="https://cdn.jsdelivr.net/npm/moment@2/moment.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/moment@2/locale/ru.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/idb@6/build/iife/index-min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js" defer></script>
 <script src="{{ start_url }}/static/js/db.js" defer></script>
-<script src="{{ start_url }}/static/js/main_components.js" defer></script>
 <script src="{{ start_url }}/static/js/base.js" defer></script>
-<script src="{{ start_url }}/static/js/vue_other_page.js" defer></script>
+<script src="{{ start_url }}/static/js/vue.js" defer></script>
 {% endblock %}

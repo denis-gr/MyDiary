@@ -1,5 +1,8 @@
 <div class="creation-menu" id="creation-menu">
-    <div class="creation-menu-inner btn-group-vertical" id="creation-menu-inner">
+    <div class="creation-menu-inner btn-group-vertical">
+        <button class="btn btn-outline-secondary link" type="button" data-bs-toggle="modal" v-for="i in types" :data-bs-target="'#add-' + i.name">
+            <i :class="'bi-' + i.icon + ' icon'" :title="i.title"></i>
+        </button>
         <button class="btn btn-outline-secondary link" type="button" onclick="toggleCreationMenu()">
             <i class="bi-x icon" title="Закрыть"></i>
         </button>
@@ -8,4 +11,4 @@
         <i class="bi-plus icon" title="Открыть меню создния записей"></i>
     </button>
 </div>
-<record-type-creator :type="i" v-for="i in types"></record-type-creator>
+<record-type-creator :type="i" v-for="i in types" :key="i.uuid"></record-type-creator>

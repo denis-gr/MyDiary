@@ -70,9 +70,9 @@ const dbPromise = idb.openDB(nameDB, versionDB, {
             autoIncrement: true
         }).createIndex('name', 'name');
         db.createObjectStore('records', {
-            keyPath: 'id',
+            keyPath: '$id',
             autoIncrement: true
-        }).createIndex('date', 'date');
+        }).createIndex('date', '$date');
         db.createObjectStore('recordTypes', {
             keyPath: 'id',
             autoIncrement: true
@@ -97,14 +97,14 @@ async function getRecords({
     db = await dbPromise;
     types = await db.getAll("recordTypes");
     records = await (date ? db.getAllFromIndex("records", "date", date) : db.getAll("records"));
-    records = type ? records.filter(d => d.type == type) : records;
-    records = tag ? records.filter(d => d.tags.indexOf(tag) >= 0) : records;
+    records = type ? records.filter(d => d.$type == type) : records;
+    records = tag ? records.filter(d => d.$tags.indexOf(tag) >= 0) : records;
     if (q) {
         q = q.toLowerCase();
         records = records.filter(record => {
-            fields = types.find(type => type.uuid == record.type).fields.search;
+            fields = types.find(type => type.uuid == record.$type).fields.search;
             for (i in fields) {
-                if (record.content[fields[i]].toLowerCase().includes(q)) {
+                if (record[fields[i]].toLowerCase().includes(q)) {
                     return true;
                 };
                 return false;
@@ -124,7 +124,7 @@ async function removeUnusedTags(tags) {
     records = await db.getAll("records");
     records.forEach(record => {
         if (tags.length) {
-            tags = tags.filter(tag => record.tags.indexOf(tag) < 0);
+            tags = tags.filter(tag => record.$tags.indexOf(tag) < 0);
         };
     });
     promises = tags.map(tag => db.getKeyFromIndex("tags", "name", tag));
@@ -211,12 +211,12 @@ const DB = {
     },
     addRecord(data) {
         data = Object.assign({}, data);
-        data.created = data.changed = new Date().getTime();
+        data.$created = data.$changed = new Date().getTime();
         return dbPromise.then(db => db.add("records", data)).then(id => dbPromise.then(db => db.get("records", id)));
     },
     putRecord(data) {
         data = Object.assign({}, data);
-        data.changed = new Date().getTime();
+        data.$changed = new Date().getTime();
         return dbPromise.then(db => db.put("records", data)).then(id => dbPromise.then(db => db.get("records", id)));
     },
     delRecord(id) {

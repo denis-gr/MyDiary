@@ -1,6 +1,170 @@
 const SLICE = 10;
+
+function GetUUID4() {
+    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c=>(
+        c^crypto.getRandomValues(new Uint8Array(1))[0]&15 >> c/4).toString(16));
+};
+
+function getTags(...texts) {
+    text = texts.join(" ");
+    words = text.split(/\s/g);
+    tags = words.filter(x => (x[0] == "#") && (x.length > 1));
+    tags = tags.map(x => x.slice(1));
+    return [...new Set(tags)];
+};
+
+TYPES = [
+    {
+        "name": "note",
+        "title": "Заметка",
+        "uuid": "abb116ac-697a-11eb-ac85-c0e434b07c91",
+        "description": "Одно поле для текста",
+        "icon": "pencil-fill",
+        "template": "<div class=\"text-to-borders\"v-text='record.content.text'></div>",
+        "form_template": "<div class='form-field'><label class='form-label'>Текст</label><textarea class=\"form-control\"v-model='record.text'></textarea></div>",
+        "fields": {
+            "tags": ["text"],
+            "search":["text"],
+            "require":["text"]
+        },
+    }, {
+        "name": "idea",
+        "title": "Идея",
+        "uuid": "0f3e74c0-beca-4d91-8b37-0d8af574afd7",
+        "description": "Одно поле для текста, есть страница, со списком идей.",
+        "icon": "chat-fill",
+        "template": "<div class=\"text-to-borders\"v-text='record.text'></div>",
+        "form_template": "<div class='form-field'><label class='form-label'>Что за идея?</label><textarea class=\"form-control\"v-model='record.text'></textarea></div>",
+        "fields": {
+            "tags": ["text"],
+            "search":["text"],
+            "require":["text"]
+        },
+        "page":{
+            "name": "ideas-page",
+            "title": "Идеи",
+            "template": "<div class=\"records\"><header class=\"header\"><div class=\"title h3\">Мои идеи</div></header><ul class=\"row records-list\" v-if=\"records.length\"><li class=\"records-list-item col-sm-4\" v-for=\"i in records\" :key=\"i.id\"><component :is=\"getRecordTypeComponent(i.$type)\" :id_record=\"i.$id\"></component></li></ul><div class=\"errors\" v-else><p class=\"error-text\">У вас, либо нет идей, либо они не загруженны.</p></div></div>"
+        },
+    }, {
+        "name": "task",
+        "title": "Задача",
+        "uuid": "ee5a8960-6e2b-11eb-b6df-c0e434b07c91",
+        "description": "Одно поле для описания задачи, одно поле для обозначения завершенности и заключения, есть страница, со списком задач.",
+        "icon": "calendar-event-fill",
+        "template": `<div class="text-to-borders task" v-text="record.text" :class="{overdue: new Date(record.$date + ' ' + record.$time) < new Date(), done: record.isDone}"></div>`,
+        "form_template": `<div class="form-field"> <label class="form-label">Что за идея?</label> <autosize-textarea class="form-control" v-model="record.text"></autosize-textarea> </div> <div class="form-check"> <input class="form-check-input" type="checkbox" v-model="record.isDone"> <label class="form-check-label"> Задача выполнена. </label> </div> <div class="form-field" v-if="record.isDone"> <label class="form-label">Итоги</label> <autosize-textarea class="form-control" v-model="record.conclusion"></autosize-textarea> </div>`,
+        "fields": {
+            "tags": ["text", "conclusion"],
+            "search": ["text", "conclusion"],
+            "require": ["text"],
+        },
+        "page": {
+            "name": "tasks-page",
+            "title": "Задачи",
+            "template": `<header class="header"> <div class="title h3 text-center">Мои задачи</div> </header> <div class="records"> <div class="load" v-if="!records"> <p class="load-text text-center">Загрузка...</p> </div> <div class="errors" v-else-if="!records.length" v-cloak=""> <p class="error-text text-center">У ваc нет записей.</p> </div> <ul class="row records-list" v-else=""> <li class="records-list-item col-sm-4" v-for="i in records" :key="i.id"> <component :is="getRecordTypeComponent(i.$type)" :id_record="i.id"></component> </li></ul> </div>`,
+        },
+    },
+];
+
+CONVECTORS = {
+    universum: {
+        universum: text => text,
+        mydiary: text => {
+            CONVESTORS = {
+                "3": {
+                    "ru.schustovd.diary.api.CommentMark": data => ({
+                        "$type": "abb116ac-697a-11eb-ac85-c0e434b07c91",
+                        "$time": data["time"],
+                        "$date": data["date"],
+                        "$tags": getTags(data["comment"]),
+                        "text": data["comment"],
+                    }),
+                    "ru.schustovd.diary.api.IdeaMark": data => ({
+                        "$type": "cb363470-6e2b-11eb-91ec-c0e434b07c91",
+                        "$time": data["time"],
+                        "$date": data["date"],
+                        "$tags": getTags(data["comment"]),
+                        "text": data["comment"],
+                    }),
+                    "ru.schustovd.diary.api.TaskMark": data => ({
+                        "$type": "ee5a8960-6e2b-11eb-b6df-c0e434b07c91",
+                        "$time": data["time"],
+                        "$date": data["date"],
+                        "$tags": getTags(data["comment"], data["conclusion"]),
+                        "text": data["comment"],
+                        "isDone": data["done"],
+                        "conclusion": data["conclusion"],
+                    }),
+                },
+            };
+            data = JSON.parse(text);
+            version = data["version"];
+            errorTypes = new Set();
+            newData = { records: [], tags: new Set(), types: TYPES};
+            data.marks.forEach(i => {
+                convector = CONVESTORS[version][i.type];
+                if (convector) {
+                    record = convector(i);
+                    record.$tags.forEach(tag => newData.tags.add(tag));  
+                    newData.records.push(record);            
+                } else {
+                    errorTypes.add(i.type);
+                };
+            });
+            newData.tags = [...newData.tags];
+            if (errorTypes) {
+                console.log("Error Types", errorTypes);
+            };
+            return JSON.stringify(newData);
+        },
+    },
+    mydiary: {
+        mydiary: text => text,
+        universum: text => {
+            CONVESTORS = {
+                "abb116ac-697a-11eb-ac85-c0e434b07c91": data => ({
+                    "comment": data["text"],
+                    "id": GetUUID4(),
+                    "date": data["$date"],
+                    "time": data["$time"],
+                    "created": data["$created"],
+                    "changed": data["$changed"],
+                    "type": "ru.schustovd.diary.api.CommentMark"
+                }),
+                "cb363470-6e2b-11eb-91ec-c0e434b07c91": data => ({
+                    "comment": data["text"],
+                    "id": GetUUID4(),
+                    "date": data["$date"],
+                    "time": data["$time"],
+                    "created": data["$created"],
+                    "changed": data["$changed"],
+                    "type": "ru.schustovd.diary.api.CommentMark"
+                }),
+                "838d858c-7a4f-4396-b3ba-f76855697e78": data => ({
+                    "comment": data["text"],
+                    "done": data["isDone"],
+                    "conclusion": data["conclusion"],
+                    "id": GetUUID4(),
+                    "date": data["$date"],
+                    "time": data["$time"],
+                    "created": data["$created"],
+                    "changed": data["$changed"],
+                    "type": "ru.schustovd.diary.api.CommentMark"
+                }),
+            };
+            data = JSON.parse(text);
+            newData = { version: "3", marks: [], recurrences: []};
+            data.records.forEach(i => {
+                convector = CONVESTORS[i.$type];
+                record = convector(i);
+                newData.marks.push(record);
+            });
+            return JSON.stringify(newData);
+        },
+    },
+};
+
 const getRecordModalHTML = type => document.querySelector("#record-modal-template").innerHTML.replaceAll("{form}", type.form_template);
-const getCrearionMenuLinkTemplate = type => document.querySelector("#creation-menu-link-template").innerHTML.replaceAll("{type_name}", type.name).replaceAll("{type_icon}", type.icon).replaceAll("{type_icon}", type.icon).replaceAll("{type_title}", type.title);
 const getRecordHTML = type => document.querySelector("#record-template").innerHTML.replaceAll("{type_name}", type.name).replaceAll("{type_icon}", type.icon).replaceAll("{type_template}", type.template);
 
 function getDays(year, month) {
@@ -88,20 +252,19 @@ Vue.component("record-type-creator", {
     methods: {
         getModalComponent: uuid => window.getModalComponent(uuid),
         async add(data) {
-            tags = this.type.fields.search.map(field => data.content[field].split(/\s/)).flat();
+            tags = this.type.fields.search.map(field => data[field].split(/\s/)).flat();
             tags = tags.filter(x => x[0] == "#").map(x => x.slice(1)).filter(x => x);
             tags = await Promise.all(tags.map(DB.pullTag));
-            data.tags = tags.map(x => x.name);
+            data.$tags = tags.map(x => x.name);
             await vueApp.addRecord(data);
             this.record = this.getRecord();
         },
         getRecord() {
             return {
-                type: this.type.uuid,
-                content: {},
-                tags: options.tag ? [options.tag] : [],
-                date: new Date(Date.parse(options.date) || new Date).toISOString().slice(null, 10),
-                time: moment().format("HH:mm"),
+                $type: this.type.uuid,
+                $tags: options.tag ? [options.tag] : [],
+                $date: new Date(Date.parse(options.date) || new Date).toISOString().slice(null, 10),
+                $time: moment().format("HH:mm"),
             };
         },
     },
@@ -124,27 +287,22 @@ function createVueRecord(a) {
         data: () => ({
             type: a,
             icon: a.icon,
-            record: {
-                content: {}
-            },
-            form: {
-                content: {}
-            },
+            record: {},
+            form: {},
         }),
         methods: {
-            datetime: x => moment(x.date + "T" + x.time).format("LLL"),
-            url_date: x => `{{ start_url }}/date.html?date=${moment(x.date).format("YYYY-MM-DD")}`,
+            datetime: x => moment(x.$date + "T" + x.$time).format("LLL"),
+            url_date: x => `{{ start_url }}/date.html?date=${moment(x.$date).format("YYYY-MM-DD")}`,
             url_tag: tag => `{{ start_url }}/tag.html?tag=${tag}`,
             async remove() {
                 await vueApp.removeRecord(this);
             },
             async save() {
                 this.record = Object.assign({}, this.form);
-                this.record.content = Object.assign({}, this.form.content);
-                tags = this.type.fields.search.map(field => this.record.content[field].split(/\s/)).flat();
+                tags = this.type.fields.search.map(field => this.record[field].split(/\s/)).flat();
                 tags = tags.filter(x => x[0] == "#").map(x => x.slice(1)).filter(x => x);
                 tags = await Promise.all(tags.map(DB.pullTag));
-                this.record.tags = tags.map(x => x.name);
+                this.record.$tags = tags.map(x => x.name);
                 await DB.putRecord(this.record);
                 await vueApp.removeUnusedTags();
             },
@@ -152,7 +310,6 @@ function createVueRecord(a) {
         async created() {
             this.record = await DB.getRecord(this.id_record);
             this.form = Object.assign({}, this.record);
-            this.form.content = Object.assign({}, this.record.content);
         },
     })
 };
@@ -160,9 +317,6 @@ function createVueRecord(a) {
 _typesModal = {};
 _types = {};
 DB.getTypes().then(recordTypes => {
-    temp = recordTypes.map(getCrearionMenuLinkTemplate).join("");
-    document.querySelector("#creation-menu-inner").insertAdjacentHTML('afterbegin', temp);
-
     recordTypes.forEach(type => {
         _typesModal[type.uuid] = `${type.name}-modal-record`;
         createVueModalRecord(type);
@@ -189,6 +343,14 @@ const vueApp = new Vue({
             slice: options.slice || SLICE,
         },
         today: moment().format("YYYY-MM-DD"),
+        convector: {  
+            fromType: "universum",
+            toType: "mydiary",
+            convectorsTypes: {
+                "universum": "Универсум",
+                "mydiary": "Мой дневник",
+            },
+        },
     },
     methods: {
         async addRecord(data) {
@@ -197,11 +359,11 @@ const vueApp = new Vue({
             await this.update();
         },
         async removeRecord(record) {
-            await DB.delRecord(record.id);
-            index = this.records.findIndex(data => data.id == record.id);
+            await DB.delRecord(record.id_record);
+            index = this.records.findIndex(data => data.$id == record.id_record);
             record = this.records[index];
             this.records.splice(index, 1);
-            await this.removeUnusedTags(record.tags);
+            await this.removeUnusedTags();
             await this.update();
         },
         async update() {
@@ -223,28 +385,7 @@ const vueApp = new Vue({
         getDateUrl: date => `{{ start_url }}/date.html?date=${moment(date).format("YYYY-MM-DD")}`,
         getTagUrl: tag => `{{ start_url }}/tag.html?tag=${tag.name}`,
         getRecordTypeComponent: id => getComponent(id),
-    },
-    created() {
-        this.update();
-    }
-});
 
-
-
-
-vueApp.$mount("#app")
-
-/*
-vueApp = new Vue({
-    data: {  
-        fromType: "universum",
-        toType: "mydiary",
-        convectorsTypes: {
-            "universum": "Универсум",
-            "mydiary": "Мой дневник",
-        },
-    },
-    methods: {
         async exportData() {
             data = {};
             data.types = await DB.getTypes();
@@ -267,6 +408,7 @@ vueApp = new Vue({
             data.types.forEach(i => delete i.id);
             await Promise.all(data.records.map(DB.addRecord));
             await Promise.all(data.tags.map(DB.pullTag));
+            await Promise.all(data.types.map(DB.addType));
             this.update();
         },
         async deleteAll() {
@@ -286,25 +428,30 @@ vueApp = new Vue({
         async startConvector() {
             var fromFile = document.querySelector("#formFile").files[0];
             var fromText = await fromFile.text();
-            var toText = CONVECTORS[this.fromType][this.toType](fromText);
+            var toText = CONVECTORS[this.convector.fromType][this.convector.toType](fromText);
             var blob = new Blob([toText]);
             var url = URL.createObjectURL(blob);
             var link = document.createElement('a');
             link.setAttribute('href', url);
             link.setAttribute('download', "DB.json");
             link.click();
-        }
+        },
     },
+    created() {
+        this.update();
+    }
 });
 
 
-
-DB.getType(options.type).then(type => {
-    if (type && type.page) {
-        document.querySelector("#page").innerHTML = type.page.template;
-    } else {
-        document.querySelector("#page .load").hidden = true;
-        document.querySelector("#page .errors").hidden = false;
-    };
-}).then(() => vueApp.$mount("#app"));
-*/
+if (document.querySelector("#page")) {
+    DB.getType(options.type).then(type => {
+        if (type && type.page) {
+            document.querySelector("#page").innerHTML = type.page.template;
+        } else {
+            document.querySelector("#page .load").hidden = true;
+            document.querySelector("#page .errors").hidden = false;
+        };
+    }).then(() => vueApp.$mount("#app"));    
+} else {
+    vueApp.$mount("#app");
+};

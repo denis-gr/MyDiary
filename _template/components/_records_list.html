@@ -7,7 +7,7 @@
     </div>            
     <ul class="row records-list" v-else>
         <li class="records-list-item col-sm-4" v-for="i in records">
-            <component :is="getRecordTypeComponent(i.type)" :id_record="i.id"></component>
+            <component :is="getRecordTypeComponent(i.$type)" :id_record="i.$id"></component>
         </li>
     </ul>
 </div>
