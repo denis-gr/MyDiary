@@ -2,7 +2,43 @@
 
 {% block content %}
 {% include 'components/_creation_menu.html' %}
-{% block inner %}{% endblock %}
+<main class="min-vh-100 pb-3" id="app">
+    <header class="navbar main-navbar navbar-expand-lg mb-3">
+        <div class="container">
+            <a class="navbar-brand" href="#">MyDiary</a>
+            <a class="navbar-toggler" href="#" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </a>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ start_url }}/main.html">Главная страница</a>
+                    </li>
+                    <li class="nav-item" v-for="i in types" :key="i.uuid">
+                        <a class="nav-link" v-if="i.page" :href="'{{ start_url }}/page.html?type=' + i.uuid"
+                            v-text="i.page.title"></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ start_url }}/other.html">Другое</a>
+                    </li>
+                </ul>
+                <form class="navbar-search d-flex" action="{{ start_url }}/search.html" defer>
+                    <div class="row gx-1 form-field">
+                        <div class="col">
+                            <input class="form-control " type="search" name="q" aria-label="Поиск">
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-outline-secondary" type="submit">Найти</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </header>
+    {% block inner %}
+    {% endblock %}
+</main>
 {% endblock %}
 
 {% block extra_js %}
@@ -16,4 +52,5 @@
 <script src="{{ start_url }}/static/js/db.js" defer></script>
 <script src="{{ start_url }}/static/js/base.js" defer></script>
 <script src="{{ start_url }}/static/js/vue.js" defer></script>
+{% block scripts %}{% endblock %}
 {% endblock %}

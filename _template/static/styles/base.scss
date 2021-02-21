@@ -1,58 +1,78 @@
 .navbar {
-    .navbar-brand {}
+    .navbar-brand {
+    }
 
-    .navbar-toggler {}
+    .navbar-toggler {
+    }
 
-    .navbar-toggler-icon {}
+    .navbar-toggler-icon {
+    }
 
-    .navbar-nav {}
+    .navbar-nav {
+    }
 
-    .navbar-nav .nav-item {}
+    .navbar-nav .nav-item {
+    }
 
-    .navbar-nav .nav-link {}
+    .navbar-nav .nav-link {
+    }
 
-    .navbar-search {}
+    .navbar-search {
+    }
 
     .navbar-search .form-field {
-        .form-control {}
+        .form-control {
+        }
 
-        .btn {}
+        .btn {
+        }
     }
 }
 
 .records-header {
-    .title {}
+    .title {
+    }
 
-    .btn-change-date {}
+    .btn-change-date {
+    }
 
     .search-field.form-field {
-        .form-control {}
+        .form-control {
+        }
 
-        .btn {}
+        .btn {
+        }
     }
 }
 
 .records-header .tags-menu {
-    .current-tag {}
+    .current-tag {
+    }
 
-    .tags-menu-list {}
+    .tags-menu-list {
+    }
 
-    .tags-menu-list-item {}
+    .tags-menu-list-item {
+    }
 
-    .tags-menu-list-link {}
+    .tags-menu-list-link {
+    }
 }
 
 .records {
     .records-list {
         list-style: none;
-        padding: 0;      
+        padding: 0;
     }
 
-    .records-list-item {}
+    .records-list-item {
+    }
 
-    .errors {}
+    .errors {
+    }
 
-    .error-text {}
+    .error-text {
+    }
 }
 
 .calendar {
@@ -60,17 +80,21 @@
         font-size: 1rem;
     }
 
-    .header .title {}
+    .header .title {
+    }
 
-    .header .btn-change-date {}
+    .header .btn-change-date {
+    }
 
     .day-row {
         font-size: 0;
     }
 
-    .weekday {}
+    .weekday {
+    }
 
-    .weekday, .day {
+    .weekday,
+    .day {
         display: inline-block;
         box-sizing: content-box;
         width: 1.6rem;
@@ -79,51 +103,65 @@
         padding: 0.5rem;
     }
 
-    .day {}
+    .day {
+    }
 
-    .day.active.today {}
+    .day.active.today {
+    }
 
-    .day.active.today:hover {}
+    .day.active.today:hover {
+    }
 
-    .day.active {}
+    .day.active {
+    }
 
-    .day.active:hover {}
+    .day.active:hover {
+    }
 
-    .day.passive {}
+    .day.passive {
+    }
 }
 
 .main-page-tags {
-    .header {}
+    .header {
+    }
 
-    .header .title {}
+    .header .title {
+    }
 
     .tags-list {
         list-style: none;
         padding: 0;
     }
 
-    .tags-list-item {}
+    .tags-list-item {
+    }
 
     .tags-list-link {
         word-wrap: break-word;
         font-size: 1.5rem;
     }
 
-    .errors {}
+    .errors {
+    }
 
-    .error-text {}
+    .error-text {
+    }
 }
 
 .creation-menu {
     .creation-menu-inner {
-        display: none
+        display: none;
     }
 
-    .creation-menu-inner .link {}
+    .creation-menu-inner .link {
+    }
 
-    .creation-menu-inner .icon {}
+    .creation-menu-inner .icon {
+    }
 
-    .link, .main-link {
+    .link,
+    .main-link {
         display: inline-block;
         height: 50px;
         width: 50px;
@@ -137,9 +175,11 @@
         display: none;
     }
 
-    .main-link {}
+    .main-link {
+    }
 
-    .main-link .icon {}
+    .main-link .icon {
+    }
 
     position: fixed;
     width: 50px;
@@ -155,7 +195,7 @@
         position: absolute;
         top: 0.5rem;
         height: 15px;
-        left: 0;  
+        left: 0;
     }
 
     .left.icon {
@@ -171,15 +211,19 @@
         width: 100%;
     }
 
-    .right .content {}
+    .right .content {
+    }
 
-    .right .bottom {}
+    .right .bottom {
+    }
 
-    .date, .tag {
+    .date,
+    .tag {
         margin-right: 10px;
     }
 
-    .icon {}
+    .icon {
+    }
 
     margin-bottom: 10px;
     position: relative;
@@ -187,7 +231,8 @@
 }
 
 .form-field {
-    .form-control {}
+    .form-control {
+    }
 
     .autosize-textarea {
         border: none;
@@ -202,9 +247,11 @@
         font-size: inherit;
     }
 
-    .form-label {}
+    .form-label {
+    }
 
-    .btn {}
+    .btn {
+    }
 }
 
 .text-to-borders {
@@ -217,3 +264,16 @@
 }
 
 //other.html ...
+
+.block {
+    height: 100vh;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.block .inner {
+    background-color: rgba(0, 0, 0, 0.5);
+}
