@@ -20,8 +20,8 @@ TYPES = [
         "uuid": "abb116ac-697a-11eb-ac85-c0e434b07c91",
         "description": "Одно поле для текста",
         "icon": "pencil-fill",
-        "template": "<div class=\"text-to-borders\"v-text='record.content.text'></div>",
-        "form_template": "<div class='form-field'><label class='form-label'>Текст</label><textarea class=\"form-control\"v-model='record.text'></textarea></div>",
+        "template": document.querySelector("#record-type-template").innerHTML,
+        "form_template": document.querySelector("#record-type-form-template").innerHTML,
         "fields": {
             "tags": ["text"],
             "search":["text"],
@@ -33,8 +33,8 @@ TYPES = [
         "uuid": "0f3e74c0-beca-4d91-8b37-0d8af574afd7",
         "description": "Одно поле для текста, есть страница, со списком идей.",
         "icon": "chat-fill",
-        "template": "<div class=\"text-to-borders\"v-text='record.text'></div>",
-        "form_template": "<div class='form-field'><label class='form-label'>Что за идея?</label><textarea class=\"form-control\"v-model='record.text'></textarea></div>",
+        "template": document.querySelector("#idea-type-template").innerHTML,
+        "form_template": document.querySelector("#idea-type-form-template").innerHTML,
         "fields": {
             "tags": ["text"],
             "search":["text"],
@@ -43,7 +43,7 @@ TYPES = [
         "page":{
             "name": "ideas-page",
             "title": "Идеи",
-            "template": "<div class=\"records\"><header class=\"header\"><div class=\"title h3\">Мои идеи</div></header><ul class=\"row records-list\" v-if=\"records.length\"><li class=\"records-list-item col-sm-4\" v-for=\"i in records\" :key=\"i.id\"><component :is=\"getRecordTypeComponent(i.$type)\" :id_record=\"i.$id\"></component></li></ul><div class=\"errors\" v-else><p class=\"error-text\">У вас, либо нет идей, либо они не загруженны.</p></div></div>"
+            "template": document.querySelector("#idea-type-page-template").innerHTML,
         },
     }, {
         "name": "task",
@@ -51,8 +51,8 @@ TYPES = [
         "uuid": "ee5a8960-6e2b-11eb-b6df-c0e434b07c91",
         "description": "Одно поле для описания задачи, одно поле для обозначения завершенности и заключения, есть страница, со списком задач.",
         "icon": "calendar-event-fill",
-        "template": `<div class="text-to-borders task" v-text="record.text" :class="{overdue: new Date(record.$date + ' ' + record.$time) < new Date(), done: record.isDone}"></div>`,
-        "form_template": `<div class="form-field"> <label class="form-label">Что за идея?</label> <autosize-textarea class="form-control" v-model="record.text"></autosize-textarea> </div> <div class="form-check"> <input class="form-check-input" type="checkbox" v-model="record.isDone"> <label class="form-check-label"> Задача выполнена. </label> </div> <div class="form-field" v-if="record.isDone"> <label class="form-label">Итоги</label> <autosize-textarea class="form-control" v-model="record.conclusion"></autosize-textarea> </div>`,
+        "template": document.querySelector("#task-type-template").innerHTML,
+        "form_template": document.querySelector("#task-type-form-template").innerHTML,
         "fields": {
             "tags": ["text", "conclusion"],
             "search": ["text", "conclusion"],
@@ -61,7 +61,7 @@ TYPES = [
         "page": {
             "name": "tasks-page",
             "title": "Задачи",
-            "template": `<header class="header"> <div class="title h3 text-center">Мои задачи</div> </header> <div class="records"> <div class="load" v-if="!records"> <p class="load-text text-center">Загрузка...</p> </div> <div class="errors" v-else-if="!records.length" v-cloak=""> <p class="error-text text-center">У ваc нет записей.</p> </div> <ul class="row records-list" v-else=""> <li class="records-list-item col-sm-4" v-for="i in records" :key="i.id"> <component :is="getRecordTypeComponent(i.$type)" :id_record="i.id"></component> </li></ul> </div>`,
+            "template": document.querySelector("#task-type-page-template").innerHTML,
         },
     },
 ];
@@ -242,13 +242,7 @@ Vue.component("calendar", {
 Vue.component("record-type-creator", {
     template: "#creation-element-template",
     props: ["type"],
-    data() {
-        return {
-            record: {
-                content: {},
-            },
-        }
-    },
+    data: () => ({ record: {} }),
     methods: {
         getModalComponent: uuid => window.getModalComponent(uuid),
         async add(data) {
