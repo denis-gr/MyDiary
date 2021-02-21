@@ -1,5 +1,5 @@
 <template id="record-modal-template">
-    <div>
+    <div class="form">
         <div class="form-field">
             <label class="form-label">
                 Дата и время
@@ -19,7 +19,7 @@
 
 <template id="creation-element-template">
     <modal :title="type.title" :id="'add-' + type.name">
-        <component :is="type.name + '-modal-record'" :record="record">
+        <component :is="getModalComponent(type.uuid)" :record="record">
         </component>
         <template v-slot:footer>
             <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="add(record)">
@@ -32,7 +32,7 @@
 <template id="record-template">
     <div class="record-preview">
         <modal title="Изменить запись" :id="'editRecord'+id_record">
-            <component is="{type_name}-modal-record" :record="form"></component>
+            <component :is="getModalComponent(type.uuid)" :record="form"></component>
             <template v-slot:footer>
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="remove()">
                     Удалить
@@ -42,7 +42,7 @@
                 </button>
             </template>
         </modal>
-        <i class="bi-{type_icon} icon left"></i>
+        <i :class="`bi-${type.icon} icon left`"></i>
         <div class="right">
             <div class="content" data-bs-toggle="modal" :data-bs-target="'#editRecord'+id_record">
                 {type_template}

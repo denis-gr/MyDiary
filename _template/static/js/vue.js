@@ -1,70 +1,55 @@
 const SLICE = 10;
 
-function GetUUID4() {
-    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c=>(
-        c^crypto.getRandomValues(new Uint8Array(1))[0]&15 >> c/4).toString(16));
-};
-
-function getTags(...texts) {
-    text = texts.join(" ");
-    words = text.split(/\s/g);
-    tags = words.filter(x => (x[0] == "#") && (x.length > 1));
-    tags = tags.map(x => x.slice(1));
-    return [...new Set(tags)];
-};
-
-TYPES = [
-    {
-        "name": "note",
-        "title": "Заметка",
-        "uuid": "abb116ac-697a-11eb-ac85-c0e434b07c91",
-        "description": "Одно поле для текста",
-        "icon": "pencil-fill",
-        "template": document.querySelector("#record-type-template").innerHTML,
-        "form_template": document.querySelector("#record-type-form-template").innerHTML,
-        "fields": {
-            "tags": ["text"],
-            "search":["text"],
-            "require":["text"]
-        },
-    }, {
-        "name": "idea",
-        "title": "Идея",
-        "uuid": "0f3e74c0-beca-4d91-8b37-0d8af574afd7",
-        "description": "Одно поле для текста, есть страница, со списком идей.",
-        "icon": "chat-fill",
-        "template": document.querySelector("#idea-type-template").innerHTML,
-        "form_template": document.querySelector("#idea-type-form-template").innerHTML,
-        "fields": {
-            "tags": ["text"],
-            "search":["text"],
-            "require":["text"]
-        },
-        "page":{
-            "name": "ideas-page",
-            "title": "Идеи",
-            "template": document.querySelector("#idea-type-page-template").innerHTML,
-        },
-    }, {
-        "name": "task",
-        "title": "Задача",
-        "uuid": "ee5a8960-6e2b-11eb-b6df-c0e434b07c91",
-        "description": "Одно поле для описания задачи, одно поле для обозначения завершенности и заключения, есть страница, со списком задач.",
-        "icon": "calendar-event-fill",
-        "template": document.querySelector("#task-type-template").innerHTML,
-        "form_template": document.querySelector("#task-type-form-template").innerHTML,
-        "fields": {
-            "tags": ["text", "conclusion"],
-            "search": ["text", "conclusion"],
-            "require": ["text"],
-        },
-        "page": {
-            "name": "tasks-page",
-            "title": "Задачи",
-            "template": document.querySelector("#task-type-page-template").innerHTML,
-        },
+TYPES = [{
+    "name": "note",
+    "title": "Заметка",
+    "uuid": "abb116ac-697a-11eb-ac85-c0e434b07c91",
+    "description": "Одно поле для текста",
+    "icon": "pencil-fill",
+    "template": document.querySelector("#record-type-template").innerHTML,
+    "form_template": document.querySelector("#record-type-form-template").innerHTML,
+    "fields": {
+        "tags": ["text"],
+        "search": ["text"],
+        "require": ["text"]
     },
-];
+}, {
+    "name": "idea",
+    "title": "Идея",
+    "uuid": "0f3e74c0-beca-4d91-8b37-0d8af574afd7",
+    "description": "Одно поле для текста, есть страница, со списком идей.",
+    "icon": "chat-fill",
+    "template": document.querySelector("#idea-type-template").innerHTML,
+    "form_template": document.querySelector("#idea-type-form-template").innerHTML,
+    "fields": {
+        "tags": ["text"],
+        "search": ["text"],
+        "require": ["text"]
+    },
+    "page": {
+        "name": "ideas-page",
+        "title": "Идеи",
+        "template": document.querySelector("#idea-type-page-template").innerHTML,
+    },
+}, {
+    "name": "task",
+    "title": "Задача",
+    "uuid": "ee5a8960-6e2b-11eb-b6df-c0e434b07c91",
+    "description": "Одно поле для описания задачи, одно поле для обозначения завершенности и заключения, есть страница, со списком задач.",
+    "icon": "calendar-event-fill",
+    "template": document.querySelector("#task-type-template").innerHTML,
+    "form_template": document.querySelector("#task-type-form-template").innerHTML,
+    "fields": {
+        "tags": ["text", "conclusion"],
+        "search": ["text", "conclusion"],
+        "require": ["text"],
+    },
+    "page": {
+        "name": "tasks-page",
+        "title": "Задачи",
+        "template": document.querySelector("#task-type-page-template").innerHTML,
+    },
+}, ];
 
 CONVECTORS = {
     universum: {
@@ -100,13 +85,17 @@ CONVECTORS = {
             data = JSON.parse(text);
             version = data["version"];
             errorTypes = new Set();
-            newData = { records: [], tags: new Set(), types: TYPES};
+            newData = {
+                records: [],
+                tags: new Set(),
+                types: TYPES
+            };
             data.marks.forEach(i => {
                 convector = CONVESTORS[version][i.type];
                 if (convector) {
                     record = convector(i);
-                    record.$tags.forEach(tag => newData.tags.add(tag));  
-                    newData.records.push(record);            
+                    record.$tags.forEach(tag => newData.tags.add(tag));
+                    newData.records.push(record);
                 } else {
                     errorTypes.add(i.type);
                 };
@@ -153,7 +142,11 @@ CONVECTORS = {
                 }),
             };
             data = JSON.parse(text);
-            newData = { version: "3", marks: [], recurrences: []};
+            newData = {
+                version: "3",
+                marks: [],
+                recurrences: []
+            };
             data.records.forEach(i => {
                 convector = CONVESTORS[i.$type];
                 record = convector(i);
@@ -164,8 +157,21 @@ CONVECTORS = {
     },
 };
 
-const getRecordModalHTML = type => document.querySelector("#record-modal-template").innerHTML.replaceAll("{form}", type.form_template);
-const getRecordHTML = type => document.querySelector("#record-template").innerHTML.replaceAll("{type_name}", type.name).replaceAll("{type_icon}", type.icon).replaceAll("{type_template}", type.template);
+const getRecordModalHTML = type => document.querySelector("#record-modal-template").innerHTML.replace("{form}", type.form_template);
+const getRecordHTML = type => document.querySelector("#record-template").innerHTML.replace("{type_template}", type.template);
+
+function GetUUID4() {
+    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c => (
+        c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16));
+};
+
+function getTags(...texts) {
+    text = texts.join(" ");
+    words = text.split(/\s/g);
+    tags = words.filter(x => (x[0] == "#") && (x.length > 1));
+    tags = tags.map(x => x.slice(1));
+    return [...new Set(tags)];
+};
 
 function getDays(year, month) {
     const date = (year && month) ? new Date(year, month - 1, 1) : new Date();
@@ -199,6 +205,40 @@ function getDays(year, month) {
 
 function toggleCreationMenu() {
     document.querySelector("#creation-menu").classList.toggle("show")
+};
+
+BaseVueRecord = {
+    props: ["id_record"],
+    data: () => ({
+        record: {},
+        form: {},
+    }),
+    methods: {
+        getModalComponent: uuid => `modal-record-type-${uuid}`,
+        datetime: x => moment(x.$date + "T" + x.$time).format("LLL"),
+        url_date: x => `{{ start_url }}/date.html?date=${moment(x.$date).format("YYYY-MM-DD")}`,
+        url_tag: tag => `{{ start_url }}/tag.html?tag=${tag}`,
+        async remove() {
+            await vueApp.removeRecord(this);
+        },
+        async save() {
+            this.record = {
+                ...this.form
+            };
+            tags = this.type.fields.search.map(field => this.record[field].split(/\s/)).flat();
+            tags = tags.filter(x => x[0] == "#").map(x => x.slice(1)).filter(x => x);
+            tags = await Promise.all(tags.map(DB.pullTag));
+            this.record.$tags = tags.map(x => x.name);
+            await DB.putRecord(this.record);
+            await vueApp.removeUnusedTags();
+        },
+    },
+    async created() {
+        this.record = await DB.getRecord(this.id_record);
+        this.form = {
+            ...this.record
+        };
+    },
 };
 
 Vue.component("modal", {
@@ -242,9 +282,11 @@ Vue.component("calendar", {
 Vue.component("record-type-creator", {
     template: "#creation-element-template",
     props: ["type"],
-    data: () => ({ record: {} }),
+    data: () => ({
+        record: {}
+    }),
     methods: {
-        getModalComponent: uuid => window.getModalComponent(uuid),
+        getModalComponent: uuid => `modal-record-type-${uuid}`,
         async add(data) {
             tags = this.type.fields.search.map(field => data[field].split(/\s/)).flat();
             tags = tags.filter(x => x[0] == "#").map(x => x.slice(1)).filter(x => x);
@@ -267,60 +309,20 @@ Vue.component("record-type-creator", {
     },
 });
 
-function createVueModalRecord(a) {
-    Vue.component(`${a.name}-modal-record`, {
-        props: ["record"],
-        template: getRecordModalHTML(a),
-    });
-};
-
-function createVueRecord(a) {
-    Vue.component(`${a.name}-record`, {
-        props: ["id_record"],
-        template: getRecordHTML(a),
-        data: () => ({
-            type: a,
-            icon: a.icon,
-            record: {},
-            form: {},
-        }),
-        methods: {
-            datetime: x => moment(x.$date + "T" + x.$time).format("LLL"),
-            url_date: x => `{{ start_url }}/date.html?date=${moment(x.$date).format("YYYY-MM-DD")}`,
-            url_tag: tag => `{{ start_url }}/tag.html?tag=${tag}`,
-            async remove() {
-                await vueApp.removeRecord(this);
-            },
-            async save() {
-                this.record = { ...this.form };
-                tags = this.type.fields.search.map(field => this.record[field].split(/\s/)).flat();
-                tags = tags.filter(x => x[0] == "#").map(x => x.slice(1)).filter(x => x);
-                tags = await Promise.all(tags.map(DB.pullTag));
-                this.record.$tags = tags.map(x => x.name);
-                await DB.putRecord(this.record);
-                await vueApp.removeUnusedTags();
-            },
-        },
-        async created() {
-            this.record = await DB.getRecord(this.id_record);
-            this.form = { ...this.record };
-        },
-    })
-};
-
-_typesModal = {};
-_types = {};
 DB.getTypes().then(recordTypes => {
     recordTypes.forEach(type => {
-        _typesModal[type.uuid] = `${type.name}-modal-record`;
-        createVueModalRecord(type);
-
-        _types[type.uuid] = `${type.name}-record`;
-        createVueRecord(type);
+        Vue.component(`modal-record-type-${type.uuid}`, {
+            props: ["record"],
+            template: getRecordModalHTML(type),
+        });
+        Vue.component(`record-type-${type.uuid}`, {
+            extends: BaseVueRecord,
+            template: getRecordHTML(type),
+            data: () => ({
+                type
+            }),
+        });
     });
-
-    window.getComponent = uuid => _types[uuid];
-    window.getModalComponent = uuid => _typesModal[uuid];
 });
 
 const vueApp = new Vue({
@@ -336,7 +338,7 @@ const vueApp = new Vue({
             slice: options.slice || SLICE,
         },
         today: moment().format("YYYY-MM-DD"),
-        convector: {  
+        convector: {
             fromType: "universum",
             toType: "mydiary",
             convectorsTypes: {
@@ -377,7 +379,7 @@ const vueApp = new Vue({
         getFormattedDate: date => moment(date).format("LL"),
         getDateUrl: date => `{{ start_url }}/date.html?date=${moment(date).format("YYYY-MM-DD")}`,
         getTagUrl: tag => `{{ start_url }}/tag.html?tag=${tag.name}`,
-        getRecordTypeComponent: id => getComponent(id),
+        getRecordTypeComponent: uuid => `record-type-${uuid}`,
 
         async exportData() {
             data = {};
@@ -387,11 +389,11 @@ const vueApp = new Vue({
             data.tags = data.tags.map(tag => tag.name);
             string = JSON.stringify(data);
             var blob = new Blob([string]);
-            var url = URL.createObjectURL(blob); 
+            var url = URL.createObjectURL(blob);
             var link = document.createElement('a');
             link.setAttribute('href', url);
             link.setAttribute('download', "DB.json");
-            link.click();           
+            link.click();
         },
         async importData() {
             var file = document.querySelector("#formImportFile").files[0];
@@ -443,7 +445,7 @@ if (document.querySelector("#page")) {
             document.querySelector("#page .load").hidden = true;
             document.querySelector("#page .errors").hidden = false;
         };
-    }).then(() => vueApp.$mount("#app"));    
+    }).then(() => vueApp.$mount("#app"));
 } else {
     vueApp.$mount("#app");
 };
