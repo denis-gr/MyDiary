@@ -31,6 +31,7 @@ workbox.precaching.precacheAndRoute([
     "{{ start_url }}/static/js/base.js",
     "{{ start_url }}/static/js/vue.js",
     "{{ start_url }}/static/js/db.js",
+    "{{ start_url }}/sw.js",
     "{{ start_url }}/date.html",
     "{{ start_url }}/development.html",
     "{{ start_url }}/index.html",
@@ -38,7 +39,6 @@ workbox.precaching.precacheAndRoute([
     "{{ start_url }}/other.html",
     "{{ start_url }}/page.html",
     "{{ start_url }}/search.html",
-    "{{ start_url }}/sw.html",
     "{{ start_url }}/tag.html",
 ], {
     ignoreURLParametersMatching: [/.*/]
