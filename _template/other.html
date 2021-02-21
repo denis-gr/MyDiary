@@ -51,7 +51,7 @@
         <button class="btn btn-primary mr-2 mb-2" type="button"
             @click="exportData">Экспортировать</button>
         <div class="mb-3 me-2">
-            <label for="formImportFile" class="form-label">Импорт данных</label>
+            <label for="formFile" class="form-label">Импорт данных (из файла)</label>
             <input @change="importData" class="form-control" type="file" id="formImportFile">
         </div>
     </div>
@@ -75,6 +75,7 @@
                 </div>
             </div>
             <div class="mb-3 me-3">
+                <label for="formFile" class="form-label" hidden>Исходный файл</label>
                 <input @change="startConvector" class="form-control" type="file" id="formFile">
             </div>          
         </div>
