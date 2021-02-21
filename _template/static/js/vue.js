@@ -49,7 +49,7 @@ TYPES = [{
         "title": "Задачи",
         "template": document.querySelector("#task-type-page-template").innerHTML,
     },
-}, ];
+}];
 
 CONVECTORS = {
     universum: {
@@ -88,7 +88,8 @@ CONVECTORS = {
             newData = {
                 records: [],
                 tags: new Set(),
-                types: TYPES
+                types: TYPES,
+                version: "1",
             };
             data.marks.forEach(i => {
                 convector = CONVESTORS[version][i.type];
@@ -111,35 +112,37 @@ CONVECTORS = {
         mydiary: text => text,
         universum: text => {
             CONVESTORS = {
-                "abb116ac-697a-11eb-ac85-c0e434b07c91": data => ({
-                    "comment": data["text"],
-                    "id": GetUUID4(),
-                    "date": data["$date"],
-                    "time": data["$time"],
-                    "created": data["$created"],
-                    "changed": data["$changed"],
-                    "type": "ru.schustovd.diary.api.CommentMark"
-                }),
-                "cb363470-6e2b-11eb-91ec-c0e434b07c91": data => ({
-                    "comment": data["text"],
-                    "id": GetUUID4(),
-                    "date": data["$date"],
-                    "time": data["$time"],
-                    "created": data["$created"],
-                    "changed": data["$changed"],
-                    "type": "ru.schustovd.diary.api.CommentMark"
-                }),
-                "838d858c-7a4f-4396-b3ba-f76855697e78": data => ({
-                    "comment": data["text"],
-                    "done": data["isDone"],
-                    "conclusion": data["conclusion"],
-                    "id": GetUUID4(),
-                    "date": data["$date"],
-                    "time": data["$time"],
-                    "created": data["$created"],
-                    "changed": data["$changed"],
-                    "type": "ru.schustovd.diary.api.CommentMark"
-                }),
+                "1": {
+                    "abb116ac-697a-11eb-ac85-c0e434b07c91": data => ({
+                        "comment": data["text"],
+                        "id": GetUUID4(),
+                        "date": data["$date"],
+                        "time": data["$time"],
+                        "created": data["$created"],
+                        "changed": data["$changed"],
+                        "type": "ru.schustovd.diary.api.CommentMark"
+                    }),
+                    "cb363470-6e2b-11eb-91ec-c0e434b07c91": data => ({
+                        "comment": data["text"],
+                        "id": GetUUID4(),
+                        "date": data["$date"],
+                        "time": data["$time"],
+                        "created": data["$created"],
+                        "changed": data["$changed"],
+                        "type": "ru.schustovd.diary.api.CommentMark"
+                    }),
+                    "838d858c-7a4f-4396-b3ba-f76855697e78": data => ({
+                        "comment": data["text"],
+                        "done": data["isDone"],
+                        "conclusion": data["conclusion"],
+                        "id": GetUUID4(),
+                        "date": data["$date"],
+                        "time": data["$time"],
+                        "created": data["$created"],
+                        "changed": data["$changed"],
+                        "type": "ru.schustovd.diary.api.CommentMark"
+                    }),                    
+                },
             };
             data = JSON.parse(text);
             newData = {
@@ -147,8 +150,9 @@ CONVECTORS = {
                 marks: [],
                 recurrences: []
             };
+            version = data["version"];
             data.records.forEach(i => {
-                convector = CONVESTORS[i.$type];
+                convector = CONVESTORS[version][i.$type];
                 record = convector(i);
                 newData.marks.push(record);
             });
@@ -382,7 +386,7 @@ const vueApp = new Vue({
         getRecordTypeComponent: uuid => `record-type-${uuid}`,
 
         async exportData() {
-            data = {};
+            data = { version: "1" };
             data.types = await DB.getTypes();
             data.records = await DB.getRecords({});
             data.tags = await DB.getTags();
@@ -399,12 +403,14 @@ const vueApp = new Vue({
             var file = document.querySelector("#formImportFile").files[0];
             var text = await file.text();
             data = JSON.parse(text);
-            data.records.forEach(i => delete i.id);
-            data.types.forEach(i => delete i.id);
-            await Promise.all(data.records.map(DB.addRecord));
-            await Promise.all(data.tags.map(DB.pullTag));
-            await Promise.all(data.types.map(DB.addType));
-            this.update();
+            if (data.version == 1) {
+                data.records.forEach(i => delete i.id);
+                data.types.forEach(i => delete i.id);
+                await Promise.all(data.records.map(DB.addRecord));
+                await Promise.all(data.tags.map(DB.pullTag));
+                await Promise.all(data.types.map(DB.addType));
+                this.update();
+            };
         },
         async deleteAll() {
             await DB.delTypes();
@@ -417,8 +423,10 @@ const vueApp = new Vue({
             var file = document.querySelector("#typeFile").files[0];
             var text = await file.text();
             data = JSON.parse(text);
-            await DB.addType(data);
-            this.update();
+            if (data.version == 1) {
+                await DB.addType(data.type);
+                this.update();                
+            };        
         },
         async startConvector() {
             var fromFile = document.querySelector("#formFile").files[0];

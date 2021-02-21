@@ -1,58 +1,56 @@
 const nameDB = "MyDiary";
 const versionDB = 1;
 
-const DefaultTypes = [
-    {
-        "name": "note",
-        "title": "Заметка",
-        "uuid": "abb116ac-697a-11eb-ac85-c0e434b07c91",
-        "description": "Одно поле для текста",
-        "icon": "pencil-fill",
-        "template": document.querySelector("#record-type-template").innerHTML,
-        "form_template": document.querySelector("#record-type-form-template").innerHTML,
-        "fields": {
-            "tags": ["text"],
-            "search":["text"],
-            "require":["text"]
-        },
-    }, {
-        "name": "idea",
-        "title": "Идея",
-        "uuid": "0f3e74c0-beca-4d91-8b37-0d8af574afd7",
-        "description": "Одно поле для текста, есть страница, со списком идей.",
-        "icon": "chat-fill",
-        "template": document.querySelector("#idea-type-template").innerHTML,
-        "form_template": document.querySelector("#idea-type-form-template").innerHTML,
-        "fields": {
-            "tags": ["text"],
-            "search":["text"],
-            "require":["text"]
-        },
-        "page":{
-            "name": "ideas-page",
-            "title": "Идеи",
-            "template": document.querySelector("#idea-type-page-template").innerHTML,
-        },
-    }, {
-        "name": "task",
-        "title": "Задача",
-        "uuid": "ee5a8960-6e2b-11eb-b6df-c0e434b07c91",
-        "description": "Одно поле для описания задачи, одно поле для обозначения завершенности и заключения, есть страница, со списком задач.",
-        "icon": "calendar-event-fill",
-        "template": document.querySelector("#task-type-template").innerHTML,
-        "form_template": document.querySelector("#task-type-form-template").innerHTML,
-        "fields": {
-            "tags": ["text", "conclusion"],
-            "search": ["text", "conclusion"],
-            "require": ["text"],
-        },
-        "page": {
-            "name": "tasks-page",
-            "title": "Задачи",
-            "template": document.querySelector("#task-type-page-template").innerHTML,
-        },
+const DefaultTypes = [{
+    "name": "note",
+    "title": "Заметка",
+    "uuid": "abb116ac-697a-11eb-ac85-c0e434b07c91",
+    "description": "Одно поле для текста",
+    "icon": "pencil-fill",
+    "template": document.querySelector("#record-type-template").innerHTML,
+    "form_template": document.querySelector("#record-type-form-template").innerHTML,
+    "fields": {
+        "tags": ["text"],
+        "search": ["text"],
+        "require": ["text"]
     },
-];
+}, {
+    "name": "idea",
+    "title": "Идея",
+    "uuid": "0f3e74c0-beca-4d91-8b37-0d8af574afd7",
+    "description": "Одно поле для текста, есть страница, со списком идей.",
+    "icon": "chat-fill",
+    "template": document.querySelector("#idea-type-template").innerHTML,
+    "form_template": document.querySelector("#idea-type-form-template").innerHTML,
+    "fields": {
+        "tags": ["text"],
+        "search": ["text"],
+        "require": ["text"]
+    },
+    "page": {
+        "name": "ideas-page",
+        "title": "Идеи",
+        "template": document.querySelector("#idea-type-page-template").innerHTML,
+    },
+}, {
+    "name": "task",
+    "title": "Задача",
+    "uuid": "ee5a8960-6e2b-11eb-b6df-c0e434b07c91",
+    "description": "Одно поле для описания задачи, одно поле для обозначения завершенности и заключения, есть страница, со списком задач.",
+    "icon": "calendar-event-fill",
+    "template": document.querySelector("#task-type-template").innerHTML,
+    "form_template": document.querySelector("#task-type-form-template").innerHTML,
+    "fields": {
+        "tags": ["text", "conclusion"],
+        "search": ["text", "conclusion"],
+        "require": ["text"],
+    },
+    "page": {
+        "name": "tasks-page",
+        "title": "Задачи",
+        "template": document.querySelector("#task-type-page-template").innerHTML,
+    },
+}];
 
 function createDefaultTypes(db) {
     promises = DefaultTypes.map(i => db.add("recordTypes", i));
@@ -131,62 +129,67 @@ async function removeUnusedTags(tags) {
 };
 
 const DB = {
-    countTypes() {
-        return dbPromise.then(db => db.count("recordTypes"))
+    async countTypes() {
+        db = await dbPromise;
+        return db.count("recordTypes");
     },
-    getTypes() {
-        return dbPromise.then(db => db.getAll("recordTypes"))
+    async getTypes() {
+        db = await dbPromise;
+        return db.getAll("recordTypes");
     },
-    getType(uuid) {
-        return dbPromise.then(db => db.getFromIndex("recordTypes", "uuid", uuid))
+    async getType(uuid) {
+        db = await dbPromise;
+        return db.getFromIndex("recordTypes", "uuid", uuid);
     },
-    delTypes() {
-        return dbPromise.then(db => db.clear("recordTypes"))
+    async delTypes() {
+        db = await dbPromise;
+        await db.clear("recordTypes");
     },
-    addType(data) {
-        return dbPromise.then(db => db.getFromIndex("recordTypes", "uuid", data.uuid))
-            .then(type => {
-                if (type) {
-                    data = Object.assign({}, data);
-                    data.id = type.id;
-                };
-                return dbPromise.then(db => db.put("recordTypes", data))
-                    .then(id => dbPromise.then(db => db.get("recordTypes", id)));
+    async addType(data) {
+        db = await dbPromise;
+        type = await db.getFromIndex("recordTypes", "uuid", data.uuid);
+        if (type) {
+            data = { ...data, id: type.id };
+        };
+        id = await db.put("recordTypes", data);
+        return db.get("recordTypes", id);
+    },
+    async delType(uuid) {
+        db = await dbPromise;
+        id = await db.getKeyFromIndex("recordTypes", "uuid", uuid);
+        await db.delete("recordTypes", id);
+    },
+    async countTags() {
+        db = await dbPromise;
+        return db.count("tags");
+    },
+    async getTags() {
+        db = await dbPromise;
+        return db.getAll("tags");
+    },
+    async delTags() {
+        db = await dbPromise;
+        await db.clear("tags");
+    },
+    async pullTag(name) {
+        db = await dbPromise;
+        tag = await db.getFromIndex("tags", "name", name);
+        if (!tag) {
+            id = await db.add("tags", {
+                name
             });
+            tag = await db.get("tags", id);
+        };
+        return tag;
     },
-    delType(uuid) {
-        return dbPromise.then(db =>
-            db.getKeyFromIndex("recordTypes", "uuid", uuid)
-            .then(id => db.delete("recordTypes", id))
-        );
+    async removeUnusedTags(tags) {
+        await removeUnusedTags(tags)
     },
-    countTags() {
-        return dbPromise.then(db => db.count("tags"))
+    async countRecords() {
+        db = await dbPromise;
+        return db.count("records");
     },
-    getTags() {
-        return dbPromise.then(db => db.getAll("tags"))
-    },
-    delTags() {
-        return dbPromise.then(db => db.clear("tags"))
-    },
-    pullTag(name) {
-        return dbPromise.then(db => db.getFromIndex("tags", "name", name)).then(tag => {
-            if (!tag) {
-                tag = dbPromise.then(db => db.add("tags", {
-                    name
-                }));
-                tag = tag.then(id => dbPromise.then(db => db.get("tags", id)));
-            };
-            return tag;
-        })
-    },
-    removeUnusedTags(tags) {
-        return removeUnusedTags(tags)
-    },
-    countRecords() {
-        return dbPromise.then(db => db.count("records"))
-    },
-    getRecords({
+    async getRecords({
         type,
         date,
         tag,
@@ -201,23 +204,30 @@ const DB = {
             slice
         })
     },
-    delRecords() {
-        return dbPromise.then(db => db.clear("records"))
+    async delRecords() {
+        db = await dbPromise;
+        await db.clear("records");
     },
-    getRecord(id) {
-        return dbPromise.then(db => db.get("records", id))
+    async getRecord(id) {
+        db = await dbPromise;
+        return db.get("records", id);
     },
-    addRecord(data) {
+    async addRecord(data) {
+        db = await dbPromise;
         data = Object.assign({}, data);
         data.$created = data.$changed = new Date().getTime();
-        return dbPromise.then(db => db.add("records", data)).then(id => dbPromise.then(db => db.get("records", id)));
+        id = await db.add("records", data);
+        return db.get("records", id);
     },
-    putRecord(data) {
+    async putRecord(data) {
+        db = await dbPromise;
         data = Object.assign({}, data);
         data.$changed = new Date().getTime();
-        return dbPromise.then(db => db.put("records", data)).then(id => dbPromise.then(db => db.get("records", id)));
+        id = await db.add("records", data);
+        return db.get("records", id);
     },
-    delRecord(id) {
-        return dbPromise.then(db => db.delete("records", id))
+    async delRecord(id) {
+        db = await dbPromise;
+        await db.delete("records", id);
     },
 };
