@@ -224,7 +224,9 @@ BaseVueRecord = {
             this.record = {
                 ...this.form
             };
-            tags = this.type.fields.search.map(field => this.record[field].split(/\s/)).flat();
+            fields = this.type.fields.search;
+            fields = fields.filter(field => this.record[field]);
+            tags = fields.map(field => this.record[field].split(/\s/)).flat();
             tags = tags.filter(x => x[0] == "#").map(x => x.slice(1)).filter(x => x);
             tags = await Promise.all(tags.map(DB.pullTag));
             this.record.$tags = tags.map(x => x.name);
@@ -287,7 +289,9 @@ Vue.component("record-type-creator", {
     methods: {
         getModalComponent: uuid => `modal-record-type-${uuid}`,
         async add(data) {
-            tags = this.type.fields.search.map(field => data[field].split(/\s/)).flat();
+            fields = this.type.fields.search;
+            fields = fields.filter(field => data[field]);
+            tags = fields.map(field => data[field].split(/\s/)).flat();
             tags = tags.filter(x => x[0] == "#").map(x => x.slice(1)).filter(x => x);
             tags = await Promise.all(tags.map(DB.pullTag));
             data.$tags = tags.map(x => x.name);
@@ -423,7 +427,7 @@ const vueApp = new Vue({
             var text = await file.text();
             data = JSON.parse(text);
             if (data.version == 1) {
-                delete data.id
+                delete data.id;
                 await DB.addType(data.type);
                 this.update();                
             };        

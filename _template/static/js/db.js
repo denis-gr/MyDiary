@@ -218,7 +218,7 @@ const DB = {
         db = await dbPromise;
         data = Object.assign({}, data);
         data.$changed = new Date().getTime();
-        id = await db.add("records", data);
+        id = await db.put("records", data);
         return db.get("records", id);
     },
     async delRecord(id) {
