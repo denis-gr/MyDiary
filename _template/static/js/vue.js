@@ -84,7 +84,7 @@ CONVECTORS = {
                 records: [],
                 tags: new Set(),
                 types: TYPES,
-                version: "1",
+                version: "3",
             };
             data.marks.forEach(i => {
                 convector = CONVESTORS[version][i.type];
@@ -107,7 +107,7 @@ CONVECTORS = {
         mydiary: text => text,
         universum: text => {
             CONVESTORS = {
-                "1": {
+                "3": {
                     "abb116ac-697a-11eb-ac85-c0e434b07c91": data => ({
                         "comment": data["text"],
                         "id": GetUUID4(),
@@ -385,7 +385,7 @@ const vueApp = new Vue({
         getRecordTypeComponent: uuid => `record-type-${uuid}`,
 
         async exportData() {
-            data = { version: "1" };
+            data = { version: "3" };
             data.types = await DB.getTypes();
             data.records = await DB.getRecords({});
             data.tags = await DB.getTags();
@@ -405,7 +405,7 @@ const vueApp = new Vue({
             var file = document.querySelector("#formImportFile").files[0];
             var text = await file.text();
             data = JSON.parse(text);
-            if (data.version == 1) {
+            if (data.version == 3) {
                 data.records.forEach(i => delete i.id);
                 data.types.forEach(i => delete i.id);
                 data.tags.forEach(i => delete i.id);
@@ -426,7 +426,7 @@ const vueApp = new Vue({
             var file = document.querySelector("#typeFile").files[0];
             var text = await file.text();
             data = JSON.parse(text);
-            if (data.version == 1) {
+            if (data.version == 3) {
                 delete data.id;
                 await DB.addType(data.type);
                 this.update();                

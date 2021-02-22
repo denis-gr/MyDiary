@@ -1,5 +1,5 @@
 const nameDB = "MyDiary";
-const versionDB = 1;
+const versionDB = 3;
 
 const DefaultTypes = [{
     "title": "Заметка",
