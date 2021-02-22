@@ -18,7 +18,7 @@
 </template>
 
 <template id="creation-element-template">
-    <modal :title="type.title" :id="'add-' + type.name">
+    <modal :title="type.title" :id="'add-' + type.uuid">
         <component :is="getModalComponent(type.uuid)" :record="record">
         </component>
         <template v-slot:footer>

@@ -1,7 +1,6 @@
 const SLICE = 10;
 
 TYPES = [{
-    "name": "note",
     "title": "Заметка",
     "uuid": "abb116ac-697a-11eb-ac85-c0e434b07c91",
     "description": "Одно поле для текста",
@@ -14,7 +13,6 @@ TYPES = [{
         "require": ["text"]
     },
 }, {
-    "name": "idea",
     "title": "Идея",
     "uuid": "0f3e74c0-beca-4d91-8b37-0d8af574afd7",
     "description": "Одно поле для текста, есть страница, со списком идей.",
@@ -27,12 +25,10 @@ TYPES = [{
         "require": ["text"]
     },
     "page": {
-        "name": "ideas-page",
         "title": "Идеи",
         "template": document.querySelector("#idea-type-page-template").innerHTML,
     },
 }, {
-    "name": "task",
     "title": "Задача",
     "uuid": "ee5a8960-6e2b-11eb-b6df-c0e434b07c91",
     "description": "Одно поле для описания задачи, одно поле для обозначения завершенности и заключения, есть страница, со списком задач.",
@@ -45,7 +41,6 @@ TYPES = [{
         "require": ["text"],
     },
     "page": {
-        "name": "tasks-page",
         "title": "Задачи",
         "template": document.querySelector("#task-type-page-template").innerHTML,
     },
@@ -390,6 +385,9 @@ const vueApp = new Vue({
             data.types = await DB.getTypes();
             data.records = await DB.getRecords({});
             data.tags = await DB.getTags();
+            data.records.forEach(i => delete i.id);
+            data.types.forEach(i => delete i.id);
+            data.tags.forEach(i => delete i.id);
             data.tags = data.tags.map(tag => tag.name);
             string = JSON.stringify(data);
             var blob = new Blob([string]);
@@ -406,6 +404,7 @@ const vueApp = new Vue({
             if (data.version == 1) {
                 data.records.forEach(i => delete i.id);
                 data.types.forEach(i => delete i.id);
+                data.tags.forEach(i => delete i.id);
                 await Promise.all(data.records.map(DB.addRecord));
                 await Promise.all(data.tags.map(DB.pullTag));
                 await Promise.all(data.types.map(DB.addType));
@@ -424,6 +423,7 @@ const vueApp = new Vue({
             var text = await file.text();
             data = JSON.parse(text);
             if (data.version == 1) {
+                delete data.id
                 await DB.addType(data.type);
                 this.update();                
             };        

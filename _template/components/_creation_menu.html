@@ -1,6 +1,6 @@
 <div class="creation-menu" id="creation-menu">
     <div class="creation-menu-inner btn-group-vertical">
-        <button class="btn btn-outline-secondary link" type="button" data-bs-toggle="modal" v-for="i in types" :data-bs-target="'#add-' + i.name">
+        <button class="btn btn-outline-secondary link" type="button" data-bs-toggle="modal" v-for="i in types" :data-bs-target="'#add-' + i.uuid">
             <i :class="'bi-' + i.icon + ' icon'" :title="i.title"></i>
         </button>
         <button class="btn btn-outline-secondary link" type="button" onclick="toggleCreationMenu()">
