@@ -1,4 +1,11 @@
+const _promice = (async () => {
+    const l = navigator.language;
+    await import("{{ start_url }}/static/ckeditor5/build/ckeditor.js");
+    await import(`{{ start_url }}/static/ckeditor5/build/translations/${l}.js`);
+})();
+
 async function initEditor(el) {
+    await _promice
     const _ckeditor_settings = {
         toolbar: {
             items: [
