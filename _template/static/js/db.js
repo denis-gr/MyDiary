@@ -211,10 +211,10 @@ class DBClass {
             data.REIVS = temp.iv;
             data.records = null;
         };
-        return JSON.stringify(data);
+        return {"data.json": new File([JSON.stringify(data)], "data.json")};
     };
-    async import(data) {
-        data = JSON.parse(data);
+    async import(files) {
+        const data = JSON.parse(await files[Object.keys(files)[0]].text());
         if (!this._password && data.REABS) {
             throw INVALIDPASSWORD;
         };
@@ -229,13 +229,15 @@ class DBClass {
         if (data.version == 5) {
             for (let i in data.records) {
                 const n = data.records[i];
-                const o = await this._dbRequest("get", "records", n.$id);
-                if (((o.$changed || 0) <= n.$changed) &&
-                    (JSON.stringify(o) != JSON.stringify(n))) {
+                n.$id = n.$id || n.$created;
+                const o = await this._dbRequest("get", "records", n.$id || -1);
+                if (!o || !o.$changed || ((o.$changed <= n.$changed) &&
+                    (JSON.stringify(o) != JSON.stringify(n)))){
                     await this._dbRequest("put", "records", n.$id, n);
                 };
             };
         };
+        await this.sync();
     };
     async sync() {
         await this._promise;

@@ -193,10 +193,11 @@ const App = Vue.createApp({
             };
         },
         async _syncWithGD() {
-            const datafromGD = await this.GD.importFromGD();
-            const datafromDB = await DB.export();
+            const filesfromGD = await this.GD.importFromGD();
+            const datafromGD = await filesfromGD["data.json"].text();
+            const datafromDB = await (await DB.export())["data.json"].text();
             if (datafromGD != datafromDB) {
-                await DB.import(datafromGD);
+                await DB.import(filesfromGD);
                 await this.GD.exportToGD(await DB.export());
                 await this.update();
             };
@@ -254,6 +255,7 @@ const App = Vue.createApp({
                 return records.slice(vm.slice);
             };
         },
+        recordCount: v => (v.allRecords || []).filter(i => !i.$deleted).length,
         tags: v => [...new Set((v.allRecords || []).filter(i => !i.$deleted)
             .map(i => i.$tags).flat())],
     },
@@ -280,13 +282,13 @@ App.component("wysiwyg-editor", {
     watch: {
         modelValue(val) {
             if (this.editor.getData() != val) {
-                this.editor.setData(val);
+                this.editor.setData(val || "");
             };
         },
     },
     async mounted() {
         this.editor = await initEditor(this.$refs["div"]);
-        this.editor.setData(this.modelValue);
+        this.editor.setData(this.modelValue || "");
         this.editor.model.document.on('change:data', () => {
             this.$emit("update:modelValue", this.editor.getData());
         });

@@ -56,12 +56,12 @@ class GDDBClass {
     };
     async downloadText(fileId) {
         await this._promise;
-        return gapi.client.drive.files.get({ fileId, alt: 'media' }).body;
+        return (await gapi.client.drive.files.get({fileId, alt:'media'})).body;
     };
     async find(q) {
         await this._promise;
-        return gapi.client.drive.files.list({ spaces: 'appDataFolder',
-            fields: 'files(id, name)', q }).result.files;
+        return (await gapi.client.drive.files.list({ spaces: 'appDataFolder',
+            fields: 'files(id, name)', q })).result.files;
     };
     async deleteFile(fileId) {
         await this._promise;
@@ -83,12 +83,12 @@ class GDDBClass {
         await this._promise;
         await this.deleteFile(await this.getDir("DB"));
     };
-    async exportToGD(data) {
+    async exportToGD(files) {
         await this._promise;
         const root = await this.getDir("DB");
         const filename = new Date().toISOString() + ".json";
         const temp = await this.addFile(filename, "application/json", root);
-        await this.uploadText(temp, data);
+        await this.uploadText(temp, await files["data.json"].text());
     };
     async importFromGD() {
         await this._promise;
@@ -105,6 +105,6 @@ class GDDBClass {
                 break
             } catch {}
         };
-        return data;
+        return {"data.json": new File([data], "data.json")};
     };
 };
