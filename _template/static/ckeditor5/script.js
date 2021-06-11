@@ -1,5 +1,5 @@
 const _promice = (async () => {
-    const l = navigator.language;
+    const l = navigator.language.slice(null, 2);
     await import("{{ start_url }}/static/ckeditor5/build/ckeditor.js");
     await import(`{{ start_url }}/static/ckeditor5/build/translations/${l}.js`);
 })();
