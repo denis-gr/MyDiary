@@ -2,7 +2,6 @@
 import pathlib
 import argparse
 import re
-import sys
 
 import django
 from django.template.loader import render_to_string
@@ -111,8 +110,8 @@ for path in pathlib.Path(TEMPLATE_DIR).glob("**/*.*"):
     elif path.suffix == ".js":
         min_fun = jsmin.jsmin
     elif path.suffix == ".scss":
-        fun = lambda x: sass.compile(string=x)
-        min_fun = css_html_js_minify.css_minify
+        fun = lambda x: sass.compile(string=x,
+            output_style=('compressed' if args.is_not_minify else "nested"))
         new_path = temp_path.with_suffix(".css")
     else:
         is_text = False

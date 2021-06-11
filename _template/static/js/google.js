@@ -73,8 +73,8 @@ class GDDBClass {
         const d = path.split("/");
         let id = rootPath || 'appDataFolder';
         for (let i in d) {
-            const res = await this.find("name='" + d[i] + "'and parents in '" +
-                id + "' and mimeType='" + dt + "'");
+            const res = await this.find(["name='", d[i], "'and parents in '",
+                id, "' and mimeType='", dt, "'"].join(""));
             id = res.length ? res[0].id : await this.addFile(d[i], dt, id);
         };
         return id;
@@ -93,8 +93,8 @@ class GDDBClass {
     async importFromGD() {
         await this._promise;
         const root = await this.getDir("DB");
-        const q = "parents in '" + root + "' and mimeType = 'application/json'";
-        let files = await this.find(q);
+        let files = await this.find(
+            "parents in '" + root + "' and mimeType = 'application/json'");
         files.sort((a, b) => a.name == b.name ? 0 : (a.name > b.name ? -1 : 1));
         let data = '{"records":[],"version":"5"}';
         for (let i in files) {

@@ -6,17 +6,51 @@ const getRecordHTML = type => document.querySelector("#record-template")
     .innerHTML.replace("{type_template}", type.template);
 
 const messages = {
-    en: {},
+    en: {
+        message_sync_GD: "Sign in to Google to sync data with Google Drive. \nOr do you want to disable syncing?",
+        message_password_modal: 'To remove the password, leave the password fields blank and click "Set". \nFor synchronization to work, all instances must either have the same password or be absent.',
+        question_text: 'Or the answer to "{q}"',
+        reboot_message: "These settings will be applied only after reboot",
+        version: "Version: {v}",
+        "browser_support": "The site creator did not aim to support older browsers.",
+        "disclaimer": "The site is not responsible for anything.", 
+    },
     ru: {
         Mo: "Пн", Tu: "Вт", We: "Ср", Th: "Чт", Fr: "Пт", Sa: "Сб", Su: "Вс",
         Tags: "Теги", Change: "Изменить", "Change date": "Изменить дату",
-        Year: "Год", Month: "Месяц", Go: "Перейти", Date: "Дата", Time: "Время",
-        "Loading...": "Загрузка...", "No records": "Нет записей",
-        Close: "Закрыть", Delete: "Удалить", Create: "Создать", Save: "Сохранить",
-        'Open post records menu': "Открыть меню создния записей",
-        'No tags': "Нет тегов",
+        Year: "Год", Month: "Месяц", Go: "Перейти", Date: "Дата",
+        Time: "Время", "Loading...": "Загрузка...", Close: "Закрыть",
+        "No records": "Нет записей", Delete: "Удалить", Create: "Создать",
+        Save: "Сохранить", 'No tags': "Нет тегов",
+        'Open post records menu': "Открыть меню создания записей",   
+        message_sync_GD: "Войдите в Google, что бы синхронизировать данные с Google Drive. \nИли вы хотите отключить синхронизацию?",
+        Disable: "Отключить", Login: "Войти", "Connect to Google": "Подключение к Google",
+        "Password setting": "Настройка пароля", "New password": "Новый пароль",
+        "New password (again)": "Новый пароль (ещё раз)",
+        "Security question": "Контрольный вопрос", "Answer to security question": "Ответ на контрольный вопрос",
+        "message_password_modal":'Что бы убрать пароль оставьте поля с паролем пустыми и нажмите "Поставить". \nДля работы синхронизации во всех экземплярах должен, либо быть один и тот же пароль, либо отсутствовать.',
+        "Set": "Поставить", "Do not change":"Не менять", "Unlocking": "Разблокировка",
+        "Password":"Пароль", "question_text": 'Или ответ на "{q}"', "Date":"Дата",
+        "Toggle navigation": "Переключить навигацию", "Homepage":"Главная страница",
+        "Search": "Поиск", "Other":"Другое", "Type": "Тип", "Any": "Любой", "Tag": "Тег",
+        "Information": "Информация", "Number of record types:": "Количество типов записей:",
+        "Number of tags:": "Количество тегов:", "Number of records:": "Количество записей: ", "Record types": "Типы записей",
+        "Load data type": "Загрузить тип данных", "Enable": "Включить",
+        reboot_message: "Эти настройки будут применены только после перезагрузки",
+        "Integration with Google Drive": "Интеграция с Google Drive", "Use GD": "Использовать GD",
+        "Synchronization interval (minutes)": "Интервал синхронизации (минуты)",
+        "Delete from GD": "Удалить с GD", "Install/change/uninstall": "Установить/сменить/удалить",
+        "Local data": "Локальные данные", "Export": "Экспортировать",
+        "Import": "Импортировать", "About site": "О сайте", "version": "Версия: {v}",
+        "Source Code": "Исходный код", "Documentation": "Документация", "Convectors": "Конвекторы",
+        "Front page": "Первая страница",
+        "browser_support": "Создатель сайта не ставил целью поддержку старых браузеров.",
+        "disclaimer": "Сайт не несет ответственности, ни за что.", 
+
     }
 };
+Object.keys(messages.ru).filter(i => !(messages.en[i]))
+    .forEach(i => messages.en[i] = i);
 
 const i18n = VueI18n.createI18n({
     locale: window.navigator.language.slice(0, 2),
@@ -33,7 +67,7 @@ const App = Vue.createApp({
         options: {},
         today: moment().format("YYYY-MM-DD"),
         isUseGD: settings.get("isUseGD"),
-        syncInterval: settings.get("syncInterval") / 60 / 1000,
+        syncInterval: settings.get("syncInterval") / 60000,
         password1: "",
         password2: "",
         question: settings.get("question"),
@@ -99,18 +133,19 @@ const App = Vue.createApp({
                 settings.set("passwordCipher", null);
                 settings.set("passwordIv", null);
             } else if (this.password1 != this.password2) {
-                alert("Пароли не совпают");
+                alert("Пароли не совпадают");
             } else if (!this.question || !this.answer) {
                 alert("Нет контрольного вопроса или ответа");
             } else {
                 await DB.setPassword(this.password1);
                 await DB.sync();
-                settings.set("passwordHash", await getPasswordHash(this.password1));
+                settings.set("passwordHash",
+                    await getPasswordHash(this.password1));
                 settings.set("question", this.question);
                 settings.set("answerHash", await getPasswordHash(this.answer));
-                const temp = await encrypt(this.answer, strToAB(this.password1));
-                settings.set("passwordCipher", ABToStr(temp.data));
-                settings.set("passwordIv", temp.iv);
+                const t = await encrypt(this.answer, strToAB(this.password1));
+                settings.set("passwordCipher", ABToStr(t.data));
+                settings.set("passwordIv", t.iv);
                 this.password1 = this.password2 = "";
             };
         },
@@ -184,7 +219,7 @@ const App = Vue.createApp({
     },
     watch: {
         isUseGD: value => settings.set("isUseGD", value),
-        syncInterval: v => settings.set("syncInterval", (v > 0 ? v : 1) * 60000),
+        syncInterval: v => settings.set("syncInterval", (v > 0 ? v:1) * 60000),
     },
     computed: {
         records: vm => {
@@ -208,7 +243,7 @@ const App = Vue.createApp({
                 };
                 return true;
             });
-            records.sort((a, b) => a.$date + a.$time < b.$date + b.$time ? 1 : -1);
+            records.sort((a,b)=>a.$date + a.$time < b.$date + b.$time ? 1: -1);
             if (vm.slice > 0) {
                 return records.slice(0, vm.slice);
             } else {
@@ -230,7 +265,7 @@ Processes.addListener(isBusy => {
 
 App.component("modal", {
     functional: true,
-    props: ["title", "isnotfooter"],
+    props: ["title", "notfooter"],
     template: "#modal-template",
 });
 
@@ -292,8 +327,9 @@ App.component("calendar", {
         getClassesDay(date) {
             const classes = ["day"];
             if (date.getMonth() + 1 == this.month) classes.push('active');
-            if (moment(date).format('YYYYMMDD') == moment().format('YYYYMMDD'))
+            if (moment(date).format('YYYYMMDD')==moment().format('YYYYMMDD')){
                 classes.push('today');
+            } ;
             return classes;
         },
         async update() {

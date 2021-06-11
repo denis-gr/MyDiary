@@ -3,71 +3,69 @@
 {% block content %} 
 <div class="my-progress-bar" id="progress-bar" hidden></div>
 <div class="window" id="app">
-    <modal id="startGDModal" title="Подключение к Google" v-cloak>
-        <p>Войдите в Google, что бы синхронизировать данные с Google Drive.</p>
-        <p>Или вы хотите отключить синхронизацию?</p>
+    <modal id="startGDModal" :title="$t('Connect to Google')" v-cloak>
+        <p v-t="'message_sync_GD'"></p>
         <template v-slot:footer="">
-            <button class="btn btn-secondary" data-bs-dismiss="modal" @click="isUseGD = false">Отключить</button>
-            <button class="btn btn-primary" data-bs-dismiss="modal" onclick="login()">Войти</button>
+            <button class="btn btn-secondary" data-bs-dismiss="modal" @click="isUseGD = false" v-t="'Disable'"></button>
+            <button class="btn btn-primary" data-bs-dismiss="modal" onclick="login()" v-t="'Login'"></button>
         </template>
     </modal>
-    <modal id="setPassword" title="Настройка пароля" v-cloak>
+    <modal id="setPassword" :title="$t('Password setting')" v-cloak>
         <label class="form-field">
-            <span class="form-label">Новый пароль</span>
+            <span class="form-label" v-t="'New password'"></span>
             <input class="form-control" v-model="password1" autocomplete="off">
         </label>
         <label class="form-field">
-            <span class="form-label">Новый пароль (ещё раз)</span>
+            <span class="form-label" v-t="'New password (again)'"></span>
             <input class="form-control" v-model="password2" autocomplete="off">
         </label>
         <label class="form-field">
-            <span class="form-label">Контрольный вопрос</span>
+            <span class="form-label" v-t="'Security question'"></span>
             <input class="form-control" v-model="question" autocomplete="off">
         </label>
         <label class="form-field">
-            <span class="form-label">Ответ на контрольный вопрос</span>
+            <span class="form-label" v-t="'Answer to security question'"></span>
             <input class="form-control" v-model="answer" autocomplete="off">
         </label>
-        <small>Что бы убрать пароль оставте поля с паролем пустыми и нажмите "Поставить"</small>
-        <small>Для работы синхронизации во всех экземплярах должен, либо быть один и тот же пароль, либо отсуствувать</small>
+        <small v-t="'message_password_modal'"></small>
         <template v-slot:footer="">
-            <button class="btn btn-secondary" data-bs-dismiss="modal">Не менять</button>
-            <button class="btn btn-primary" data-bs-dismiss="modal" @click="setPassword">Поставить</button>
+            <button class="btn btn-secondary" data-bs-dismiss="modal" v-t="'Do not change'"></button>
+            <button class="btn btn-primary" data-bs-dismiss="modal" @click="setPassword" v-t="'Set'"></button>
         </template>
     </modal>
-    <modal id="passwordModal" title="Разблокировка" isnotfooter="true" v-cloak>
+    <modal id="passwordModal" :title="$t('Unlocking')" notfooter="true" v-cloak>
         <label class="form-field">
-            <span class="form-label">Пароль</span>
+            <span class="form-label" v-t="'Password'"></span>
             <input class="form-control" ref="passwordInput" autocomplete="off">
         </label>
-        <small>Или ответ на "<span v-text='question'></span>"</small>
+        <small v-text="$t('question_text', {q: question})"></small>
     </modal>
-    <modal id="editDate" title="Изменить дату" v-cloak>
+    <modal id="editDate" :title="$t('Change date')" v-cloak>
         <label class="form-field">
-            <span class="form-label">Дата</span>
+            <span class="form-label" v-t="'Date'"></span>
             <input class="form-control" type="date" v-model="today">
         </label>
         <template v-slot:footer="">
-            <a class="btn btn-primary" data-bs-dismiss="modal" @click="changeDate(today)">Перейти</a>
+            <a class="btn btn-primary" data-bs-dismiss="modal" @click="changeDate(today)" v-t="'Go'"></a>
         </template>
     </modal>
     <header class="navbar main-navbar navbar-expand-lg">
         <div class="container navbar-inner">
             <span class="navbar-brand">MyDiary</span>
             <button class="navbar-toggler" data-bs-target="#navbarSupportedContent" data-bs-toggle="collapse"
-                aria-label="Toggle navigation">
+                :aria-label="$t('Toggle navigation')">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="#dashboard">Главная страница</a>
+                        <a class="nav-link" href="#dashboard" v-t="'Homepage'"></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#search">Поиск</a>
+                        <a class="nav-link" href="#search" v-t="'Search'"></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#other">Другое</a>
+                        <a class="nav-link" href="#other" v-t="'Other'"></a>
                     </li>
                     <li class="nav-item" v-for="i in types">
                         <a class="nav-link" :href="`#type/${i.uuid}`" v-if="i.page_title" v-text="i.page_title"></a>
@@ -77,23 +75,23 @@
         </div>
     </header>
     <div class="container search-page" v-if="options.page == 'search'" v-cloak>
-        <h1 class="title text-center">Поиск</h1>
+        <h1 class="title text-center" v-t="'Search'"></h1>
         <div class="row justify-content-center">
             <label class="input-group form-field">
-                <span class="input-group-text">Искать</span>
+                <span class="input-group-text" v-t="'Search'"></span>
                 <input class="form-control" type="search" v-model.trim="options.q" @input="update">
             </label>
             <label class="input-group form-field w-auto">
-                <span class="input-group-text">Тип</span>
+                <span class="input-group-text" v-t="'Type'"></span>
                 <select class="form-select" v-model="options.type" @input="update">
-                    <option :value="undefined">Любой</option>
+                    <option :value="undefined" v-t="'Any'"></option>
                     <option :value="i.uuid" v-for="i in types" v-text="i.title" :key="i.uuid"></option>
                 </select>
             </label>
             <label class="input-group form-field w-auto">
-                <span class="input-group-text">Тег</span>
+                <span class="input-group-text" v-t="'Tag'"></span>
                 <select class="form-select" v-model="options.tag" @input="update">
-                    <option :value="undefined">Любой</option>
+                    <option :value="undefined" v-t="'Any'"></option>
                     <option :value="i" v-if="tags" v-for="i in tags" v-text="'#'+i" :key="i"></option>
                 </select>
             </label>       
@@ -119,24 +117,24 @@
     <div class="other-page container" v-else-if="options.page == 'other'" v-cloak>
         <div class="row">
             <section class="col-lg-12 mb-5">
-                <h3 class="title">Информация</h3>
+                <h3 class="title" v-t="'Information'"></h3>
                 <table class="table">
                     <tr>
-                        <td>Количество типов записей: </td>
+                        <td v-t="'Number of record types:'"></td>
                         <td v-text="(types || []).length"></td>
                     </tr>
                     <tr>
-                        <td>Количество тегов: </td>
+                        <td v-t="'Number of tags:'"></td>
                         <td v-text="(tags || []).length"></td>
                     </tr>
                     <tr>
-                        <td>Количество записей: </td>
+                        <td v-t="'Number of records:'"></td>
                         <td v-text="(allRecords || []).length"></td>
                     </tr>
                 </table>
             </section>
             <section class="col-lg-12 mb-5">
-                <h3>Типы записей</h3>
+                <h3 v-t="'Record types'"></h3>
                 <div class="row types-list">
                     <div class="col-md-6 type-preview" v-for="type in types" :key="type.uuid">
                         <i :class="`icon bi-${type.icon}`"></i>
@@ -145,10 +143,10 @@
                         <div class="bottom">
                             <div class="btn-group">
                                 <button class="btn btn-primary" @click='DB("put", "types", ({...type, isEnable: false }))'
-                                    v-if="type.isEnable">Отключить</button>
+                                    v-if="type.isEnable" v-t="'Disable'"></button>
                                 <button class="btn btn-primary" @click='DB("put", "types", ({...type, isEnable: true }))'
-                                    v-else>Включить</button>
-                                <button class="btn btn-danger" @click='DB("del", "types", type.uuid)'>Удалить</button>
+                                    v-else v-t="'Enable'"></button>
+                                <button class="btn btn-danger" @click='DB("del", "types", type.uuid)' v-t="'Delete'"></button>
                             </div>
                             <div class="btn-group">
                                 <span class="btn btn-primary active" v-text="type.index"></span>
@@ -160,42 +158,41 @@
                         </div>
                     </div>
                 </div>
-                <button class="btn btn-primary btn-add-type" @click="addType">Загрузить тип данных</button>
+                <button class="btn btn-primary btn-add-type" @click="addType" v-t="'Load data type'"></button>
             </section>
             <section class="col-lg-6 mb-5">
-                <h3>Интеграция с Google Drive</h3>
+                <h3 v-t="'Integration with Google Drive'"></h3>
                 <label class="form-field form-check">
                     <input class="form-check-input" type="checkbox" v-model="isUseGD">
-                    <span class="form-check-label">Использовать GD</span>
+                    <span class="form-check-label" v-t="'Use GD'"></span>
                 </label>
                 <label class="form-field input-group">
-                    <span class="input-group-text">Интервал синзронизации (минуты)</span>
+                    <span class="input-group-text" v-t="'Synchronization interval (minutes)'"></span>
                     <input class="form-control" type="number" v-model="syncInterval">
                 </label>
-                <button class="btn btn-danger mb-3" @click="deleteFromGD">Удалить с GD</button>
-                <div class="small">Эти настройки будут применыны толькл после перезагрузки</div>
+                <button class="btn btn-danger mb-3" @click="deleteFromGD" v-t="'Delete from GD'"></button>
+                <div class="small" v-t="'reboot_message'"></div>
             </section>
             <section class="col-lg-6 mb-5">
-                <h3>Пароль</h3>
+                <h3 v-t="'Password'"></h3>
                 <button class="btn btn-primary mb-5" data-bs-target="#setPassword"
-                    data-bs-toggle="modal">Установить/сменить/удалить</button>
-                <h3>Локальные данные</h3>
-                <button class="btn btn-danger m-1" @click="deleteAll">Удалить</button>
-                <button class="btn btn-primary m-1" @click="exportData">Экспортировать</button>
-                <button class="btn btn-primary m-1" @click="importData">Импортировать</button>
+                    data-bs-toggle="modal" v-t="'Install/change/uninstall'"></button>
+                <h3 v-t="'Local data'"></h3>
+                <button class="btn btn-danger m-1" @click="deleteAll" v-t="'Delete'"></button>
+                <button class="btn btn-primary m-1" @click="exportData" v-t="'Export'"></button>
+                <button class="btn btn-primary m-1" @click="importData" v-t="'Import'"></button>
             </section>
             <section class="col-lg-12 mb-5">
-                <h3>О сайте</h3>
-                <p>Версия: 5</p>
-                <p>Создатель сайта не ставил целью поддержку старых браузеров.</p>
-                <p>Сайт не несет ответственности, ни за что.</p>
-                <a class="link" href="{{ start_url }}/?redirect=off" target="_blank">Первая главная страница</a>
-                <a class="link" href="{{ start_url }}/convector.html" target="_blank">Конвекторы данных</a>
-                <!--a class="link" href="{{ start_url }}/development.html" target="_blank">Документация</a-->
-                <a class="link" href="https://github.com/denis-gr/diary" target="_blank">Исходный код</a>
+                <h3 v-t="'About site'"></h3>
+                <p v-text="$t('version', {v: '5'})"></p>
+                <p v-t="'browser_support'"></p>
+                <p v-t="'disclaimer'"></p>
+                <a class="link" href="{{ start_url }}/?redirect=off" target="_blank" v-t="'Front page'"></a>
+                <a class="link" href="{{ start_url }}/convector.html" target="_blank" v-t="'Convectors'"></a>
+                <!--a class="link" href="{{ start_url }}/development.html" target="_blank" v-t="'Documentation'"></a-->
+                <a class="link" href="https://github.com/denis-gr/diary" target="_blank" v-t="'Source Code'"></a>
             </section>            
         </div>
-
     </div>
     <div class="container date-page" v-else-if="options.page == 'date'" v-cloak>
         <header class="records-header mb-2">

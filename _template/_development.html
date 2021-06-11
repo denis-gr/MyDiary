@@ -4,19 +4,20 @@
 <header class="navbar main-navbar navbar-expand-lg">
     <div class="container navbar-inner">
         <span class="navbar-brand">MyDiary</span>
-        <button class="navbar-toggler" data-bs-target="#navbarSupportedContent" data-bs-toggle="collapse"  aria-label="Toggle navigation">
+        <button class="navbar-toggler" data-bs-target="#navbarSupportedContent" data-bs-toggle="collapse"
+            :aria-label="$t('Toggle navigation')">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ start_url }}/main.html#dashboard">Главная страница</a>
+                    <a class="nav-link" href="#dashboard" v-t="'Homepage'"></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ start_url }}/main.html#search">Поиск</a>
+                    <a class="nav-link" href="#search" v-t="'Search'"></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ start_url }}/main.html#other">Другое</a>
+                    <a class="nav-link" href="#other" v-t="'Other'"></a>
                 </li>
             </ul>
         </div>

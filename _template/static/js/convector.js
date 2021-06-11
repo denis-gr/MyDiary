@@ -66,9 +66,9 @@ async function convertFromMydiaryToUniversum(files) {
                 "type": "ru.schustovd.diary.api.CommentMark",
                 "comment": data["text"],
             }),
-            "1fb116ac-697a-11eb-ac85-c0e434b07c91": data => ({
+            "1fb116ac-697a-11eb-ac85-c0e434b07c91": d => ({
                 "type": "ru.schustovd.diary.api.CommentMark",
-                "comment": data["description"] + "\n" + htmlToText(data["content"]),
+                "comment": d["description"]+"\n"+htmlToText(d["content"]),
             }),
             "3838c06e-7b72-11eb-b8d8-c0e434b07c91": data => ({
                 "type": "ru.schustovd.diary.api.RateMark",

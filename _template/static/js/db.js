@@ -1,6 +1,5 @@
 const nameDB = "MyDiary";
 const versionDB = 5;
-// "isRecordValid", "getRecordTags", "getSearchText", "addBlankRecord" are string function
 const DefaultTypes = [{
     title: "Заметка",
     uuid: "1bb116ac-697a-11eb-ac85-c0e434b07c91",
@@ -30,8 +29,6 @@ const DefaultTypes = [{
     icon: "emoji-expressionless-fill",
     template: document.querySelector("#rate-type-template").innerHTML,
     form_template: document.querySelector("#rate-type-form-template").innerHTML,
-    //page_title: "Настроение",
-    //page_template: document.querySelector("#rate-type-page-template").innerHTML,
     isRecordValid: "(t,r)=>(r.rate>0)",
     getRecordTags: "(t,r)=>[]",
     getSearchText: "(t,r)=>null",
@@ -43,8 +40,6 @@ const DefaultTypes = [{
     icon: "chat-fill",
     template: document.querySelector("#idea-type-template").innerHTML,
     form_template: document.querySelector("#idea-type-form-template").innerHTML,
-    //page_title: "Идеи",
-    //page_template: document.querySelector("#idea-type-page-template").innerHTML,
     isRecordValid: "(t,r)=>!!r.text",
     getRecordTags: "(t,r)=>getHashtags(r.text)",
     getSearchText: "(t,r)=>r.text",
@@ -56,8 +51,6 @@ const DefaultTypes = [{
     icon: "calendar-event-fill",
     template: document.querySelector("#task-type-template").innerHTML,
     form_template: document.querySelector("#task-type-form-template").innerHTML,
-    //page_title: "Задачи",
-    //page_template: document.querySelector("#task-type-page-template").innerHTML,
     isRecordValid: "(t,r)=>!!r.text",
     getRecordTags: "(t,r)=>getHashtags(r.text,r.conclusion)",
     getSearchText: "(t,r)=>(r.text+r.conclusion)",
@@ -72,7 +65,7 @@ class DBClass {
     async _prepare() {
         this._db = await this._indexedDBPromise;
         if (this._db.isFirst) {
-            let data = DefaultTypes.map(i => ({isEnable: true, index: 0, ...i}));
+            let data = DefaultTypes.map(i=>({isEnable: true, index: 0, ...i}));
             data = data.map(i => this._dbRequest("put", "types", i.uuid, i));
             await Promise.all(data);
         };
@@ -207,9 +200,9 @@ class DBClass {
         const data = {};
         data.records = await this._dbRequest("getAll", "records"),
         data.version = "5";
-        data.records.sort((a, b) => a.$id == b.$id ? 0 : (a.$id > b.$id ? -1 : 1));
+        data.records.sort((a,b)=>a.$id == b.$id ? 0 :(a.$id > b.$id ? -1 : 1));
         data.records.forEach(data =>
-            Object.keys(data).sort().reduce((a, i) => ({...a, [i]: data[i]}), {})
+            Object.keys(data).sort().reduce((a,i)=>({...a, [i]: data[i]}), {})
         );
         if (this._password) {
             data.records = JSON.stringify(data.records);
