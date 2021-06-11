@@ -1,0 +1,168 @@
+.base-theme {
+    .main-navbar.navbar {
+        .navbar-brand {
+            color: var(--color3);
+            background-color: var(--color1);
+        };
+
+        .navbar-toggler {
+            color: var(--color3);
+            background-color: var(--color1);
+            border: none;
+
+            &:focus {
+                box-shadow: none;
+            }
+        };
+
+        .navbar-collapse {
+            color: var(--color4);
+            background-color: var(--color1);
+        };
+
+        .navbar-toggler-icon {
+            background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 0, 0, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e")
+        };
+
+        .navbar-nav {
+            .nav-link {
+                color: var(--color4);
+                background-color: var(--color1);
+            };
+        };
+
+        .navbar-search {
+            .form-field {
+                margin-bottom: 0;
+            };
+
+            margin-left: auto;
+        };
+
+        .navbar-inner {
+            background-color: var(--color1);
+        };
+
+        background-color: var(--color1);
+    };
+
+    .record .record-preview {
+        .right .content {
+            border-bottom: 1px solid var(--color3);
+        };
+        .right .date, .right .tag {
+            color: var(--color3);
+            font-size: 0.75rem;
+            display: inline-block;
+        };
+    };
+
+    .calendar {
+        .header {
+            font-size: 1rem;
+        }
+
+        .header .title {
+            font-size: calc(1.3rem + .6vw);
+        }
+
+        .header .btn-change-date {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .weekday,
+        .day {
+            font-size: 1rem;
+            border-radius: 100%;
+            border: 1px solid transparent;
+            background-color: transparent;
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .day {
+            text-decoration: none;
+        }
+
+        .day.active.today {
+            border-color: var(--color5);
+        }
+
+        .day.active.today:hover {
+            background-color: var(--color5);
+            color: var(--color2);
+        }
+
+        .day.active {
+            border-color: var(--color6);
+        }
+
+        .day.active:hover {
+            background-color: var(--color6);
+            color: var(--color2);
+        }
+    };
+
+    .tags-menu-list {
+        background-color: var(--color2);
+    };
+
+    .dashboard-tags .tags .tags-list .tags-list-link {
+        word-wrap: break-word;
+        font-size: 1.5rem;
+        color: var(--color3);
+    };
+
+    .icon {
+        background-color: transparent;
+        color: var(--color3);
+        font-size: 1.5rem;
+        line-height: 1rem;
+    }
+
+    .form-field {
+        margin-bottom: 1rem;
+    }
+
+    &.dark .input-group-text{
+        background-color: transparent;
+        color: var(--color3);
+    };
+
+    &.dark .btn-cls, &.dark .navbar-toggler-icon {
+        filter: invert(1) grayscale(100%) brightness(200%);
+        background-color: transparent;
+    };
+
+    &, *:focus, * {
+        background-color: var(--color2);
+        color: var(--color3);
+    };
+    
+    .first-page .block-inner a, .first-page .block-inner h2, .first-page .block-inner p {
+        background-color: transparent;
+        color: white;
+    };
+
+    .my-progress-bar {
+        background: var(--color5);
+    };
+
+    &.dark {
+        --color1: #212529;
+        --color2: #212529;
+        --color3: #f8f9fa;
+        --color4: #f8f9fa;
+        --color5: red;
+        --color6: #7b5940;        
+    };
+
+    --color1: #f8f9fa;
+    --color2: #ffffff;
+    --color3: #212529;
+    --color4: rgba(0,0,0,.55);
+    --color5: red;
+    --color6: #7b5940;
+    --ck-color-base-background: var(--color2);
+};

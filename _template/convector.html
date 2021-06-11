@@ -1,0 +1,60 @@
+{% extends '_base.html' %}
+
+{% block content %}
+<div class="window" id="app">
+    <div class="my-progress-bar" id="progress-bar" hidden></div>
+    <header class="navbar main-navbar navbar-expand-lg">
+        <div class="container navbar-inner">
+            <span class="navbar-brand">MyDiary</span>
+            <button class="navbar-toggler" data-bs-target="#navbarSupportedContent" data-bs-toggle="collapse"  aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ start_url }}/main.html#dashboard">Главная страница</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ start_url }}/main.html#search">Поиск</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ start_url }}/main.html#other">Другое</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </header>
+    <div class="container convector-page">
+        <h3 class="title">Конвектирование типов</h3>
+        <div class="input-group form-field">
+            <label class="input-group-text">Из:</label>
+            <select class="form-select" v-model="fromType">
+                <option v-for="(val, key) in convectorsTypes" :value="key" v-text="val">
+                </option>
+            </select>
+        </div>
+        <div class="input-group form-field">
+            <label class="input-group-text">В:</label>
+            <select class="form-select" v-model="toType">
+                <option v-for="(val, key) in convectorsTypes" :value="key" v-text="val">
+                </option>
+            </select>
+        </div>
+        <button class="btn btn-primary" @click="startConvector">Начать</button>
+    </div>
+    {% block inner %}
+    {% endblock %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+
+<div id="templates">
+    {% include 'components/_default_record_types.html' %}
+</div>
+<script src="https://cdn.jsdelivr.net/npm/idb@6/build/iife/index-min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js" defer></script>
+<script src="{{ start_url }}/static/js/base.js" defer></script>
+<script src="{{ start_url }}/static/js/db.js" defer></script>
+<script src="{{ start_url }}/static/js/convector.js" defer></script>
+{% endblock %}

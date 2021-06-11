@@ -1,0 +1,76 @@
+<template id="record-type-template">
+    <div class="text-to-borders" v-text="record.text"></div>
+</template>
+
+<template id="record-type-form-template">
+    <div class="form-field">
+        <label class="form-label">Текст</label>
+        <autosize-textarea class="form-control" v-model="form.text"></autosize-textarea>
+    </div>
+</template>
+
+<template id="text-type-template">
+    <div v-html="record.description"></div>
+</template>
+
+<template id="text-type-form-template">
+    <div class="form-field">
+        <label class="form-label">Описание</label>
+        <autosize-textarea class="form-control" v-model="form.description"></autosize-textarea>
+    </div>
+    <wysiwyg-editor v-model="form.content"></wysiwyg-editor>
+</template>
+
+<template id="idea-type-template">
+    <div class="text-to-borders" v-text="record.text"></div>
+</template>
+
+<template id="idea-type-form-template">
+    <div class="form-field">
+        <label class="form-label">Что за идея?</label>
+        <autosize-textarea class="form-control" v-model="form.text"></autosize-textarea>
+    </div>
+</template>
+
+<template id="task-type-template">
+    <div class="text-to-borders" v-text="record.text" :style="[new Date(record.$date + ' ' + record.$time) < new Date() ? { color: 'red' } : {},
+            record.isDone ? { color: 'green' } : {}]"></div>
+</template>
+
+<template id="task-type-form-template">
+    <div class="form-field">
+        <label class="form-label">Что за идея?</label>
+        <autosize-textarea class="form-control" v-model="form.text"></autosize-textarea>
+    </div>
+    <div class="form-check my-3">
+        <input class="form-check-input" type="checkbox" v-model="form.isDone">
+        <label class="form-check-label">
+          Задача выполнена.
+        </label>
+      </div>
+    <div class="form-field" v-if="form.isDone">
+        <label class="form-label">Итоги</label>
+        <autosize-textarea class="form-control" v-model="form.conclusion"></autosize-textarea>
+    </div>
+</template>
+
+<template id="rate-type-template">
+    <div style="color: green;" v-if="record.rate == 5">Отличное</div>
+    <div style="color: teal;" v-else-if="record.rate == 4">Хорошие</div>
+    <div style="color: yellow;" v-else-if="record.rate == 3">Нормальное</div>
+    <div style="color: orange;" v-else-if="record.rate == 2">Плохое</div>
+    <div style="color: red;" v-else-if="record.rate == 1">Ужасное</div>
+</template>
+
+<template id="rate-type-form-template">
+    <div class="form-field">
+        <label class="form-label">Какое у вас сегодня настроение?</label>
+        <select class="form-select" v-model.number="form.rate">
+            <option value="5">Отличное</option>
+            <option value="4">Хорошие</option>
+            <option value="3">Нормальное</option>
+            <option value="2">Плохое</option>
+            <option value="1">Ужасное</option>
+        </select>
+    </div>
+</template>

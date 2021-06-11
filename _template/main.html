@@ -1,0 +1,282 @@
+{% extends '_base.html' %}
+
+{% block content %} 
+<div class="my-progress-bar" id="progress-bar" hidden></div>
+<div class="window" id="app">
+    <modal id="startGDModal" title="Подключение к Google" v-cloak>
+        <p>Войдите в Google, что бы синхронизировать данные с Google Drive.</p>
+        <p>Или вы хотите отключить синхронизацию?</p>
+        <template v-slot:footer="">
+            <button class="btn btn-secondary" data-bs-dismiss="modal" @click="isUseGD = false">Отключить</button>
+            <button class="btn btn-primary" data-bs-dismiss="modal" onclick="login()">Войти</button>
+        </template>
+    </modal>
+    <modal id="setPassword" title="Настройка пароля" v-cloak>
+        <label class="form-field">
+            <span class="form-label">Новый пароль</span>
+            <input class="form-control" v-model="password1" autocomplete="off">
+        </label>
+        <label class="form-field">
+            <span class="form-label">Новый пароль (ещё раз)</span>
+            <input class="form-control" v-model="password2" autocomplete="off">
+        </label>
+        <label class="form-field">
+            <span class="form-label">Контрольный вопрос</span>
+            <input class="form-control" v-model="question" autocomplete="off">
+        </label>
+        <label class="form-field">
+            <span class="form-label">Ответ на контрольный вопрос</span>
+            <input class="form-control" v-model="answer" autocomplete="off">
+        </label>
+        <small>Что бы убрать пароль оставте поля с паролем пустыми и нажмите "Поставить"</small>
+        <small>Для работы синхронизации во всех экземплярах должен, либо быть один и тот же пароль, либо отсуствувать</small>
+        <template v-slot:footer="">
+            <button class="btn btn-secondary" data-bs-dismiss="modal">Не менять</button>
+            <button class="btn btn-primary" data-bs-dismiss="modal" @click="setPassword">Поставить</button>
+        </template>
+    </modal>
+    <modal id="passwordModal" title="Разблокировка" isnotfooter="true" v-cloak>
+        <label class="form-field">
+            <span class="form-label">Пароль</span>
+            <input class="form-control" ref="passwordInput" autocomplete="off">
+        </label>
+        <small>Или ответ на "<span v-text='question'></span>"</small>
+    </modal>
+    <modal id="editDate" title="Изменить дату" v-cloak>
+        <label class="form-field">
+            <span class="form-label">Дата</span>
+            <input class="form-control" type="date" v-model="today">
+        </label>
+        <template v-slot:footer="">
+            <a class="btn btn-primary" data-bs-dismiss="modal" @click="changeDate(today)">Перейти</a>
+        </template>
+    </modal>
+    <header class="navbar main-navbar navbar-expand-lg">
+        <div class="container navbar-inner">
+            <span class="navbar-brand">MyDiary</span>
+            <button class="navbar-toggler" data-bs-target="#navbarSupportedContent" data-bs-toggle="collapse"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#dashboard">Главная страница</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#search">Поиск</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#other">Другое</a>
+                    </li>
+                    <li class="nav-item" v-for="i in types">
+                        <a class="nav-link" :href="`#type/${i.uuid}`" v-if="i.page_title" v-text="i.page_title"></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </header>
+    <div class="container search-page" v-if="options.page == 'search'" v-cloak>
+        <h1 class="title text-center">Поиск</h1>
+        <div class="row justify-content-center">
+            <label class="input-group form-field">
+                <span class="input-group-text">Искать</span>
+                <input class="form-control" type="search" v-model.trim="options.q" @input="update">
+            </label>
+            <label class="input-group form-field w-auto">
+                <span class="input-group-text">Тип</span>
+                <select class="form-select" v-model="options.type" @input="update">
+                    <option :value="undefined">Любой</option>
+                    <option :value="i.uuid" v-for="i in types" v-text="i.title" :key="i.uuid"></option>
+                </select>
+            </label>
+            <label class="input-group form-field w-auto">
+                <span class="input-group-text">Тег</span>
+                <select class="form-select" v-model="options.tag" @input="update">
+                    <option :value="undefined">Любой</option>
+                    <option :value="i" v-if="tags" v-for="i in tags" v-text="'#'+i" :key="i"></option>
+                </select>
+            </label>       
+        </div>
+        <hr>
+        <records :records="records"></records>
+    </div>
+    <div class="container tag-page" v-else-if="options.page == 'tag'" v-cloak>
+        <header class="navbar records-header mb-2">
+            <div class="dropdown tags-menu" v-if="tags && tags.length">
+                <a class="dropdown-toggle h1" data-bs-toggle="dropdown" v-text="'#'+options.tag"></a>
+                <ul class="dropdown-menu tags-menu-list">
+                    <li class="tags-menu-list-item" v-for="i in tags" :key="i">
+                        <a class="dropdown-item tags-menu-list-link" v-if="i != options.tag" :href="getTagUrl(i)"
+                            v-text="'#'+i"></a>
+                    </li>
+                </ul>
+            </div>
+            <div class="h1" v-text="'#'+options.tag" v-else></div>
+        </header>
+        <records :records="records"></records>
+    </div>
+    <div class="other-page container" v-else-if="options.page == 'other'" v-cloak>
+        <div class="row">
+            <section class="col-lg-12 mb-5">
+                <h3 class="title">Информация</h3>
+                <table class="table">
+                    <tr>
+                        <td>Количество типов записей: </td>
+                        <td v-text="(types || []).length"></td>
+                    </tr>
+                    <tr>
+                        <td>Количество тегов: </td>
+                        <td v-text="(tags || []).length"></td>
+                    </tr>
+                    <tr>
+                        <td>Количество записей: </td>
+                        <td v-text="(allRecords || []).length"></td>
+                    </tr>
+                </table>
+            </section>
+            <section class="col-lg-12 mb-5">
+                <h3>Типы записей</h3>
+                <div class="row types-list">
+                    <div class="col-md-6 type-preview" v-for="type in types" :key="type.uuid">
+                        <i :class="`icon bi-${type.icon}`"></i>
+                        <span class="name" v-text="type.title"></span>
+                        <small class="description" v-text="type.description"></small>
+                        <div class="bottom">
+                            <div class="btn-group">
+                                <button class="btn btn-primary" @click='DB("put", "types", ({...type, isEnable: false }))'
+                                    v-if="type.isEnable">Отключить</button>
+                                <button class="btn btn-primary" @click='DB("put", "types", ({...type, isEnable: true }))'
+                                    v-else>Включить</button>
+                                <button class="btn btn-danger" @click='DB("del", "types", type.uuid)'>Удалить</button>
+                            </div>
+                            <div class="btn-group">
+                                <span class="btn btn-primary active" v-text="type.index"></span>
+                                <button class="btn btn-primary"
+                                    @click='DB("put", "types", ({...type, index: --type.index }))'>-</button>
+                                <button class="btn btn-primary"
+                                    @click='DB("put", "types", ({...type, index: ++type.index }))'>+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary btn-add-type" @click="addType">Загрузить тип данных</button>
+            </section>
+            <section class="col-lg-6 mb-5">
+                <h3>Интеграция с Google Drive</h3>
+                <label class="form-field form-check">
+                    <input class="form-check-input" type="checkbox" v-model="isUseGD">
+                    <span class="form-check-label">Использовать GD</span>
+                </label>
+                <label class="form-field input-group">
+                    <span class="input-group-text">Интервал синзронизации (минуты)</span>
+                    <input class="form-control" type="number" v-model="syncInterval">
+                </label>
+                <button class="btn btn-danger mb-3" @click="deleteFromGD">Удалить с GD</button>
+                <div class="small">Эти настройки будут применыны толькл после перезагрузки</div>
+            </section>
+            <section class="col-lg-6 mb-5">
+                <h3>Пароль</h3>
+                <button class="btn btn-primary mb-5" data-bs-target="#setPassword"
+                    data-bs-toggle="modal">Установить/сменить/удалить</button>
+                <h3>Локальные данные</h3>
+                <button class="btn btn-danger m-1" @click="deleteAll">Удалить</button>
+                <button class="btn btn-primary m-1" @click="exportData">Экспортировать</button>
+                <button class="btn btn-primary m-1" @click="importData">Импортировать</button>
+            </section>
+            <section class="col-lg-12 mb-5">
+                <h3>О сайте</h3>
+                <p>Версия: 5</p>
+                <p>Создатель сайта не ставил целью поддержку старых браузеров.</p>
+                <p>Сайт не несет ответственности, ни за что.</p>
+                <a class="link" href="{{ start_url }}/?redirect=off" target="_blank">Первая главная страница</a>
+                <a class="link" href="{{ start_url }}/convector.html" target="_blank">Конвекторы данных</a>
+                <!--a class="link" href="{{ start_url }}/development.html" target="_blank">Документация</a-->
+                <a class="link" href="https://github.com/denis-gr/diary" target="_blank">Исходный код</a>
+            </section>            
+        </div>
+
+    </div>
+    <div class="container date-page" v-else-if="options.page == 'date'" v-cloak>
+        <header class="records-header mb-2">
+            <button class="title h1 btn btn-link" data-bs-target="#editDate" data-bs-toggle="modal">
+                <h1 v-text="getFormattedDate(options.date)"></h1>
+            </button>
+            <button class="btn btn-link align-text-bottom" @click='changeDay(-1)'><</button>
+            <button class="btn btn-link align-text-bottom" @click='changeDay(+1)'>></button>
+        </header>
+        <records :records="records"></records>
+    </div>
+    <template v-for="i in types" v-else-if="options.page == 'type'" v-cloak>
+        <component :is="`page-record-${i.uuid}`" v-if="options.type == i.uuid"></component>
+    </template>
+    <div class="container dashboard-page" v-else>
+        <div class="row text-center">
+            <calendar id="calendar" class="col-md-6" :first_date="options.date" v-cloak></calendar>
+            <div class="dashboard-tags col-md-6">
+                <h3 class="title" v-t="'Tags'"></h3>
+                <nav class="tags-list" v-if="tags.length" v-cloak>
+                    <a class="tags-list-link" v-for="i in tags" :href="getTagUrl(i)" v-text="i"></a>
+                </nav>
+                <p class="error-text" v-else v-cloak v-t="'No tags'"></p>
+            </div>
+        </div>
+        <records :records="records"></records>
+    </div>
+    <div class="creation-menu" id="creation-menu">
+        <div class="creation-menu-inner btn-group-vertical">
+            <template v-for="i in types">
+                <button class="btn btn-outline-secondary" @click="callEditor(i.uuid)"
+                    v-if="i.isEnable" :title="i.title">
+                    <i :class="`bi-${i.icon} icon`"></i>
+                </button>
+            </template>
+            <button class="btn btn-outline-secondary btn-cls" onclick="toggleCreationMenu()"
+                :title="$t('Close')">
+                <i class="bi-x icon"></i>
+            </button>
+        </div>
+        <button class="btn btn-outline-secondary btn-opn" onclick="toggleCreationMenu()"
+            :title="$t('Open post records menu')">
+            <i class="bi-plus icon"></i>
+        </button>
+    </div>
+    <record-editor :type="i" v-for="i in types" :key="i.uuid"></record-editor>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    {
+        const fun = () => {
+            if (!location.hash.length) {
+                location.hash = "#dashboard"
+            };
+            window.options = {};
+            const temp = decodeURIComponent(location.hash).split(/[#/]/);
+            window.options.page = temp[1];
+            window.options[temp[1]] = temp[2];
+        };
+        window.addEventListener("hashchange", fun);
+        fun();
+    }
+</script>
+<div id="templates">
+    {% include 'components/_components.html' %}
+    {% include 'components/_record_components.html' %}
+    {% include 'components/_default_record_types.html' %}
+</div>
+<script src="https://cdn.jsdelivr.net/npm/moment@2/moment.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2/locale/ru.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/idb@6/build/iife/index-min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/vue-i18n@9/dist/vue-i18n.global.js" defer></script>
+<script src="https://apis.google.com/js/api.js" defer></script>
+<script src="{{ start_url }}/static/js/google.js" defer></script>
+<script src="{{ start_url }}/static/js/base.js" defer></script>
+<script src="{{ start_url }}/static/js/db.js" defer></script>
+<script src="{{ start_url }}/static/js/vue.js" defer></script>
+<script src="{{ start_url }}/static/ckeditor5/build/ckeditor.js" defer></script>
+<script src="{{ start_url }}/static/ckeditor5/build/translations/ru.js" defer></script>
+<script src="{{ start_url }}/static/ckeditor5/script.js" defer></script>
+{% endblock %}

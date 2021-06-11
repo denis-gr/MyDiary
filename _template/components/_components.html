@@ -1,0 +1,50 @@
+<template id="modal-template">
+  <div class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-fullscreen-sm-down">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" v-text="title"></h5>
+        </div>
+        <div class="modal-body">
+          <slot></slot>
+        </div>
+        <div class="modal-footer" v-if="!isnotfooter">
+          <slot name="footer"></slot>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="calendar-template">
+  <div class="calendar">
+    <modal class="calendar-modal" :title="$t('Change date')" :id="'edit'+id">
+      <div class="form-field input-group">
+        <span class="input-group-text" v-t="'Year'"></span>
+        <input class="form-control" type="number" v-model="year">
+      </div>
+      <div class="form-field input-group">
+        <span class="input-group-text" v-t="'Month'"></span>
+        <input class="form-control" type="number" v-model="month">
+      </div>
+      <template v-slot:footer="">
+        <button class="btn btn-primary" data-bs-dismiss="modal" @click="update" v-t="'Go'"></button>
+      </template>
+    </modal>
+    <div class="header">
+      <a class="title btn-link" data-bs-toggle="modal" :data-bs-target="'#edit'+id" v-text="title"></a>
+    </div>
+    <div class="day-row">
+      <span class="weekday" v-t="'Mo'"></span>
+      <span class="weekday" v-t="'Tu'"></span>
+      <span class="weekday" v-t="'We'"></span>
+      <span class="weekday" v-t="'Th'"></span>
+      <span class="weekday" v-t="'Fr'"></span>
+      <span class="weekday" v-t="'Sa'"></span>
+      <span class="weekday" v-t="'Su'"></span>
+    </div>
+    <div class="day-row" v-for="i in days">
+      <a v-for="j in i" v-text="j.getDate()" :href="$root.getDateUrl(j)" :class="getClassesDay(j)"></a>
+    </div>
+  </div>
+</template>

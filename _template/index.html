@@ -1,0 +1,48 @@
+{% extends '_base.html' %}
+
+{% block extra_head %}
+<script>
+    if (!localStorage.isNotFirst || location.search.indexOf("redirect=off") > 0) {
+        localStorage.setItem('isNotFirst', "true");
+    } else {
+        location = "{{ start_url }}/main.html";
+    };
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="window first-page">
+    <section class="block" style="background-image: url('{{ start_url }}/static/img/diary.jpg')">
+        <div class="block-inner">
+            <h2 class="title">Ведите дневник</h2>
+            <p>Ведение дневника помогает справляться с трудностями, развивать творческие способности, обрести уверенность в себе и лучше понять своё место в жизни.</p>
+        </div>
+    </section>
+    <section class="block" style="background-image: url('{{ start_url }}/static/img/data.jpg')">
+        <div class="block-inner">
+            <h2 class="title">Ваши данные не пропадут</h2>
+            <p>Вы можете сделать импорт и экспорт данных в любой момент.</p>
+        </div>
+    </section>
+    <section class="block" style="background-image: url('{{ start_url }}/static/img/lock.jpg')">
+        <div class="block-inner">
+            <h2 class="title">Конфиденциальность</h2>
+            <p>Сайт не хранит данные на сервере, он даже не имеет такой возможности. Ваши данные хранятся в вашем браузере и получить к ним доступ можно только с него.</p>
+        </div>
+    </section>
+    <section class="block" style="background-image: url('{{ start_url }}/static/img/pwa.jpg')">
+        <div class="block-inner">
+            <h2 class="title">PWA</h2>
+            <p>Вы можете установить этот сайт, как приложение (если это поддерживает ваш браузер) и работать с ним без интернета.</p>
+        </div>
+    </section>
+    <section class="block" style="background-image: url('{{ start_url }}/static/img/start.jpg')">
+        <div class="block-inner">
+            <a class="start-btn" href="{{ start_url }}/main.html">Начать</a>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% endblock %}
