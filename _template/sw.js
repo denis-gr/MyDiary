@@ -34,6 +34,8 @@ workbox.precaching.precacheAndRoute([
     "{{ start_url }}/static/js/base.js",
     "{{ start_url }}/static/js/vue.js",
     "{{ start_url }}/static/js/db.js",
+    "{{ start_url }}/static/img/password.jpg",
+    "{{ start_url }}/static/img/google.jpg",
     "{{ start_url }}/static/img/diary.jpg",
     "{{ start_url }}/static/img/start.jpg",
     "{{ start_url }}/static/img/lock.jpg",
