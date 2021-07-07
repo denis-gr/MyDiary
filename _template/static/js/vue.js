@@ -203,17 +203,20 @@ const App = Vue.createApp({
             };
         },
         async syncWithGD() {
-            const t = setInterval(() => Processes.fun(async () => {
-                try {
-                    await this._syncWithGD();
-                    clearInterval(t);
-                } catch (error) {
-                    if (error == INVALIDPASSWORD) {
-                        clearInterval(t);
-                        throw INVALIDPASSWORD;
+            await Processes.fun(async () => {
+                while (true) {
+                    try {
+                        await this._syncWithGD();
+                        break
+                    } catch (error) {
+                        if (error == INVALIDPASSWORD) {
+                            clearInterval(t);
+                            throw INVALIDPASSWORD;
+                        };
                     };
-                }
-            }), 1000);
+                };
+                await new Promise(r => setTimeout(r, 1000));
+            });
         },
     },
     async mounted() {
