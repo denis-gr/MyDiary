@@ -96,7 +96,7 @@ class GDDBClass {
         let files = await this.find(
             "parents in '" + root + "' and mimeType = 'application/json'");
         files.sort((a, b) => a.name == b.name ? 0 : (a.name > b.name ? -1 : 1));
-        let data = '{"records":[],"version":"5.1"}';
+        let data = '{"records":[],"version":"5"}';
         for (let i in files) {
             const temp = await this.downloadText(files[i].id);
             try {

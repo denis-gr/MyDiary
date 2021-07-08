@@ -1,5 +1,5 @@
 const nameDB = "MyDiary";
-const versionDB = 5.1;
+const versionDB = 5;
 const DefaultTypes = [{
     title: "Заметка",
     uuid: "1bb116ac-697a-11eb-ac85-c0e434b07c91",
@@ -189,8 +189,7 @@ class DBClass {
         };
         await this._promise;
         data = data.map(i => Object.assign({}, i));
-        data = data.map(i => ({ ...i, $changed: Number(new Date) }));
-        data = data.map(i => ({ ...i, $id: String(i.$changed) }));
+        data.forEach(i => i.$id = i.$created = i.$changed = Number(new Date));
         data = data.map(i => this._dbRequest("put", "records", i.$id, i));
         data = await Promise.all(data);
         await this.sync();
@@ -200,7 +199,7 @@ class DBClass {
         await this._promise;
         const data = {};
         data.records = await this._dbRequest("getAll", "records"),
-        data.version = "5.1";
+        data.version = "5";
         data.records.sort((a,b)=>a.$id == b.$id ? 0 :(a.$id > b.$id ? -1 : 1));
         data.records.forEach(data =>
             Object.keys(data).sort().reduce((a,i)=>({...a, [i]: data[i]}), {})
@@ -227,10 +226,11 @@ class DBClass {
                 throw INVALIDPASSWORD; 
             }
         };
-        if (data.version == "5.1") {
+        if (data.version == 5) {
             for (let i in data.records) {
                 const n = data.records[i];
-                const o = await this._dbRequest("get", "records", n.$id);
+                n.$id = n.$id || n.$created;
+                const o = await this._dbRequest("get", "records", n.$id || -1);
                 if (!o || !o.$changed || ((o.$changed <= n.$changed) &&
                     (JSON.stringify(o) != JSON.stringify(n)))){
                     await this._dbRequest("put", "records", n.$id, n);
@@ -260,12 +260,10 @@ class DBClass {
 };
 
 const dbPromise = idb.openDB(nameDB, versionDB, {
-    upgrade(db, oldVersion) {
-        if (!oldVersion) {
-            db.createObjectStore('storage');
-            db.createObjectStore('types');
-            db.createObjectStore('records');            
-        };
+    upgrade(db) {
+        db.createObjectStore('storage');
+        db.createObjectStore('types');
+        db.createObjectStore('records');
         db.isFirst = true;
     }
 });

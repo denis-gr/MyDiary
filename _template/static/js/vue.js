@@ -130,7 +130,7 @@ const App = Vue.createApp({
         async addType() {
             await Processes.fun(async () => {
                 const data = JSON.parse(await (await getFile())[0].text());
-                if (data.version == "5.1" || data.version == "5") {
+                if (data.version == "5") {
                     await DB.put("types", data.type);
                 };
             });

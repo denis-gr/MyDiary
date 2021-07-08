@@ -88,7 +88,7 @@ async function convertFromUniversumToMydiary(files) {
                 "$tags": getHashtags(data["comment"], data["conclusion"]),
                 "text": data["comment"],
                 "isDone": data["done"],
-                "conclusion": data["c"],
+                "conclusion": data["conclusion"],
             }),
         },
     };
@@ -97,13 +97,14 @@ async function convertFromUniversumToMydiary(files) {
     delete files[Object.keys(files)[0]];
     const newData = {
         records: [],
-        version: "5.1",
+        version: "5",
     };
     data.marks.forEach(i => {
         const convector = universumMydiaryConvestors[data["version"]][i.type];
         if (convector) {
             const record = {
                 $id: i["id"],
+                $created: i["created"],
                 $changed: i["changed"] > 0 ? i["changed"] : i["created"],
                 $date: i["date"],
                 $time: i["time"].slice(null, -3),
@@ -118,7 +119,7 @@ async function convertFromUniversumToMydiary(files) {
 
 async function convertFromMydiaryToUniversum(files) {
     const mydiaryUniversumConvestors = {
-        "5.1": {
+        "5": {
             "1bb116ac-697a-11eb-ac85-c0e434b07c91": data => ({
                 "type": "ru.schustovd.diary.api.CommentMark",
                 "comment": data["text"],
@@ -163,7 +164,7 @@ async function convertFromMydiaryToUniversum(files) {
             const record = {
                 ...convector(i, files),
                 id: GetUUID4(),
-                created: i["$changed"],
+                created: i["$created"],
                 changed: i["$changed"],
                 time: i["$time"] + ":00",
                 date: i["$date"],
