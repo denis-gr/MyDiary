@@ -200,7 +200,7 @@ class DBClass {
         await this._promise;
         const data = {};
         data.records = await this._dbRequest("getAll", "records"),
-        data.version = "5";
+        data.version = "5.1";
         data.records.sort((a,b)=>a.$i == b.$i ? 0 :(a.$i > b.$i ? -1 : 1));
         data.records.forEach(data =>
             Object.keys(data).sort().reduce((a,i)=>({...a, [i]: data[i]}), {})
