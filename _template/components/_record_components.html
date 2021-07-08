@@ -4,7 +4,7 @@
         <div class="error-text" v-else-if="!records.length" v-t="'No records'" v-cloak></div>
         <ul class="row records-list" v-else>
             <li class="records-list-item col-sm-6" v-for="i in records">
-                <component :is="`record-${i.$s}`" :record="i" :key="i.$i"></component>
+                <component :is="`record-${i.$type}`" :record="i" :key="i.$id"></component>
             </li>
         </ul>
     </div>
@@ -13,8 +13,8 @@
 <template id="record-modal-temp">
     <div class="form">
         <div class="form-field input-group">
-            <input class="form-control" type="date" v-model="form.$d" :title="$t('Date')">
-            <input class="form-control" type="time" v-model="form.$t" :title="$t('Time')">
+            <input class="form-control" type="date" v-model="form.$date" :title="$t('Date')">
+            <input class="form-control" type="time" v-model="form.$time" :title="$t('Time')">
         </div>
         {form}
     </div>
@@ -25,12 +25,12 @@
         <div class="record-preview">
             <i :class="`bi-${type.icon} icon left`"></i>
             <div class="right">
-                <div class="content" @click="$root.callEditor(record.$s, record)">
+                <div class="content" @click="$root.callEditor(record.$type, record)">
                     {type_template}
                 </div>
                 <div class="bottom">
-                    <a class="date" v-text="datetime(record)" :href="$root.getDateUrl(record.$d)"></a>
-                    <a class="tag" v-for="tag in record.$m" v-text="'#'+tag" :href="$root.getTagUrl(tag)"></a>
+                    <a class="date" v-text="datetime(record)" :href="$root.getDateUrl(record.$date)"></a>
+                    <a class="tag" v-for="tag in record.$tags" v-text="'#'+tag" :href="$root.getTagUrl(tag)"></a>
                 </div>
             </div>
         </div>
@@ -41,7 +41,7 @@
     <modal :title="type.title">
         <component :is="`modal-record-${type.uuid}`" :form="form"></component>
         <template v-slot:footer="">
-            <button class="btn btn-danger" data-bs-dismiss="modal" @click="remove" v-if="form.$i" v-t="'Delete'"></button>
+            <button class="btn btn-danger" data-bs-dismiss="modal" @click="remove" v-if="form.$id" v-t="'Delete'"></button>
             <button class="btn btn-primary" ref="cls" v-show="!isValid" v-t="'Close'"></button>
             <button class="btn btn-primary" ref="btn" v-show="isValid" v-t="'Save'"></button>
         </template>

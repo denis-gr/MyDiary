@@ -64,13 +64,13 @@ async function convertFromUniversumToMydiary(files) {
     const universumMydiaryConvestors = {
         "3": {
             "ru.schustovd.diary.api.CommentMark": data => ({
-                "$s": "1bb116ac-697a-11eb-ac85-c0e434b07c91",
-                "$m": getHashtags(data["comment"]),
-                "t": data["comment"],
+                "$type": "1bb116ac-697a-11eb-ac85-c0e434b07c91",
+                "$tags": getHashtags(data["comment"]),
+                "text": data["comment"],
             }),
             "ru.schustovd.diary.api.RateMark": data => ({
-                "$s": "3838c06e-7b72-11eb-b8d8-c0e434b07c91",
-                "r": ({
+                "$type": "3838c06e-7b72-11eb-b8d8-c0e434b07c91",
+                "rate": ({
                     3: 5,
                     5: 4,
                     2: 3,
@@ -79,16 +79,16 @@ async function convertFromUniversumToMydiary(files) {
                 })[data["grade"]],
             }),
             "ru.schustovd.diary.api.IdeaMark": data => ({
-                "$s": "4f3e74c0-beca-4d91-8b37-0d8af574afd7",
-                "$m": getHashtags(data["comment"]),
-                "t": data["comment"],
+                "$type": "4f3e74c0-beca-4d91-8b37-0d8af574afd7",
+                "$tags": getHashtags(data["comment"]),
+                "text": data["comment"],
             }),
             "ru.schustovd.diary.api.TaskMark": data => ({
-                "$s": "5e5a8960-6e2b-11eb-b6df-c0e434b07c91",
-                "$m": getHashtags(data["comment"], data["c"]),
-                "t": data["comment"],
-                "i": data["done"],
-                "c": data["c"],
+                "$type": "5e5a8960-6e2b-11eb-b6df-c0e434b07c91",
+                "$tags": getHashtags(data["comment"], data["conclusion"]),
+                "text": data["comment"],
+                "isDone": data["done"],
+                "conclusion": data["c"],
             }),
         },
     };
@@ -103,10 +103,10 @@ async function convertFromUniversumToMydiary(files) {
         const convector = universumMydiaryConvestors[data["version"]][i.type];
         if (convector) {
             const record = {
-                $i: i["id"],
-                $c: i["changed"] > 0 ? i["changed"] : i["created"],
-                $d: i["date"],
-                $t: i["time"].slice(null, -3),
+                $id: i["id"],
+                $changed: i["changed"] > 0 ? i["changed"] : i["created"],
+                $date: i["date"],
+                $time: i["time"].slice(null, -3),
                 ...convector(i, files),
             };
             newData.records.push(record);
@@ -121,11 +121,11 @@ async function convertFromMydiaryToUniversum(files) {
         "5.1": {
             "1bb116ac-697a-11eb-ac85-c0e434b07c91": data => ({
                 "type": "ru.schustovd.diary.api.CommentMark",
-                "comment": data["t"],
+                "comment": data["text"],
             }),
             "1fb116ac-697a-11eb-ac85-c0e434b07c91": d => ({
                 "type": "ru.schustovd.diary.api.CommentMark",
-                "comment": d["d"]+"\n"+htmlToText(d["c"]),
+                "comment": d["description"]+"\n"+htmlToText(d["content"]),
             }),
             "3838c06e-7b72-11eb-b8d8-c0e434b07c91": data => ({
                 "type": "ru.schustovd.diary.api.RateMark",
@@ -135,17 +135,17 @@ async function convertFromMydiaryToUniversum(files) {
                     3: 2,
                     2: 4,
                     1: 1
-                })[data["r"]],
+                })[data["rate"]],
             }),
             "4f3e74c0-beca-4d91-8b37-0d8af574afd7": data => ({
                 "type": "ru.schustovd.diary.api.IdeaMark",
-                "comment": data["t"],
+                "comment": data["text"],
             }),
             "5e5a8960-6e2b-11eb-b6df-c0e434b07c91": data => ({
                 "type": "ru.schustovd.diary.api.TaskMark",
-                "c": data["c"],
-                "comment": data["t"],
-                "done": data["i"],
+                "conclusion": data["conclusion"],
+                "comment": data["text"],
+                "done": data["isDone"],
             }),
         },
     };
@@ -158,15 +158,15 @@ async function convertFromMydiaryToUniversum(files) {
         recurrences: []
     };
     data.records.forEach(i => {
-        convector = mydiaryUniversumConvestors[data["version"]][i.$s];
+        convector = mydiaryUniversumConvestors[data["version"]][i.$type];
         if (convector) {
             const record = {
                 ...convector(i, files),
                 id: GetUUID4(),
-                created: i["$c"],
-                changed: i["$c"],
-                time: i["$t"] + ":00",
-                date: i["$d"],
+                created: i["$changed"],
+                changed: i["$changed"],
+                time: i["$time"] + ":00",
+                date: i["$date"],
             };
             newData.marks.push(record);
         };
