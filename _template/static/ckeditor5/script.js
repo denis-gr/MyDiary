@@ -5,7 +5,7 @@ const _promice = (async () => {
 })();
 
 async function initEditor(el) {
-    await _promice
+    await _promice;
     const _ckeditor_settings = {
         toolbar: {
             items: [

@@ -111,7 +111,7 @@ for path in pathlib.Path(TEMPLATE_DIR).glob("**/*.*"):
         min_fun = jsmin.jsmin
     elif path.suffix == ".scss":
         fun = lambda x: sass.compile(string=x,
-            output_style=('compressed' if args.is_not_minify else "nested"))
+            output_style=('compressed' if not args.is_not_minify else "nested"))
         new_path = temp_path.with_suffix(".css")
     else:
         is_text = False

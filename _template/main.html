@@ -184,7 +184,10 @@
             </section>
             <section class="col-lg-12 mb-5">
                 <h3 v-t="'About site'"></h3>
-                <p v-text="$t('version', {v: '5'})"></p>
+                <p>
+                    <span v-text="$t('version', {v: '5.1'})"></span>
+                    <button class="btn btn-link" v-text="$t('Update')" @click="updateApp"></button>
+                </p>
                 <p v-t="'browser_support'"></p>
                 <p v-t="'disclaimer'"></p>
                 <a class="link" href="{{ start_url }}/?redirect=off" target="_blank" v-t="'Front page'"></a>

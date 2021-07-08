@@ -51,6 +51,7 @@ const messages = {
         "Source Code": "Исходный код", "Documentation": "Документация", 
         browser_support: "Создатель сайта не ставил целью поддержку старых браузеров.",
         disclaimer: "Сайт не несет ответственности, ни за что.", 
+        Update: "Обновить",
     }
 };
 Object.keys(messages.ru).filter(i => !(messages.en[i]))
@@ -88,6 +89,11 @@ const App = Vue.createApp({
                 this.allRecords = await DB.getAll("records");
             });
         },
+        async updateApp() {
+            const s = await navigator.serviceWorker.getRegistration();
+            await s.unregister();
+            location.reload();
+        },
         async callEditor(typeUUID, data) {
             await this.editors[typeUUID](data);
         },
@@ -124,7 +130,7 @@ const App = Vue.createApp({
         async addType() {
             await Processes.fun(async () => {
                 const data = JSON.parse(await (await getFile())[0].text());
-                if (data.version == 5) {
+                if (data.version == "5.1" || data.version == "5") {
                     await DB.put("types", data.type);
                 };
             });
@@ -207,15 +213,14 @@ const App = Vue.createApp({
                 while (true) {
                     try {
                         await this._syncWithGD();
-                        break
+                        break;
                     } catch (error) {
                         if (error == INVALIDPASSWORD) {
-                            clearInterval(t);
                             throw INVALIDPASSWORD;
                         };
+                        await new Promise(r => setTimeout(r, 500));
                     };
                 };
-                await new Promise(r => setTimeout(r, 1000));
             });
         },
     },
@@ -237,13 +242,13 @@ const App = Vue.createApp({
             const q = (vm.options.q || "").toLowerCase();
             const records = vm.allRecords.filter(i => {
                 if ((i.$deleted) ||
-                    (vm.options.type && i.$type != vm.options.type) ||
-                    (vm.options.tag && !i.$tags.includes(vm.options.tag)) ||
-                    (vm.options.date && i.$date != vm.options.date)) {
+                    (vm.options.type && i.$s != vm.options.type) ||
+                    (vm.options.tag && !i.$m.includes(vm.options.tag)) ||
+                    (vm.options.date && i.$d != vm.options.date)) {
                     return false;
                 };
                 if (q) {
-                    const type = vm.types.find(type => type.uuid == i.$type);
+                    const type = vm.types.find(type => type.uuid == i.$s);
                     const text = window.eval(type.getSearchText)(type, i);
                     if (!text || !text.toLowerCase().includes(q)) {
                         return false;
@@ -251,7 +256,7 @@ const App = Vue.createApp({
                 };
                 return true;
             });
-            records.sort((a,b)=>a.$date + a.$time < b.$date + b.$time ? 1: -1);
+            records.sort((a,b)=>a.$d + a.$t < b.$d + b.$t ? 1: -1);
             if (vm.slice > 0) {
                 return records.slice(0, vm.slice);
             } else {
@@ -260,7 +265,7 @@ const App = Vue.createApp({
         },
         recordCount: v => (v.allRecords || []).filter(i => !i.$deleted).length,
         tags: v => [...new Set((v.allRecords || []).filter(i => !i.$deleted)
-            .map(i => i.$tags).flat())],
+            .map(i => i.$m).flat())],
     },
 });
 
@@ -368,7 +373,7 @@ App.component("record-editor", {
                 await new Promise((r, j) =>
                     (this.$refs.btn.onclick = r, this.$refs.cls.onclick = j));
                 const data = Object.assign({}, this.form);
-                data.$tags = window.eval(this.type.getRecordTags)(this.type,
+                data.$m = window.eval(this.type.getRecordTags)(this.type,
                     this.form);
                 await this.$root.DB((record ? "put" : "add"), "records", data);
             } catch (error) { };
@@ -377,15 +382,15 @@ App.component("record-editor", {
         },
         getRecord() {
             const record = {
-                $type: this.type.uuid,
-                $tags: options.tag ? [options.tag] : [],
-                $date: moment().format("YYYY-MM-DD"),
-                $time: moment().format("HH:mm"),
+                $s: this.type.uuid,
+                $m: options.tag ? [options.tag] : [],
+                $d: moment().format("YYYY-MM-DD"),
+                $t: moment().format("HH:mm"),
             };
             return window.eval(this.type.addBlankRecord)(this.type, record);
         },
         async remove() {
-            await this.$root.DB("del", "records", this.form.$id);
+            await this.$root.DB("del", "records", this.form.$i);
         },
     },
     computed: {
@@ -401,7 +406,7 @@ BaseAppRecord = {
     functional: true,
     props: ["record"],
     methods: {
-        datetime: x => moment(x.$date + "T" + x.$time).format("LLL"),
+        datetime: x => moment(x.$d + "T" + x.$t).format("LLL"),
     },
     computed: {
         type: v => v.$options.type
