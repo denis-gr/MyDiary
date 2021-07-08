@@ -1,5 +1,63 @@
 const nameDB = "MyDiary";
-const versionDB = 5;
+const versionDB = 5.1;
+const update = {
+    "5.1": {
+        async first_prepare(db) {
+            db.getAll("records");
+            data.map(i => {
+                if (["1bb116ac-697a-11eb-ac85-c0e434b07c91",
+                    "1fb116ac-697a-11eb-ac85-c0e434b07c91",
+                    "3838c06e-7b72-11eb-b8d8-c0e434b07c91",
+                    "4f3e74c0-beca-4d91-8b37-0d8af574afd7",
+                    "5e5a8960-6e2b-11eb-b6df-c0e434b07c91"].includes(i.$type)) {
+                    return ({
+                        $c: i.$changed,
+                        $d: i.$date,
+                        $i: i.$id,
+                        $m: i.$tags,
+                        $t: i.$time,
+                        $s: i.$type,
+                        c: i.contend || i.conclusion,
+                        d: i.description,
+                        i: i.isDone,
+                        r: i.rate,
+                        t: i.text,
+                    });
+                };
+                return i;
+                });
+            data = JSON.parse(JSON.stringify(data));
+            db.put("records", data);
+        },
+        async firstStartUsePassword(db) {
+            db.getAll("records");
+            data.map(i => {
+                if (["1bb116ac-697a-11eb-ac85-c0e434b07c91",
+                    "1fb116ac-697a-11eb-ac85-c0e434b07c91",
+                    "3838c06e-7b72-11eb-b8d8-c0e434b07c91",
+                    "4f3e74c0-beca-4d91-8b37-0d8af574afd7",
+                    "5e5a8960-6e2b-11eb-b6df-c0e434b07c91"].includes(i.$type)) {
+                    return ({
+                        $c: i.$changed,
+                        $d: i.$date,
+                        $i: i.$id,
+                        $m: i.$tags,
+                        $t: i.$time,
+                        $s: i.$type,
+                        c: i.contend || i.conclusion,
+                        d: i.description,
+                        i: i.isDone,
+                        r: i.rate,
+                        t: i.text,
+                    });
+                };
+                return i;
+                });
+            data = JSON.parse(JSON.stringify(data));
+            db.put("records", data);
+        },
+    },
+};
 const DefaultTypes = [{
     title: "Заметка",
     uuid: "1bb116ac-697a-11eb-ac85-c0e434b07c91",
@@ -68,6 +126,7 @@ class DBClass {
             let data = DefaultTypes.map(i=>({isEnable: true, index: 0, ...i}));
             data = data.map(i => this._dbRequest("put", "types", i.uuid, i));
             await Promise.all(data);
+            await update[versionDB].first_prepare(this);
         };
     };
     async _idbRequest(method, store, key, value) {
@@ -111,6 +170,9 @@ class DBClass {
             const iv = await this._db.get("storage", "REIVS");
             data = await decrypt(this._password, iv, data);
             this._records_buffer = JSON.parse(ABToStr(data));
+            if (this._db.isFirst) {
+                await update[versionDB].first_prepare(this);
+            };
         };
     };
     async setPassword(password) {
@@ -285,10 +347,12 @@ class DBClass {
 };
 
 const dbPromise = idb.openDB(nameDB, versionDB, {
-    upgrade(db) {
-        db.createObjectStore('storage');
-        db.createObjectStore('types');
-        db.createObjectStore('records');
+    upgrade(db, oldVersion) {
+        if (!oldVersion) {
+            db.createObjectStore('storage');
+            db.createObjectStore('types');
+            db.createObjectStore('records');            
+        };
         db.isFirst = true;
     }
 });
